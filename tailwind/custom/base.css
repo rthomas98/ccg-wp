@@ -1,0 +1,20 @@
+/**
+ * Custom styles to immediately follow Tailwind’s `base` layer
+ */
+
+/**
+ * This uses the background and foreground colors declared in the `theme.json`
+ * file and is applied both to the front end and in the block editor.
+ */
+body {
+	@apply bg-background text-foreground font-sans;
+}
+
+@layer base {
+	:root {
+		--color-green: #269763;
+		--color-black: #141414;
+		--color-white: #ffffff;
+		--color-grey: #c3c3c3;
+	}	
+}
