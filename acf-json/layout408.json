@@ -1,0 +1,270 @@
+{
+    "key": "group_layout408",
+    "title": "Layout 408",
+    "fields": [
+        {
+            "key": "field_layout408_sub_header",
+            "label": "Sub Header",
+            "name": "sub_header",
+            "type": "text",
+            "instructions": "Enter the sub header text",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "Elevate to new heights and achieve your dreams.",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
+        },
+        {
+            "key": "field_layout408_header",
+            "label": "Header",
+            "name": "header",
+            "type": "text",
+            "instructions": "Enter the main header text",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "Our Commitment to Golfers",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
+        },
+        {
+            "key": "field_layout408_content",
+            "label": "Content",
+            "name": "content",
+            "type": "textarea",
+            "instructions": "Enter the content text",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "Empowering amateur players by providing them with unforgettable experiences that enhance their skills, build confidence, and create lasting memories in their journey toward becoming better athletes.",
+            "placeholder": "",
+            "maxlength": "",
+            "rows": 4,
+            "new_lines": "wpautop"
+        },
+        {
+            "key": "field_layout408_cards",
+            "label": "Cards",
+            "name": "cards",
+            "type": "repeater",
+            "instructions": "Add cards for the scrolling section",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "collapsed": "",
+            "min": 0,
+            "max": 0,
+            "layout": "block",
+            "button_label": "Add Card",
+            "sub_fields": [
+                {
+                    "key": "field_layout408_card_sub_header",
+                    "label": "Sub Header",
+                    "name": "sub_header",
+                    "type": "text",
+                    "instructions": "Enter the card sub header",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "Passion",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "maxlength": ""
+                },
+                {
+                    "key": "field_layout408_card_title",
+                    "label": "Title",
+                    "name": "title",
+                    "type": "text",
+                    "instructions": "Enter the card title",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "Our Mission and Vision",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "maxlength": ""
+                },
+                {
+                    "key": "field_layout408_card_content",
+                    "label": "Content",
+                    "name": "content",
+                    "type": "textarea",
+                    "instructions": "Enter the card content",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "At Chau Chau Golf, we are dedicated to creating exceptional golfing experiences that inspire and challenge players of all skill levels. Our vision is to foster a vibrant community where passion for the game thrives.",
+                    "placeholder": "",
+                    "maxlength": "",
+                    "rows": 4,
+                    "new_lines": "wpautop"
+                },
+                {
+                    "key": "field_layout408_card_image",
+                    "label": "Image",
+                    "name": "image",
+                    "type": "image",
+                    "instructions": "Upload an image for the card",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "return_format": "array",
+                    "preview_size": "medium",
+                    "library": "all",
+                    "min_width": "",
+                    "min_height": "",
+                    "min_size": "",
+                    "max_width": "",
+                    "max_height": "",
+                    "max_size": "",
+                    "mime_types": ""
+                },
+                {
+                    "key": "field_layout408_card_buttons",
+                    "label": "Buttons",
+                    "name": "buttons",
+                    "type": "group",
+                    "instructions": "Configure the buttons for this card",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "layout": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_layout408_card_button_one_label",
+                            "label": "Button One Label",
+                            "name": "button_one_label",
+                            "type": "text",
+                            "instructions": "Enter the label for the first button",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "Learn More",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": ""
+                        },
+                        {
+                            "key": "field_layout408_card_button_one_link",
+                            "label": "Button One Link",
+                            "name": "button_one_link",
+                            "type": "url",
+                            "instructions": "Enter the URL for the first button",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "#",
+                            "placeholder": ""
+                        },
+                        {
+                            "key": "field_layout408_card_button_two_label",
+                            "label": "Button Two Label",
+                            "name": "button_two_label",
+                            "type": "text",
+                            "instructions": "Enter the label for the second button",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "Join",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": ""
+                        },
+                        {
+                            "key": "field_layout408_card_button_two_link",
+                            "label": "Button Two Link",
+                            "name": "button_two_link",
+                            "type": "url",
+                            "instructions": "Enter the URL for the second button",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "#",
+                            "placeholder": ""
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "page"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0
+}

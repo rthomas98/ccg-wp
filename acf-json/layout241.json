@@ -1,0 +1,203 @@
+{
+    "key": "group_layout241",
+    "title": "Layout 241",
+    "fields": [
+        {
+            "key": "field_layout241_sub_header",
+            "label": "Sub Header",
+            "name": "layout_241_sub_header",
+            "type": "text",
+            "instructions": "Enter the sub header text",
+            "required": 0,
+            "conditional_logic": 0,
+            "default_value": "Elevate",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
+        },
+        {
+            "key": "field_layout241_header",
+            "label": "Header",
+            "name": "layout_241_header",
+            "type": "text",
+            "instructions": "Enter the main header text",
+            "required": 0,
+            "conditional_logic": 0,
+            "default_value": "Enhance Your Golfing Potential with Our Expertise",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
+        },
+        {
+            "key": "field_layout241_content",
+            "label": "Content",
+            "name": "layout_241_content",
+            "type": "textarea",
+            "instructions": "Enter the main content text",
+            "required": 0,
+            "conditional_logic": 0,
+            "default_value": "At Chau Chau Golf, we facilitate connections for golf enthusiasts with dynamic tournaments and events customized to their skill levels. Our platform offers comprehensive resources and support to elevate your golfing experience.",
+            "placeholder": "",
+            "maxlength": "",
+            "rows": 4,
+            "new_lines": "wpautop"
+        },
+        {
+            "key": "field_layout241_cards",
+            "label": "Cards",
+            "name": "layout_241_cards",
+            "type": "repeater",
+            "instructions": "Add cards with icons, titles, and content",
+            "required": 0,
+            "conditional_logic": 0,
+            "collapsed": "field_layout241_card_title",
+            "min": 0,
+            "max": 3,
+            "layout": "block",
+            "button_label": "Add Card",
+            "sub_fields": [
+                {
+                    "key": "field_layout241_card_icon",
+                    "label": "Icon",
+                    "name": "icon",
+                    "type": "image",
+                    "instructions": "Upload an icon image (recommended size: 48x48px)",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "return_format": "array",
+                    "preview_size": "thumbnail",
+                    "library": "all",
+                    "min_width": "",
+                    "min_height": "",
+                    "min_size": "",
+                    "max_width": "",
+                    "max_height": "",
+                    "max_size": "",
+                    "mime_types": ""
+                },
+                {
+                    "key": "field_layout241_card_icon_type",
+                    "label": "Icon Type",
+                    "name": "icon_type",
+                    "type": "select",
+                    "instructions": "Select a Lucide icon type if no image is uploaded",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "choices": {
+                        "trophy": "Trophy",
+                        "calendar": "Calendar",
+                        "users": "Users",
+                        "golf": "Golf",
+                        "target": "Target",
+                        "award": "Award",
+                        "flag": "Flag"
+                    },
+                    "default_value": "golf",
+                    "allow_null": 0,
+                    "multiple": 0,
+                    "ui": 1,
+                    "return_format": "value",
+                    "ajax": 0,
+                    "placeholder": ""
+                },
+                {
+                    "key": "field_layout241_card_title",
+                    "label": "Title",
+                    "name": "title",
+                    "type": "text",
+                    "instructions": "Enter the card title",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "default_value": "",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "maxlength": ""
+                },
+                {
+                    "key": "field_layout241_card_content",
+                    "label": "Content",
+                    "name": "content",
+                    "type": "textarea",
+                    "instructions": "Enter the card content",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "default_value": "",
+                    "placeholder": "",
+                    "maxlength": "",
+                    "rows": 4,
+                    "new_lines": "wpautop"
+                }
+            ]
+        },
+        {
+            "key": "field_layout241_button_one_label",
+            "label": "Button One Label",
+            "name": "layout_241_button_one_label",
+            "type": "text",
+            "instructions": "Enter the label for the first button",
+            "required": 0,
+            "conditional_logic": 0,
+            "default_value": "Learn More",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
+        },
+        {
+            "key": "field_layout241_button_one_link",
+            "label": "Button One Link",
+            "name": "layout_241_button_one_link",
+            "type": "url",
+            "instructions": "Enter the URL for the first button",
+            "required": 0,
+            "conditional_logic": 0,
+            "default_value": "#",
+            "placeholder": ""
+        },
+        {
+            "key": "field_layout241_button_two_label",
+            "label": "Button Two Label",
+            "name": "layout_241_button_two_label",
+            "type": "text",
+            "instructions": "Enter the label for the second button",
+            "required": 0,
+            "conditional_logic": 0,
+            "default_value": "Sign Up",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
+        },
+        {
+            "key": "field_layout241_button_two_link",
+            "label": "Button Two Link",
+            "name": "layout_241_button_two_link",
+            "type": "url",
+            "instructions": "Enter the URL for the second button",
+            "required": 0,
+            "conditional_logic": 0,
+            "default_value": "#",
+            "placeholder": ""
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "page_template",
+                "operator": "==",
+                "value": "main-pages/home.php"
+            }
+        ]
+    ],
+    "menu_order": 1,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "Fields for the Layout 241 component"
+}

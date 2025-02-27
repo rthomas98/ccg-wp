@@ -42,5 +42,8 @@
 		"zip": "node node_scripts/zip.js _ccg",
 		"bundle": "run-s production zip"
 	},
-	"prettier": "@wordpress/prettier-config"
+	"prettier": "@wordpress/prettier-config",
+	"dependencies": {
+		"lucide-react": "^0.476.0"
+	}
 }

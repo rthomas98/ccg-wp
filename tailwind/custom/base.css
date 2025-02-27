@@ -18,3 +18,168 @@ body {
 		--color-grey: #c3c3c3;
 	}	
 }
+
+/* Header styles */
+#masthead {
+	background-color: var(--color-white);
+	padding: 0.75rem 0;
+}
+
+#masthead img {
+	max-height: 80px;
+	width: auto;
+}
+
+#primary-menu {
+	display: flex;
+}
+
+@media (max-width: 767px) {
+	#primary-menu {
+		flex-direction: column;
+	}
+}
+
+@media (min-width: 768px) {
+	#primary-menu {
+		flex-direction: row;
+	}
+	
+	#primary-menu > li {
+		margin-right: 1.5rem;
+	}
+}
+
+/* Ensure dropdown menus are properly styled */
+.sub-menu {
+	background-color: var(--color-white);
+	border-radius: 0.375rem;
+	box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+	z-index: 50;
+}
+
+/* Ensure menu items have proper spacing */
+.menu-item a {
+	display: block;
+	padding: 0.5rem 1rem;
+	transition: color 0.3s ease;
+}
+
+.menu-item a:hover {
+	color: var(--color-green);
+}
+
+/* Active menu item styling */
+.current-menu-item > a {
+	color: var(--color-green);
+	font-weight: 700;
+}
+
+/* Mobile menu styling */
+@media (max-width: 767px) {
+	#site-navigation:not(.hidden) {
+		display: flex;
+		flex-direction: column;
+		position: absolute;
+		top: 100%;
+		left: 0;
+		right: 0;
+		background-color: var(--color-white);
+		padding: 1rem;
+		box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+		z-index: 50;
+	}
+	
+	/* Left-justify mobile menu items */
+	#primary-menu {
+		align-items: flex-start;
+		width: 100%;
+	}
+	
+	#primary-menu > li {
+		width: 100%;
+	}
+	
+	#primary-menu > li > a {
+		text-align: left;
+		width: 100%;
+		display: block;
+	}
+	
+	/* Make the button expand to screen width */
+	.header-cta {
+		width: 100%;
+		margin-top: 1rem;
+	}
+	
+	.header-cta a {
+		display: block;
+		width: 100%;
+		text-align: center;
+	}
+	
+	/* Mobile dropdown styling */
+	.sub-menu {
+		position: static !important;
+		width: 100% !important;
+		box-shadow: none !important;
+		border-radius: 0 !important;
+		margin-top: 0 !important;
+		padding-left: 1rem !important;
+		background-color: #f8f8f8 !important;
+	}
+	
+	.mobile-dropdown-active {
+		display: block !important;
+		width: 100% !important;
+	}
+	
+	/* Dropdown toggle button */
+	.dropdown-toggle {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		transition: transform 0.2s ease;
+	}
+	
+	/* Hide dropdown toggles on desktop */
+	@media (min-width: 768px) {
+		.dropdown-toggle {
+			display: none;
+		}
+	}
+}
+
+/* Desktop dropdown behavior */
+@media (min-width: 768px) {
+	.menu-item-has-children:hover > .sub-menu {
+		display: block;
+	}
+}
+
+/* Marquee animations for the hero section */
+@keyframes marquee-top {
+	0% {
+		transform: translateX(0);
+	}
+	100% {
+		transform: translateX(-50%);
+	}
+}
+
+@keyframes marquee-bottom {
+	0% {
+		transform: translateX(-50%);
+	}
+	100% {
+		transform: translateX(0);
+	}
+}
+
+.animate-marquee-top {
+	animation: marquee-top 30s linear infinite;
+}
+
+.animate-marquee-bottom {
+	animation: marquee-bottom 30s linear infinite;
+}
