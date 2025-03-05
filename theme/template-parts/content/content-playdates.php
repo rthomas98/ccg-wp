@@ -50,103 +50,86 @@
         <?php endwhile; ?>
     <?php endif; ?>
 
-    <?php if (have_rows('event_4')) : ?>
-        <?php while (have_rows('event_4')) : the_row(); ?>
-            <section class="px-[5%] py-16 md:py-24 lg:py-28">
-                <div class="container mx-auto">
-                    <div class="mx-auto flex w-full max-w-lg flex-col">
-                        <div class="mb-12 text-center md:mb-18 lg:mb-20">
-                            <h4 class="font-semibold">
-                                <?php the_sub_field('sub_header'); ?>
-                            </h4>
-                            <h2 class="mt-3 text-4xl font-bold md:mt-4 md:text-5xl lg:text-6xl">
-                                <?php the_sub_field('header'); ?>
-                            </h2>
-                            <p class="mt-5 text-base md:mt-6 md:text-md">
-                                <?php the_sub_field('content'); ?>
-                            </p>
-                        </div>
+    <?php
+    // Query recent playdates
+    $playdates_query = new WP_Query(array(
+        'post_type' => 'playdate',
+        'posts_per_page' => 5,
+        'orderby' => 'meta_value',
+        'meta_key' => 'playdate_details_date',
+        'order' => 'DESC'
+    ));
+    ?>
 
-                        <div class="flex flex-col justify-start">
-                            <div class="no-scrollbar mb-12 flex w-full items-center overflow-auto md:justify-center md:overflow-hidden">
-                                <a href="#" class="inline-flex items-center justify-center rounded-md border-2 border-[#269763] bg-transparent px-4 py-2 text-center text-sm font-semibold text-[#269763] hover:bg-[#269763] hover:text-white">
-                                    View all
-                                </a>
-                                <a href="#" class="inline-flex items-center justify-center px-4 py-2 text-center text-sm font-semibold text-gray-600 hover:text-[#269763]">
-                                    Upcoming Playdates
-                                </a>
-                                <a href="#" class="inline-flex items-center justify-center px-4 py-2 text-center text-sm font-semibold text-gray-600 hover:text-[#269763]">
-                                    Past Events
-                                </a>
-                                <a href="#" class="inline-flex items-center justify-center px-4 py-2 text-center text-sm font-semibold text-gray-600 hover:text-[#269763]">
-                                    Golf Tournaments
-                                </a>
-                                <a href="#" class="inline-flex items-center justify-center px-4 py-2 text-center text-sm font-semibold text-gray-600 hover:text-[#269763]">
-                                    Social Events
-                                </a>
-                            </div>
-
-                            <?php if (have_rows('events')) : ?>
-                                <div class="flex flex-col gap-6 md:gap-8">
-                                    <?php while (have_rows('events')) : the_row(); 
-                                        $title = get_sub_field('title');
-                                        $status = get_sub_field('status');
-                                        $date = get_sub_field('date');
-                                        $location = get_sub_field('location');
-                                        $description = get_sub_field('description');
-                                        $image = get_sub_field('image');
-                                        $button_link = get_sub_field('button_link');
-                                    ?>
-                                        <div class="flex flex-col border border-gray-200 md:flex-row">
-                                            <div class="relative aspect-[3/2] w-full shrink-0 md:aspect-auto md:w-48 lg:aspect-square">
-                                                <?php if ($image) : ?>
-                                                    <img src="<?php echo esc_url($image['url']); ?>" 
-                                                         alt="<?php echo esc_attr($image['alt']); ?>" 
-                                                         class="absolute size-full object-cover" />
-                                                <?php endif; ?>
-                                            </div>
-                                            <div class="flex w-full flex-col items-start gap-8 p-6 sm:p-8 lg:flex-row lg:items-center">
-                                                <div>
-                                                    <div class="mb-2 flex flex-wrap items-center gap-2 sm:mb-0 sm:gap-4">
-                                                        <h3 class="text-xl font-bold md:text-2xl">
-                                                            <?php echo esc_html($title); ?>
-                                                        </h3>
-                                                        <?php if ($status) : ?>
-                                                            <p class="bg-gray-100 px-2 py-1 text-sm font-semibold">
-                                                                <?php echo esc_html($status); ?>
-                                                            </p>
-                                                        <?php endif; ?>
-                                                    </div>
-                                                    <div class="mb-3 flex items-center text-sm md:mb-4">
-                                                        <?php if ($date) : ?>
-                                                            <span><?php echo esc_html($date); ?></span>
-                                                        <?php endif; ?>
-                                                        <?php if ($date && $location) : ?>
-                                                            <span class="mx-2 text-base">•</span>
-                                                        <?php endif; ?>
-                                                        <?php if ($location) : ?>
-                                                            <span><?php echo esc_html($location); ?></span>
-                                                        <?php endif; ?>
-                                                    </div>
-                                                    <p><?php echo esc_html($description); ?></p>
-                                                </div>
-                                                <?php if ($button_link) : ?>
-                                                    <a href="<?php echo esc_url($button_link); ?>" 
-                                                       class="inline-flex items-center justify-center rounded-md border-2 border-[#269763] bg-transparent px-4 py-2 text-center text-sm font-semibold text-[#269763] hover:bg-[#269763] hover:text-white">
-                                                        Save my spot
-                                                    </a>
-                                                <?php endif; ?>
-                                            </div>
-                                        </div>
-                                    <?php endwhile; ?>
-                                </div>
-                            <?php endif; ?>
-                        </div>
-                    </div>
+    <section id="relume" class="px-[5%] py-16 md:py-24 lg:py-28">
+        <div class="container mx-auto">
+            <div class="mx-auto w-full max-w-4xl">
+                <div class="mb-12 text-center md:mb-18 lg:mb-20">
+                    <h4 class="text-base font-semibold">Playdates</h4>
+                    <h1 class="mt-3 text-4xl font-bold md:mt-4 md:text-6xl lg:text-7xl">Events</h1>
+                    <p class="mx-auto mt-5 max-w-lg text-base text-gray-600 md:mt-6">
+                        Come and be part of our thrilling playdates, where you can enjoy a fantastic mix of golf, 
+                        fun activities, and the chance to build lasting friendships with fellow enthusiasts. 
+                        We can't wait to see you there!
+                    </p>
                 </div>
-            </section>
-        <?php endwhile; ?>
-    <?php endif; ?>
+
+                <div class="flex flex-col justify-start">
+                    <?php if ($playdates_query->have_posts()) : ?>
+                        <div class="flex flex-col gap-6 md:gap-8">
+                            <?php while ($playdates_query->have_posts()) : $playdates_query->the_post(); 
+                                $details = get_field('playdate_details');
+                                $status = get_field('current_status');
+                                $registration = get_field('registration_details');
+                                $media = get_field('media');
+                                
+                                $featured_image = $media['featured_image'] ?? null;
+                                $image_url = $featured_image ? $featured_image['url'] : '';
+                                
+                                $spots_remaining = $status['spots_remaining'] ?? 0;
+                                $registration_status = $spots_remaining > 0 ? $spots_remaining . ' spots available' : 'Sold out';
+                            ?>
+                                <div class="flex flex-col border border-gray-200 md:flex-row">
+                                    <a href="<?php the_permalink(); ?>" class="relative aspect-[3/2] w-full shrink-0 md:aspect-auto md:w-48 lg:aspect-square">
+                                        <?php if ($featured_image) : ?>
+                                            <img src="<?php echo esc_url($image_url); ?>" 
+                                                 alt="<?php the_title(); ?>" 
+                                                 class="absolute size-full object-cover" />
+                                        <?php else : ?>
+                                            <div class="absolute inset-0 bg-[#c3c3c3] size-full"></div>
+                                        <?php endif; ?>
+                                    </a>
+                                    <div class="flex w-full flex-col items-start gap-8 p-6 sm:p-8 lg:flex-row lg:items-center">
+                                        <div>
+                                            <div class="mb-2 flex flex-wrap items-center gap-2 sm:mb-0 sm:gap-4">
+                                                <a href="<?php the_permalink(); ?>" class="text-xl font-bold hover:text-[#269763] md:text-2xl">
+                                                    <?php the_title(); ?>
+                                                </a>
+                                                <p class="bg-gray-100 px-2 py-1 text-sm font-semibold">
+                                                    <?php echo esc_html($registration_status); ?>
+                                                </p>
+                                            </div>
+                                            <div class="mb-3 flex items-center text-sm text-gray-600 md:mb-4">
+                                                <span><?php echo esc_html($details['date']); ?></span>
+                                                <span class="mx-2 text-base">•</span>
+                                                <span><?php echo esc_html($details['location']); ?></span>
+                                            </div>
+                                            <p class="text-gray-600">Join us for a fun-filled day of golf at <?php echo esc_html($details['location']); ?>.</p>
+                                        </div>
+                                        <a href="<?php echo $spots_remaining > 0 ? get_permalink() : 'javascript:void(0)'; ?>" 
+                                           class="inline-flex items-center justify-center rounded-md border-2 <?php echo $spots_remaining > 0 ? 'border-[#269763] text-[#269763] hover:bg-[#269763] hover:text-white' : 'border-gray-300 text-gray-300 cursor-not-allowed'; ?> bg-transparent px-4 py-2 text-center text-sm font-semibold">
+                                            Save my spot
+                                        </a>
+                                    </div>
+                                </div>
+                            <?php endwhile; ?>
+                            <?php wp_reset_postdata(); ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <?php if (have_rows('layout_27')) : ?>
         <?php while (have_rows('layout_27')) : the_row(); ?>

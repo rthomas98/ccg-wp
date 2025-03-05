@@ -540,6 +540,125 @@ class CCG_Footer_Walker_Nav_Menu extends Walker_Nav_Menu {
 }
 
 /**
+ * Handle tournament registration form submission
+ */
+function handle_tournament_registration() {
+    // Verify nonce
+    if (!isset($_POST['tournament_registration_nonce']) || 
+        !wp_verify_nonce($_POST['tournament_registration_nonce'], 'tournament_registration_nonce')) {
+        wp_send_json_error(['message' => 'Invalid nonce verification']);
+        return;
+    }
+
+    // Get tournament ID
+    $tournament_id = isset($_POST['tournament_id']) ? intval($_POST['tournament_id']) : 0;
+    if (!$tournament_id) {
+        wp_send_json_error(['message' => 'Invalid tournament ID']);
+        return;
+    }
+
+    // Check if spots are available
+    $spots_available = get_field('registration_info_spots_available', $tournament_id);
+    if ($spots_available <= 0) {
+        wp_send_json_error(['message' => 'Sorry, this tournament is full']);
+        return;
+    }
+
+    // Get form data
+    $first_name = sanitize_text_field($_POST['first_name']);
+    $last_name = sanitize_text_field($_POST['last_name']);
+    $email = sanitize_email($_POST['email']);
+    $phone = sanitize_text_field($_POST['phone']);
+    $handicap = floatval($_POST['handicap']);
+    $ghin_number = sanitize_text_field($_POST['ghin_number']);
+    $home_club = sanitize_text_field($_POST['home_club']);
+    $dietary_restrictions = sanitize_textarea_field($_POST['dietary_restrictions']);
+    $special_requests = sanitize_textarea_field($_POST['special_requests']);
+
+    // Validate required fields
+    if (empty($first_name) || empty($last_name) || empty($email) || empty($phone) || 
+        empty($handicap) || empty($ghin_number)) {
+        wp_send_json_error(['message' => 'Please fill in all required fields']);
+        return;
+    }
+
+    // Create registration post
+    $registration = [
+        'post_title' => $first_name . ' ' . $last_name . ' - ' . get_the_title($tournament_id),
+        'post_type' => 'tournament_registration',
+        'post_status' => 'publish',
+    ];
+
+    $registration_id = wp_insert_post($registration);
+
+    if (is_wp_error($registration_id)) {
+        wp_send_json_error(['message' => 'Failed to create registration']);
+        return;
+    }
+
+    // Save registration details
+    update_field('registration_details_first_name', $first_name, $registration_id);
+    update_field('registration_details_last_name', $last_name, $registration_id);
+    update_field('registration_details_email', $email, $registration_id);
+    update_field('registration_details_phone', $phone, $registration_id);
+    update_field('registration_details_handicap', $handicap, $registration_id);
+    update_field('registration_details_ghin_number', $ghin_number, $registration_id);
+    update_field('registration_details_home_club', $home_club, $registration_id);
+    update_field('registration_details_dietary_restrictions', $dietary_restrictions, $registration_id);
+    update_field('registration_details_special_requests', $special_requests, $registration_id);
+    update_field('registration_details_tournament', $tournament_id, $registration_id);
+    update_field('registration_details_status', 'registered', $registration_id);
+    update_field('registration_details_registration_date', date('Y-m-d H:i:s'), $registration_id);
+
+    // Update spots available
+    update_field('registration_info_spots_available', $spots_available - 1, $tournament_id);
+
+    // Send confirmation email to registrant
+    $to = $email;
+    $subject = 'Tournament Registration Confirmation - ' . get_the_title($tournament_id);
+    $message = "Thank you for registering for " . get_the_title($tournament_id) . ".\n\n";
+    $message .= "Registration Details:\n";
+    $message .= "Name: $first_name $last_name\n";
+    $message .= "Email: $email\n";
+    $message .= "Phone: $phone\n";
+    $message .= "GHIN Number: $ghin_number\n";
+    $message .= "Handicap Index: $handicap\n";
+    if ($home_club) {
+        $message .= "Home Club: $home_club\n";
+    }
+    
+    $headers = ['Content-Type: text/plain; charset=UTF-8'];
+    wp_mail($to, $subject, $message, $headers);
+
+    // Send notification to admin
+    $admin_email = get_option('admin_email');
+    $admin_subject = 'New Tournament Registration - ' . get_the_title($tournament_id);
+    wp_mail($admin_email, $admin_subject, $message, $headers);
+
+    wp_send_json_success([
+        'message' => 'Registration successful! Check your email for confirmation details.',
+        'registration_id' => $registration_id
+    ]);
+}
+add_action('wp_ajax_tournament_registration', 'handle_tournament_registration');
+add_action('wp_ajax_nopriv_tournament_registration', 'handle_tournament_registration');
+
+/**
+ * Include playdate registration functionality
+ */
+require_once get_template_directory() . '/inc/post-types/playdate-registration.php';
+
+/**
+ * Include tournament registration functionality
+ */
+require_once get_template_directory() . '/inc/post-types/tournament-registration.php';
+
+/**
+ * Include waitlist registration functionality
+ */
+require_once get_template_directory() . '/inc/post-types/waitlist.php';
+
+/**
  * Register ACF fields for the home page
  */
 function _ccg_register_acf_fields() {
@@ -742,6 +861,218 @@ function _ccg_register_acf_fields() {
 add_action('acf/init', '_ccg_register_acf_fields');
 
 /**
+ * Register ACF fields for tournament registration
+ */
+function register_tournament_registration_acf_fields() {
+    if (function_exists('acf_add_local_field_group')) {
+        // Tournament Registration Details
+        acf_add_local_field_group(array(
+            'key' => 'group_tournament_registration_details',
+            'title' => 'Registration Details',
+            'fields' => array(
+                array(
+                    'key' => 'field_registration_details_first_name',
+                    'label' => 'First Name',
+                    'name' => 'registration_details_first_name',
+                    'type' => 'text',
+                    'required' => 1,
+                ),
+                array(
+                    'key' => 'field_registration_details_last_name',
+                    'label' => 'Last Name',
+                    'name' => 'registration_details_last_name',
+                    'type' => 'text',
+                    'required' => 1,
+                ),
+                array(
+                    'key' => 'field_registration_details_email',
+                    'label' => 'Email',
+                    'name' => 'registration_details_email',
+                    'type' => 'email',
+                    'required' => 1,
+                ),
+                array(
+                    'key' => 'field_registration_details_phone',
+                    'label' => 'Phone',
+                    'name' => 'registration_details_phone',
+                    'type' => 'text',
+                    'required' => 1,
+                ),
+                array(
+                    'key' => 'field_registration_details_handicap',
+                    'label' => 'Handicap Index',
+                    'name' => 'registration_details_handicap',
+                    'type' => 'number',
+                    'required' => 1,
+                    'min' => -10,
+                    'max' => 54,
+                    'step' => 0.1,
+                ),
+                array(
+                    'key' => 'field_registration_details_ghin_number',
+                    'label' => 'GHIN Number',
+                    'name' => 'registration_details_ghin_number',
+                    'type' => 'text',
+                    'required' => 1,
+                ),
+                array(
+                    'key' => 'field_registration_details_home_club',
+                    'label' => 'Home Club',
+                    'name' => 'registration_details_home_club',
+                    'type' => 'text',
+                ),
+                array(
+                    'key' => 'field_registration_details_dietary_restrictions',
+                    'label' => 'Dietary Restrictions',
+                    'name' => 'registration_details_dietary_restrictions',
+                    'type' => 'textarea',
+                ),
+                array(
+                    'key' => 'field_registration_details_special_requests',
+                    'label' => 'Special Requests',
+                    'name' => 'registration_details_special_requests',
+                    'type' => 'textarea',
+                ),
+                array(
+                    'key' => 'field_registration_details_tournament',
+                    'label' => 'Tournament',
+                    'name' => 'registration_details_tournament',
+                    'type' => 'post_object',
+                    'post_type' => array('tournament'),
+                    'required' => 1,
+                ),
+                array(
+                    'key' => 'field_registration_details_status',
+                    'label' => 'Status',
+                    'name' => 'registration_details_status',
+                    'type' => 'select',
+                    'choices' => array(
+                        'registered' => 'Registered',
+                        'waitlisted' => 'Waitlisted',
+                        'cancelled' => 'Cancelled',
+                    ),
+                    'default_value' => 'registered',
+                    'required' => 1,
+                ),
+                array(
+                    'key' => 'field_registration_details_registration_date',
+                    'label' => 'Registration Date',
+                    'name' => 'registration_details_registration_date',
+                    'type' => 'date_time_picker',
+                    'required' => 1,
+                    'display_format' => 'F j, Y g:i a',
+                    'return_format' => 'Y-m-d H:i:s',
+                ),
+            ),
+            'location' => array(
+                array(
+                    array(
+                        'param' => 'post_type',
+                        'operator' => '==',
+                        'value' => 'tournament_registration',
+                    ),
+                ),
+            ),
+            'menu_order' => 0,
+            'position' => 'normal',
+            'style' => 'default',
+            'label_placement' => 'top',
+            'instruction_placement' => 'label',
+            'hide_on_screen' => array(
+                'permalink',
+                'the_content',
+                'excerpt',
+                'discussion',
+                'comments',
+                'revisions',
+                'slug',
+                'author',
+                'format',
+                'page_attributes',
+                'featured_image',
+                'categories',
+                'tags',
+                'send-trackbacks',
+            ),
+        ));
+
+        // Tournament Registration Info
+        acf_add_local_field_group(array(
+            'key' => 'group_tournament_registration_info',
+            'title' => 'Registration Information',
+            'fields' => array(
+                array(
+                    'key' => 'field_registration_info_registration_fee',
+                    'label' => 'Registration Fee',
+                    'name' => 'registration_info_registration_fee',
+                    'type' => 'number',
+                    'required' => 1,
+                    'min' => 0,
+                ),
+                array(
+                    'key' => 'field_registration_info_registration_deadline',
+                    'label' => 'Registration Deadline',
+                    'name' => 'registration_info_registration_deadline',
+                    'type' => 'date_time_picker',
+                    'required' => 1,
+                    'display_format' => 'F j, Y',
+                    'return_format' => 'F j, Y',
+                ),
+                array(
+                    'key' => 'field_registration_info_spots_available',
+                    'label' => 'Spots Available',
+                    'name' => 'registration_info_spots_available',
+                    'type' => 'number',
+                    'required' => 1,
+                    'min' => 0,
+                ),
+                array(
+                    'key' => 'field_registration_info_registration_instructions',
+                    'label' => 'Registration Instructions',
+                    'name' => 'registration_info_registration_instructions',
+                    'type' => 'wysiwyg',
+                    'tabs' => 'visual',
+                    'toolbar' => 'basic',
+                    'media_upload' => 0,
+                ),
+                array(
+                    'key' => 'field_registration_info_whats_included',
+                    'label' => "What's Included",
+                    'name' => 'registration_info_whats_included',
+                    'type' => 'repeater',
+                    'layout' => 'table',
+                    'button_label' => 'Add Item',
+                    'sub_fields' => array(
+                        array(
+                            'key' => 'field_registration_info_whats_included_item',
+                            'label' => 'Item',
+                            'name' => 'item',
+                            'type' => 'text',
+                            'required' => 1,
+                        ),
+                    ),
+                ),
+            ),
+            'location' => array(
+                array(
+                    array(
+                        'param' => 'post_type',
+                        'operator' => '==',
+                        'value' => 'tournament',
+                    ),
+                ),
+            ),
+            'menu_order' => 0,
+            'position' => 'normal',
+            'style' => 'default',
+            'label_placement' => 'top',
+            'instruction_placement' => 'label',
+        ));
+    }
+}
+add_action('acf/init', 'register_tournament_registration_acf_fields');
+
+/**
  * Enqueue scripts and styles.
  */
 function ccg_scripts() {
@@ -757,3 +1088,50 @@ function ccg_scripts() {
     wp_script_add_data('alpinejs', 'defer', true);
 }
 add_action('wp_enqueue_scripts', 'ccg_scripts');
+
+/**
+ * Custom Login Logo
+ */
+function ccg_custom_login_logo() {
+    ?>
+    <style type="text/css">
+        #login h1 a, .login h1 a {
+            background-image: url(<?php echo get_stylesheet_directory_uri(); ?>/assets/images/ccg-logo.png);
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            width: 300px;
+            height: 100px;
+            margin-bottom: 20px;
+        }
+        
+        .wp-core-ui .button-primary {
+            background-color: #269763 !important;
+            border-color: #269763 !important;
+            color: #ffffff !important;
+        }
+        
+        .wp-core-ui .button-primary:hover,
+        .wp-core-ui .button-primary:focus {
+            background-color: #1f7a4f !important;
+            border-color: #1f7a4f !important;
+            color: #ffffff !important;
+        }
+        
+        .login #backtoblog a:hover, 
+        .login #nav a:hover {
+            color: #269763 !important;
+        }
+    </style>
+    <?php
+}
+add_action('login_enqueue_scripts', 'ccg_custom_login_logo');
+
+/**
+ * Change custom logo link from wordpress.org to home url
+ */
+function _ccg_custom_logo_link($html) {
+    $html = str_replace('href="https://wordpress.org/"', 'href="' . esc_url(home_url('/')) . '"', $html);
+    return $html;
+}
+add_filter('get_custom_logo', '_ccg_custom_logo_link');

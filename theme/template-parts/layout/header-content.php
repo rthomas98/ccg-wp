@@ -10,7 +10,7 @@
 ?>
 
 <header id="masthead" class="sticky top-0 z-50 bg-white shadow-md">
-    <div class="mx-auto px-8 md:px-10 lg:px-12 flex flex-wrap items-center justify-between">
+    <div class="mx-auto px-8 md:px-10 lg:px-12 flex flex-wrap items-center justify-between container">
         <!-- Logo -->
         <div class="flex items-center">
             <?php if (has_custom_logo()) : ?>
@@ -35,10 +35,10 @@
                         if (!file_exists(get_template_directory() . '/theme/assets/images/logo.png')) {
                             echo '<span class="text-2xl font-bold text-[#269763]">' . get_bloginfo('name') . '</span>';
                         } else {
-                            echo '<img src="' . esc_url($logo_url) . '" alt="' . esc_attr(get_bloginfo('name')) . '" class="h-20 w-auto">';
+                            echo '<img src="' . esc_url($logo_url) . '" alt="' . esc_attr(get_bloginfo('name')) . '" class="h-24 w-auto md:h-28 lg:h-32">';
                         }
                     } else {
-                        echo '<img src="' . esc_url($logo_url) . '" alt="' . esc_attr(get_bloginfo('name')) . '" class="h-20 w-auto">';
+                        echo '<img src="' . esc_url($logo_url) . '" alt="' . esc_attr(get_bloginfo('name')) . '" class="h-24 w-auto md:h-28 lg:h-32">';
                     }
                     ?>
                 </a>
@@ -46,7 +46,7 @@
         </div>
 
         <!-- Mobile menu button -->
-        <button id="mobile-menu-toggle" class="md:hidden flex items-center p-2 text-black hover:text-[#269763] focus:outline-none transition-colors duration-300" aria-label="Toggle menu" aria-expanded="false" aria-controls="primary-menu">
+        <button id="mobile-menu-toggle" class="md:hidden flex items-center p-2 text-black hover:text-[#269763] focus:outline-none transition-colors duration-300">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon">
                 <line x1="3" y1="12" x2="21" y2="12"></line>
                 <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -59,184 +59,201 @@
         </button>
 
         <!-- Navigation -->
-        <nav id="site-navigation" class="hidden md:flex items-center w-full md:w-auto md:ml-auto" aria-label="<?php esc_attr_e('Main Navigation', '_ccg'); ?>">
-            <?php
-            // Check if the menu exists and display it
-            if (has_nav_menu('menu-1')) {
-                wp_nav_menu(
-                    array(
-                        'theme_location' => 'menu-1',
-                        'menu_id'        => 'primary-menu',
-                        'container'      => false,
-                        'menu_class'     => 'flex flex-col md:flex-row md:space-x-6',
-                        'items_wrap'     => '<ul id="%1$s" class="%2$s" aria-label="submenu">%3$s</ul>',
-                        'walker'         => new CCG_Walker_Nav_Menu(),
-                        'fallback_cb'    => false,
-                    )
-                );
-            } else {
-                // Fallback menu if no menu is assigned
-                echo '<ul id="primary-menu" class="flex flex-col md:flex-row md:space-x-6" aria-label="submenu">';
-                echo '<li class="relative"><a href="' . esc_url(home_url('/')) . '" class="block py-2 px-4 text-black hover:text-[#269763] transition-colors duration-300">Home</a></li>';
-                echo '<li class="relative"><a href="#" class="block py-2 px-4 text-black hover:text-[#269763] transition-colors duration-300">About</a></li>';
-                echo '<li class="relative"><a href="#" class="block py-2 px-4 text-black hover:text-[#269763] transition-colors duration-300">Services</a></li>';
-                echo '<li class="relative"><a href="#" class="block py-2 px-4 text-black hover:text-[#269763] transition-colors duration-300">Contact</a></li>';
-                echo '</ul>';
-            }
-            ?>
-            
-            <!-- CTA buttons -->
-            <div class="header-cta mt-4 md:mt-0 md:ml-6 flex flex-wrap gap-4">
-                <a href="<?php echo esc_url(home_url('/contact')); ?>" class="inline-block px-5 py-2 bg-[#269763] text-white font-medium rounded-md hover:bg-[#1c7a4e] transition-colors duration-300">
-                    Contact Us
-                </a>
-            </div>
-        </nav>
+        <div id="nav-container" class="hidden w-full md:w-auto md:flex items-center justify-between flex-1 pl-8">
+            <nav id="site-navigation" class="flex items-center justify-center flex-grow mx-8" aria-label="<?php esc_attr_e('Main Navigation', '_ccg'); ?>">
+                <?php
+                // Check if the menu exists and display it
+                if (has_nav_menu('menu-1')) {
+                    wp_nav_menu(
+                        array(
+                            'theme_location' => 'menu-1',
+                            'menu_id'        => 'primary-menu',
+                            'container'      => false,
+                            'menu_class'     => 'flex flex-col md:flex-row md:space-x-12',
+                            'items_wrap'     => '<ul id="%1$s" class="%2$s" aria-label="submenu">%3$s</ul>',
+                            'walker'         => new CCG_Walker_Nav_Menu(),
+                            'fallback_cb'    => false,
+                        )
+                    );
+                } else {
+                    // Fallback menu if no menu is assigned
+                    echo '<ul id="primary-menu" class="flex flex-col md:flex-row md:space-x-6" aria-label="submenu">';
+                    echo '<li class="relative"><a href="' . esc_url(home_url('/')) . '" class="block py-2 px-4 text-black hover:text-[#269763] transition-colors duration-300">Home</a></li>';
+                    echo '<li class="relative"><a href="#" class="block py-2 px-4 text-black hover:text-[#269763] transition-colors duration-300">About</a></li>';
+                    echo '<li class="relative"><a href="#" class="block py-2 px-4 text-black hover:text-[#269763] transition-colors duration-300">Services</a></li>';
+                    echo '</ul>';
+                }
+                ?>
+            </nav>
+
+            <?php if (!is_user_logged_in()) : ?>
+                <div class="flex flex-col md:flex-row gap-2 mt-4 md:mt-0">
+                    <a href="<?php echo esc_url(wp_login_url()); ?>" class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#269763] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#269763]/80">
+                        Login
+                        <i data-lucide="log-in" class="h-4 w-4"></i>
+                    </a>
+                    <a href="<?php echo esc_url(home_url('/register')); ?>" class="inline-flex items-center justify-center gap-2 rounded-lg border border-[#269763] px-4 py-2 text-sm font-semibold text-[#269763] transition hover:bg-[#269763] hover:text-white">
+                        Register
+                        <i data-lucide="user-plus" class="h-4 w-4"></i>
+                    </a>
+                </div>
+            <?php else : ?>
+                <div class="relative" id="user-menu">
+                    <button id="user-menu-button" class="inline-flex items-center gap-2 rounded-lg border border-[#269763] px-4 py-2 text-sm font-semibold text-[#269763] transition hover:bg-[#269763]/10">
+                        <i data-lucide="user" class="h-4 w-4"></i>
+                        <?php 
+                        $current_user = wp_get_current_user();
+                        echo esc_html($current_user->display_name);
+                        ?>
+                        <i data-lucide="chevron-down" class="h-4 w-4"></i>
+                    </button>
+                    
+                    <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-48 origin-top-right rounded-lg bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                        <a href="<?php echo esc_url(home_url('/dashboard')); ?>" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            <i data-lucide="layout-dashboard" class="h-4 w-4"></i>
+                            Dashboard
+                        </a>
+                        <a href="<?php echo home_url('/my-playdates'); ?>" class="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-[#269763]">
+                            <i data-lucide="calendar-check" class="h-4 w-4"></i>
+                            My Playdates
+                        </a>
+                        <a href="<?php echo wp_logout_url(home_url()); ?>" class="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-[#269763]">
+                            <i data-lucide="log-out" class="h-4 w-4"></i>
+                            Logout
+                        </a>
+                    </div>
+                </div>
+            <?php endif; ?>
+        </div>
     </div>
 </header>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Mobile Menu Toggle
     const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-    const siteNavigation = document.getElementById('site-navigation');
+    const navContainer = document.getElementById('nav-container');
     const menuIcon = document.querySelector('.menu-icon');
     const closeIcon = document.querySelector('.close-icon');
-    
-    // Function to check if menu exists
-    function checkMenuExists() {
-        const primaryMenu = document.getElementById('primary-menu');
-        return primaryMenu && primaryMenu.children.length > 0;
-    }
-    
-    // Only setup mobile menu if the menu exists
-    if (mobileMenuToggle && checkMenuExists()) {
+
+    if (mobileMenuToggle) {
         mobileMenuToggle.addEventListener('click', function() {
-            // Toggle the navigation
-            siteNavigation.classList.toggle('hidden');
-            
-            // Toggle the icons
+            navContainer.classList.toggle('hidden');
             menuIcon.classList.toggle('hidden');
             closeIcon.classList.toggle('hidden');
             
-            // Update aria-expanded
-            const expanded = mobileMenuToggle.getAttribute('aria-expanded') === 'true' || false;
-            mobileMenuToggle.setAttribute('aria-expanded', !expanded);
+            if (window.innerWidth < 768) {
+                navContainer.classList.toggle('mobile-menu-open');
+            }
         });
     }
-    
+
+    // User Menu Toggle
+    const userMenuButton = document.getElementById('user-menu-button');
+    const userDropdown = document.getElementById('user-dropdown');
+
+    if (userMenuButton && userDropdown) {
+        userMenuButton.addEventListener('click', function(e) {
+            e.stopPropagation();
+            userDropdown.classList.toggle('hidden');
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!userMenuButton.contains(e.target)) {
+                userDropdown.classList.add('hidden');
+            }
+        });
+    }
+
     // Handle window resize
     window.addEventListener('resize', function() {
-        if (window.innerWidth >= 768) { // md breakpoint
-            if (checkMenuExists()) {
-                siteNavigation.classList.remove('hidden');
-                siteNavigation.classList.add('md:flex');
-            }
-            
-            // Reset all mobile dropdown menus when switching to desktop
-            document.querySelectorAll('.sub-menu').forEach(function(submenu) {
-                if (window.innerWidth >= 768) {
-                    submenu.classList.remove('mobile-dropdown-active');
-                    submenu.style.display = '';
-                } else {
-                    submenu.style.display = 'none';
-                }
-            });
-        } else {
-            siteNavigation.classList.add('hidden');
-            if (menuIcon) menuIcon.classList.remove('hidden');
-            if (closeIcon) closeIcon.classList.add('hidden');
-            if (mobileMenuToggle) mobileMenuToggle.setAttribute('aria-expanded', 'false');
-        }
-    });
-    
-    // Handle dropdown menus for mobile devices
-    const menuItemsWithChildren = document.querySelectorAll('.menu-item-has-children > a');
-    
-    menuItemsWithChildren.forEach(function(menuItem) {
-        // Add desktop chevron
-        const desktopChevron = document.createElement('span');
-        desktopChevron.className = 'desktop-chevron hidden md:inline-block ml-1';
-        desktopChevron.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>';
-        menuItem.appendChild(desktopChevron);
-        
-        // Create a dropdown toggle button for mobile
-        const dropdownToggle = document.createElement('button');
-        dropdownToggle.className = 'dropdown-toggle ml-2 p-1 focus:outline-none md:hidden';
-        dropdownToggle.setAttribute('aria-expanded', 'false');
-        dropdownToggle.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>';
-        
-        // Insert the toggle button after the menu item link (inside the li)
-        menuItem.appendChild(dropdownToggle);
-        
-        // Find the submenu - it should be the next sibling of the menu item (li)
-        const submenu = menuItem.parentNode.querySelector('.sub-menu');
-        if (submenu) {
-            if (window.innerWidth < 768) {
-                submenu.style.display = 'none';
+        if (window.innerWidth >= 768) {
+            navContainer.classList.remove('mobile-menu-open');
+            menuIcon.classList.remove('hidden');
+            closeIcon.classList.add('hidden');
+            if (!navContainer.classList.contains('md:flex')) {
+                navContainer.classList.add('md:flex');
             }
         }
-        
-        // Add click event to toggle button
-        dropdownToggle.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            // Find the submenu - it should be a sibling of the parent li
-            const submenu = this.parentNode.parentNode.querySelector('.sub-menu');
-            if (submenu) {
-                // Toggle dropdown visibility
-                if (window.innerWidth < 768) {
-                    if (submenu.style.display === 'none' || submenu.style.display === '') {
-                        submenu.style.display = 'block';
-                        submenu.classList.add('mobile-dropdown-active');
-                        this.setAttribute('aria-expanded', 'true');
-                        // Rotate the arrow icon
-                        this.querySelector('svg').style.transform = 'rotate(180deg)';
-                    } else {
-                        submenu.style.display = 'none';
-                        submenu.classList.remove('mobile-dropdown-active');
-                        this.setAttribute('aria-expanded', 'false');
-                        // Reset the arrow icon
-                        this.querySelector('svg').style.transform = '';
-                    }
-                }
-            }
-        });
-        
-        // Prevent the default hover behavior on mobile
-        menuItem.addEventListener('click', function(e) {
-            if (window.innerWidth < 768) {
-                if (this.parentNode.classList.contains('menu-item-has-children')) {
-                    e.preventDefault();
-                    const dropdownToggle = this.querySelector('.dropdown-toggle');
-                    if (dropdownToggle) {
-                        dropdownToggle.click();
-                    }
-                }
-            }
-        });
     });
 });
 </script>
 
-<!-- Add responsive styles -->
 <style>
-    @media (max-width: 767px) {
-        #site-navigation:not(.hidden) {
-            display: flex;
-            flex-direction: column;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background-color: white;
-            padding: 1rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            z-index: 50;
-        }
-        
-        .submenu-open > .sub-menu {
-            display: block !important;
-        }
+@media (max-width: 767px) {
+    #nav-container.mobile-menu-open {
+        display: flex !important;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background-color: white;
+        padding: 1rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        z-index: 50;
     }
+
+    #nav-container.mobile-menu-open #site-navigation {
+        margin-bottom: 1rem;
+    }
+
+    #nav-container.mobile-menu-open .flex.flex-col {
+        width: 100%;
+    }
+
+    #user-dropdown {
+        position: static !important;
+        width: 100% !important;
+        margin-top: 0.5rem !important;
+        box-shadow: none !important;
+    }
+
+    #user-menu {
+        width: 100%;
+    }
+
+    #user-menu button {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (min-width: 768px) {
+    .menu-item-has-children {
+        position: relative;
+    }
+
+    .menu-item-has-children:hover > .sub-menu {
+        display: block;
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .sub-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        min-width: 200px;
+        background: white;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.2s, visibility 0.2s;
+        z-index: 50;
+        padding: 0.5rem 0;
+    }
+
+    .sub-menu .menu-item {
+        display: block;
+        width: 100%;
+    }
+
+    .sub-menu .menu-item a {
+        padding: 0.5rem 1rem;
+        display: block;
+        width: 100%;
+        white-space: nowrap;
+    }
+}
 </style>
