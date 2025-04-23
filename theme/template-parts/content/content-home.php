@@ -64,6 +64,11 @@
                                         <?php echo esc_html($button_two_label); ?>
                                     </a>
                                 <?php endif; ?>
+
+                                <!-- Add Third Button for Modal -->
+                                <button type="button" data-modal-target="contact-modal-<?php echo get_the_ID(); ?>" class="open-contact-modal-button inline-block px-5 py-2 bg-[#141414] text-white font-medium rounded-md hover:bg-opacity-80 transition-colors duration-300">
+                                Corporate Golf Tournament?
+                                </button>
                             <?php endwhile; ?>
                         </div>
                     <?php else : ?>
@@ -74,6 +79,10 @@
                             <a href="<?php echo esc_url(home_url('/sign-up')); ?>" class="inline-block px-5 py-2 border border-[#269763] text-[#269763] font-medium rounded-md hover:bg-[#f8f8f8] transition-colors duration-300">
                                 Sign Up
                             </a>
+                            <!-- Add Third Button for Modal (Fallback) -->
+                            <button type="button" data-modal-target="contact-modal-<?php echo get_the_ID(); ?>" class="open-contact-modal-button inline-block px-5 py-2 bg-[#141414] text-white font-medium rounded-md hover:bg-opacity-80 transition-colors duration-300">
+                                Contact Us
+                            </button>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -478,7 +487,7 @@
     ?>
         <section id="relume" class="relative px-[5%] py-16 md:py-24 lg:py-28">
             <div class="container relative z-10 mx-auto">
-                <div class="mb-12 max-w-lg md:mb-18 lg:mb-20">
+                <div class="w-full max-w-lg">
                     <?php if ($sub_header) : ?>
                         <p class="mb-3 font-semibold text-white md:mb-4">
                             <?php echo esc_html($sub_header); ?>
@@ -661,7 +670,7 @@
     ?>
         <section id="relume" class="relative px-[5%] py-16 md:py-24 lg:py-28">
             <div class="container relative z-10 mx-auto">
-                <div class="w-full max-w-lg">
+                <div class="w-full max-w-[30vw]">
                     <?php if ($title) : ?>
                         <h2 class="mb-5 text-4xl font-bold text-white md:text-5xl lg:text-6xl md:mb-6">
                             <?php echo esc_html($title); ?>
@@ -734,6 +743,76 @@
     <?php
         endwhile;
     endif;
+    ?>
+
+    <!-- Fluent Form Modal -->
+    <div id="contact-modal-<?php echo get_the_ID(); ?>" class="contact-modal fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50 p-4" aria-labelledby="modal-title-<?php echo get_the_ID(); ?>" role="dialog" aria-modal="true">
+        <div class="relative w-full max-w-[50vw] max-h-[90vh] rounded-lg bg-white p-6 shadow-xl sm:p-8 overflow-y-auto">
+            <button type="button" data-modal-close="contact-modal-<?php echo get_the_ID(); ?>" class="close-contact-modal-button sticky top-3 right-3 float-right text-gray-400 hover:text-gray-600 z-10">
+                <span class="sr-only">Close modal</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x h-6 w-6"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+            <h2 id="modal-title-<?php echo get_the_ID(); ?>" class="mb-4 text-center text-2xl font-bold">Contact Us</h2>
+            <?php echo do_shortcode('[fluentform id="7"]'); ?>
+        </div>
+    </div>
+
+    <?php
+    // Layout 190 Component
+    if (have_rows('layout_190')) :
+        while (have_rows('layout_190')) : the_row();
+            $sub_header = get_sub_field('sub_header');
+            $header = get_sub_field('header');
+            $content = get_sub_field('content');
+    ?>
+        <section id="layout190" class="px-[5%] py-16 md:py-24 lg:py-28">
+            <div class="container mx-auto">
+                <div class="flex flex-col items-center">
+                    <div class="mb-12 text-center md:mb-18 lg:mb-20">
+                        <div class="mx-auto w-full max-w-3xl">
+                            <?php if ($sub_header) : ?>
+                                <p class="mb-3 font-semibold md:mb-4"><?php echo esc_html($sub_header); ?></p>
+                            <?php endif; ?>
+                            
+                            <?php if ($header) : ?>
+                                <h2 class="mb-5 text-4xl font-bold md:mb-6 md:text-5xl lg:text-6xl"><?php echo esc_html($header); ?></h2>
+                            <?php endif; ?>
+                            
+                            <?php if ($content) : ?>
+                                <p class="md:text-md"><?php echo esc_html($content); ?></p>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    
+                    <?php if (have_rows('cards')) : ?>
+                        <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+                            <?php while (have_rows('cards')) : the_row(); 
+                                $card_image = get_sub_field('image');
+                                $card_title = get_sub_field('title');
+                                $card_content = get_sub_field('content');
+                            ?>
+                                <div class="flex flex-col items-center text-center">
+                                    <?php if ($card_image) : ?>
+                                        <img src="<?php echo esc_url($card_image['url']); ?>" alt="<?php echo esc_attr($card_image['alt']); ?>" class="mb-6 w-full object-cover md:mb-8" />
+                                    <?php endif; ?>
+                                    
+                                    <?php if ($card_title) : ?>
+                                        <h3 class="mb-4 text-xl font-bold md:text-2xl"><?php echo esc_html($card_title); ?></h3>
+                                    <?php endif; ?>
+                                    
+                                    <?php if ($card_content) : ?>
+                                        <p><?php echo esc_html($card_content); ?></p>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endwhile; ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </section>
+    <?php
+        endwhile;
+    endif; // End Layout 190 Component
     ?>
 
 </article><!-- #post-<?php the_ID(); ?> -->
