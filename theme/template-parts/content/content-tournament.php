@@ -132,17 +132,7 @@
 
     <section id="tournaments" class="px-[5%] py-16 md:py-24 lg:py-28">
         <div class="container">
-            <div class="mb-12 md:mb-18 lg:mb-20">
-                <div class="mx-auto max-w-lg text-center">
-                    <h4 class="font-semibold"><?php echo get_field('tagline', 'option') ?: 'Upcoming Events'; ?></h4>
-                    <h2 class="mt-3 text-4xl md:text-5xl lg:text-6xl font-bold">
-                        <?php echo get_field('heading', 'option') ?: 'Tournaments'; ?>
-                    </h2>
-                    <p class="mt-5 text-base md:mt-6 md:text-md">
-                        <?php echo get_field('description', 'option') ?: 'Join us for exciting golf tournaments throughout the year.'; ?>
-                    </p>
-                </div>
-            </div>
+            
 
             <div class="grid grid-cols-1 gap-x-8 gap-y-12 md:grid-cols-2 md:gap-y-16 lg:grid-cols-3">
                 <?php

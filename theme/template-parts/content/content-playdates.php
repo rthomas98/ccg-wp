@@ -7,48 +7,7 @@
 ?>
 
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
-    <?php if (have_rows('header_44')) : ?>
-        <?php while (have_rows('header_44')) : the_row(); ?>
-            <section class="px-[5%] py-16 md:py-24 lg:py-28 bg-[#f6f6f6]">
-                <div class="container mx-auto">
-                    <div class="w-full max-w-lg">
-                        <p class="mb-3 font-semibold md:mb-4">
-                            <?php the_sub_field('sub_header'); ?>
-                        </p>
-                        <h1 class="mb-5 text-5xl font-bold md:mb-6 md:text-5xl lg:text-7xl">
-                            <?php the_sub_field('header'); ?>
-                        </h1>
-                        <p class="md:text-md">
-                            <?php the_sub_field('content'); ?>
-                        </p>
-
-                        <?php if (have_rows('buttons')) : ?>
-                            <div class="mt-6 flex flex-wrap gap-4 md:mt-8">
-                                <?php while (have_rows('buttons')) : the_row(); 
-                                    $button_one_link = get_sub_field('button_one_link');
-                                    $button_two_link = get_sub_field('button_two_link');
-                                ?>
-                                    <?php if ($button_one_link) : ?>
-                                        <a href="<?php echo esc_url($button_one_link); ?>" 
-                                           class="inline-flex items-center justify-center rounded-md bg-[#269763] px-6 py-3 text-center font-semibold text-white hover:bg-[#1a724a] focus:outline-none focus:ring-2 focus:ring-[#269763] focus:ring-offset-2">
-                                            <?php the_sub_field('button_one_label'); ?>
-                                        </a>
-                                    <?php endif; ?>
-                                    
-                                    <?php if ($button_two_link) : ?>
-                                        <a href="<?php echo esc_url($button_two_link); ?>" 
-                                           class="inline-flex items-center justify-center rounded-md border-2 border-[#269763] bg-transparent px-6 py-3 text-center font-semibold text-[#269763] hover:bg-[#269763] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#269763] focus:ring-offset-2">
-                                            <?php the_sub_field('button_two_label'); ?>
-                                        </a>
-                                    <?php endif; ?>
-                                <?php endwhile; ?>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                </div>
-            </section>
-        <?php endwhile; ?>
-    <?php endif; ?>
+  
 
     <?php
     // Query recent playdates

@@ -19,28 +19,7 @@
                 </div>
             <?php else : ?>
                 <a href="<?php echo esc_url(home_url('/')); ?>" class="flex items-center">
-                    <?php 
-                    // Get the uploads directory URL dynamically
-                    $upload_dir = wp_upload_dir();
-                    $logo_path = '/2025/02/ccg.png'; // Relative path to the logo in uploads directory
-                    $logo_url = $upload_dir['baseurl'] . $logo_path;
-                    
-                    // Check if the file exists or use a fallback
-                    $logo_file_path = $upload_dir['basedir'] . $logo_path;
-                    if (!file_exists($logo_file_path)) {
-                        // Fallback to theme directory
-                        $logo_url = get_template_directory_uri() . '/theme/assets/images/logo.png';
-                        
-                        // If that doesn't exist either, use the site name as text
-                        if (!file_exists(get_template_directory() . '/theme/assets/images/logo.png')) {
-                            echo '<span class="text-2xl font-bold text-[#269763]">' . get_bloginfo('name') . '</span>';
-                        } else {
-                            echo '<img src="' . esc_url($logo_url) . '" alt="' . esc_attr(get_bloginfo('name')) . '" class="h-24 w-auto md:h-28 lg:h-32">';
-                        }
-                    } else {
-                        echo '<img src="' . esc_url($logo_url) . '" alt="' . esc_attr(get_bloginfo('name')) . '" class="h-24 w-auto md:h-28 lg:h-32">';
-                    }
-                    ?>
+                    <img src="<?php echo esc_url(get_theme_file_uri('/assets/images/ChauChau-Golf.svg')); ?>" alt="<?php echo esc_attr(get_bloginfo('name')); ?>" class="h-48 w-auto">
                 </a>
             <?php endif; ?>
         </div>
@@ -90,12 +69,9 @@
                 <div class="flex flex-col md:flex-row gap-2 mt-4 md:mt-0">
                     <a href="<?php echo esc_url(wp_login_url()); ?>" class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#269763] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#269763]/80">
                         Login
-                        <i data-lucide="log-in" class="h-4 w-4"></i>
                     </a>
                     <a href="<?php echo esc_url(home_url('/register')); ?>" class="inline-flex items-center justify-center gap-2 rounded-lg border border-[#269763] px-4 py-2 text-sm font-semibold text-[#269763] transition hover:bg-[#269763] hover:text-white">
-                        Register
-                        <i data-lucide="user-plus" class="h-4 w-4"></i>
-                    </a>
+                        Register                    </a>
                 </div>
             <?php else : ?>
                 <div class="relative" id="user-menu">

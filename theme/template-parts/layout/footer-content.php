@@ -32,10 +32,10 @@
                                 if (!file_exists(get_template_directory() . '/theme/assets/images/logo.png')) {
                                     echo '<span class="text-2xl font-bold text-[#269763]">' . get_bloginfo('name') . '</span>';
                                 } else {
-                                    echo '<img src="' . esc_url($logo_url) . '" alt="' . esc_attr(get_bloginfo('name')) . '" class="inline-block h-12 w-auto">';
+                                    echo '<img src="' . esc_url($logo_url) . '" alt="' . esc_attr(get_bloginfo('name')) . '" class="inline-block h-40 w-auto">';
                                 }
                             } else {
-                                echo '<img src="' . esc_url($logo_url) . '" alt="' . esc_attr(get_bloginfo('name')) . '" class="inline-block h-12 w-auto">';
+                                echo '<img src="' . esc_url($logo_url) . '" alt="' . esc_attr(get_bloginfo('name')) . '" class="inline-block h-40 w-auto">';
                             }
                             ?>
                         </a>
@@ -47,11 +47,11 @@
                         <?php echo esc_html(get_theme_mod('footer_text', 'Join our community and elevate your golf experience with exclusive resources and events.')); ?>
                     </p>
                     <div class="mt-6 flex flex-wrap gap-4 md:mt-8">
-                        <a href="<?php echo esc_url(home_url(get_theme_mod('join_button_url', '/join'))); ?>" class="inline-block px-5 py-2 bg-[#269763] text-white font-medium rounded-md hover:bg-[#1c7a4e] transition-colors duration-300">
-                            <?php echo esc_html(get_theme_mod('join_button_text', 'Join')); ?>
+                        <a href="<?php echo esc_url(home_url(get_theme_mod('join_button_url', '/register'))); ?>" class="inline-block px-5 py-2 bg-[#269763] text-white font-medium rounded-md hover:bg-[#1c7a4e] transition-colors duration-300">
+                            <?php echo esc_html(get_theme_mod('join_button_text', 'Become A Member')); ?>
                         </a>
-                        <a href="<?php echo esc_url(home_url(get_theme_mod('contact_button_url', '/contact'))); ?>" class="inline-block px-5 py-2 border border-[#269763] text-[#269763] font-medium rounded-md hover:bg-[#f8f8f8] transition-colors duration-300">
-                            <?php echo esc_html(get_theme_mod('contact_button_text', 'Contact')); ?>
+                        <a href="<?php echo esc_url(home_url(get_theme_mod('contact_button_url', '/contact-us'))); ?>" class="inline-block px-5 py-2 border border-[#269763] text-[#269763] font-medium rounded-md hover:bg-[#f8f8f8] transition-colors duration-300">
+                            <?php echo esc_html(get_theme_mod('contact_button_text', 'Contact Us')); ?>
                         </a>
                     </div>
                 </div>
@@ -79,16 +79,16 @@
                                 <a href="<?php echo esc_url(home_url('/about')); ?>">About Us</a>
                             </li>
                             <li class="py-2 text-sm font-semibold">
-                                <a href="<?php echo esc_url(home_url('/events')); ?>">Golf Events</a>
+                                <a href="<?php echo esc_url(home_url('/tournaments')); ?>">Tournaments</a>
                             </li>
                             <li class="py-2 text-sm font-semibold">
-                                <a href="<?php echo esc_url(home_url('/tours')); ?>">Player Tours</a>
+                                <a href="<?php echo esc_url(home_url('/playdates')); ?>">Playdates</a>
                             </li>
                             <li class="py-2 text-sm font-semibold">
-                                <a href="<?php echo esc_url(home_url('/get-started')); ?>">Get Started</a>
+                                <a href="<?php echo esc_url(home_url('/register')); ?>">Get Started</a>
                             </li>
                             <li class="py-2 text-sm font-semibold">
-                                <a href="<?php echo esc_url(home_url('/contact')); ?>">Contact Us</a>
+                                <a href="<?php echo esc_url(home_url('/contact-us')); ?>">Contact Us</a>
                             </li>
                         </ul>
                     <?php endif; ?>
@@ -111,20 +111,15 @@
                     <?php else : ?>
                         <ul>
                             <li class="py-2 text-sm font-semibold">
-                                <a href="<?php echo esc_url(home_url('/faqs')); ?>">FAQs</a>
+                                <a href="<?php echo esc_url(home_url('/membership')); ?>">Membership</a>
                             </li>
                             <li class="py-2 text-sm font-semibold">
-                                <a href="<?php echo esc_url(home_url('/blog')); ?>">Blog Posts</a>
+                                <a href="<?php echo esc_url(home_url('/become-a-partner')); ?>">Become A Partner</a>
                             </li>
                             <li class="py-2 text-sm font-semibold">
-                                <a href="<?php echo esc_url(home_url('/forum')); ?>">Community Forum</a>
+                                <a href="<?php echo esc_url(home_url('/about-us')); ?>">About Us</a>
                             </li>
-                            <li class="py-2 text-sm font-semibold">
-                                <a href="<?php echo esc_url(home_url('/support')); ?>">Support Center</a>
-                            </li>
-                            <li class="py-2 text-sm font-semibold">
-                                <a href="<?php echo esc_url(home_url('/feedback')); ?>">Feedback Form</a>
-                            </li>
+                        
                         </ul>
                     <?php endif; ?>
                 </div>
