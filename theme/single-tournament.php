@@ -793,41 +793,7 @@ get_header();
                     
                     if ($has_contact_info) : 
                     ?>
-                        <div class="mb-8 rounded-xl border border-gray-100 bg-white p-8 shadow-sm">
-                            <h3 class="mb-6 text-2xl font-bold">Contact Information</h3>
-                            <?php while (have_rows('additional_information')) : the_row(); ?>
-                                <?php if (have_rows('contact_information')) : ?>
-                                    <?php while (have_rows('contact_information')) : the_row(); ?>
-                                        <div class="space-y-4">
-                                            <?php if (get_sub_field('contact_name')) : ?>
-                                                <div class="flex items-center gap-3">
-                                                    <i data-lucide="user" class="h-5 w-5 text-[#269763]"></i>
-                                                    <p><?php echo esc_html(get_sub_field('contact_name')); ?></p>
-                                                </div>
-                                            <?php endif; ?>
-                                            
-                                            <?php if (get_sub_field('contact_email')) : ?>
-                                                <div class="flex items-center gap-3">
-                                                    <i data-lucide="mail" class="h-5 w-5 text-[#269763]"></i>
-                                                    <a href="mailto:<?php echo esc_attr(get_sub_field('contact_email')); ?>" class="text-[#269763] hover:underline">
-                                                        <?php echo esc_html(get_sub_field('contact_email')); ?>
-                                                    </a>
-                                                </div>
-                                            <?php endif; ?>
-                                            
-                                            <?php if (get_sub_field('contact_phone')) : ?>
-                                                <div class="flex items-center gap-3">
-                                                    <i data-lucide="phone" class="h-5 w-5 text-[#269763]"></i>
-                                                    <a href="tel:<?php echo esc_attr(get_sub_field('contact_phone')); ?>" class="text-[#269763] hover:underline">
-                                                        <?php echo esc_html(get_sub_field('contact_phone')); ?>
-                                                    </a>
-                                                </div>
-                                            <?php endif; ?>
-                                        </div>
-                                    <?php endwhile; ?>
-                                <?php endif; ?>
-                            <?php endwhile; ?>
-                        </div>
+                        
                     <?php endif; ?>
                     
                     <?php if (have_rows('registration_info')) : ?>

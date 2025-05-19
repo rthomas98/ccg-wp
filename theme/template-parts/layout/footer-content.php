@@ -32,10 +32,10 @@
                                 if (!file_exists(get_template_directory() . '/theme/assets/images/logo.png')) {
                                     echo '<span class="text-2xl font-bold text-[#269763]">' . get_bloginfo('name') . '</span>';
                                 } else {
-                                    echo '<img src="' . esc_url($logo_url) . '" alt="' . esc_attr(get_bloginfo('name')) . '" class="inline-block h-40 w-auto">';
+                                    echo '<img src="' . esc_url($logo_url) . '" alt="' . esc_attr(get_bloginfo('name')) . '" class="inline-block h-32 w-auto">';
                                 }
                             } else {
-                                echo '<img src="' . esc_url($logo_url) . '" alt="' . esc_attr(get_bloginfo('name')) . '" class="inline-block h-40 w-auto">';
+                                echo '<img src="' . esc_url($logo_url) . '" alt="' . esc_attr(get_bloginfo('name')) . '" class="inline-block h-32 w-auto">';
                             }
                             ?>
                         </a>

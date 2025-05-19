@@ -67,7 +67,7 @@
 
                                 <!-- Add Third Button for Modal -->
                                 <button type="button" data-modal-target="contact-modal-<?php echo get_the_ID(); ?>" class="open-contact-modal-button inline-block px-5 py-2 bg-[#141414] text-white font-medium rounded-md hover:bg-opacity-80 transition-colors duration-300">
-                                Corporate Golf Tournament?
+                                Corporation Golf Events?
                                 </button>
                             <?php endwhile; ?>
                         </div>
