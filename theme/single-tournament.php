@@ -349,29 +349,38 @@ get_header();
     <?php endif; ?>
 
     <?php 
-    // Check if tournament results has data before displaying the section
-    $has_results_data = false;
+    // Check if tournament results has actual data
+    $has_results = false;
     if (have_rows('tournament_results')) {
         while (have_rows('tournament_results')) {
             the_row();
+            if (get_sub_field('tournament_recap')) {
+                $has_results = true;
+                break;
+            }
+            
+            $final_leaderboard = get_sub_field('final_leaderboard');
+            if ($final_leaderboard) {
+                $has_results = true;
+                break;
+            }
+            
+            // Check winners
             if (have_rows('winners')) {
                 while (have_rows('winners')) {
                     the_row();
-                    if (get_sub_field('category') || get_sub_field('player_name') || get_sub_field('scoreresult') || get_sub_field('prize_won')) {
-                        $has_results_data = true;
+                    if (get_sub_field('category') || get_sub_field('player_name') || 
+                        get_sub_field('scoreresult') || get_sub_field('prize_won')) {
+                        $has_results = true;
                         break 2;
                     }
                 }
             }
-            if (get_sub_field('tournament_recap') || get_sub_field('final_leaderboard_link')) {
-                $has_results_data = true;
-                break;
-            }
         }
-        reset_rows(); // Reset the loop for later use
+        reset_rows();
     }
     
-    if ($has_results_data) : 
+    if ($has_results) : 
     ?>
         <section class="bg-gray-50 px-[5%] py-16 md:py-24">
             <div class="container mx-auto">
@@ -381,28 +390,56 @@ get_header();
                 </div>
                 
                 <?php while (have_rows('tournament_results')) : the_row(); ?>
-                    <?php if (have_rows('winners')) : ?>
+                    <?php 
+                    // Check if winners repeater has items with content
+                    $has_winners = false;
+                    if (have_rows('winners')) {
+                        while (have_rows('winners')) {
+                            the_row();
+                            if (get_sub_field('category') || get_sub_field('player_name') || 
+                                get_sub_field('scoreresult') || get_sub_field('prize_won')) {
+                                $has_winners = true;
+                                break;
+                            }
+                        }
+                        reset_rows(); // Reset for the actual loop
+                    }
+                    
+                    if ($has_winners) : 
+                    ?>
                         <div class="mb-16 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
                             <?php while (have_rows('winners')) : the_row(); ?>
-                                <?php if (get_sub_field('category') || get_sub_field('player_name') || get_sub_field('scoreresult') || get_sub_field('prize_won')) : ?>
+                                <?php 
+                                // Only show winner if it has at least one piece of data
+                                if (get_sub_field('category') || get_sub_field('player_name') || 
+                                    get_sub_field('scoreresult') || get_sub_field('prize_won')) : 
+                                ?>
                                     <div class="rounded-xl border border-gray-100 bg-white p-8 shadow-md transition-transform hover:scale-105">
                                         <div class="mb-6 inline-flex rounded-lg bg-[#269763]/10 p-3">
                                             <i data-lucide="trophy" class="h-6 w-6 text-[#269763]"></i>
                                         </div>
-                                        <h3 class="mb-4 text-2xl font-bold"><?php echo esc_html(get_sub_field('category')); ?></h3>
+                                        <?php if (get_sub_field('category')) : ?>
+                                            <h3 class="mb-4 text-2xl font-bold"><?php echo esc_html(get_sub_field('category')); ?></h3>
+                                        <?php endif; ?>
                                         <div class="space-y-3">
-                                            <div class="flex items-center gap-2">
-                                                <i data-lucide="user" class="h-5 w-5 text-gray-400"></i>
-                                                <p><span class="font-medium">Winner:</span> <?php echo esc_html(get_sub_field('player_name')); ?></p>
-                                            </div>
-                                            <div class="flex items-center gap-2">
-                                                <i data-lucide="target" class="h-5 w-5 text-gray-400"></i>
-                                                <p><span class="font-medium">Score:</span> <?php echo esc_html(get_sub_field('scoreresult')); ?></p>
-                                            </div>
-                                            <div class="flex items-center gap-2">
-                                                <i data-lucide="award" class="h-5 w-5 text-gray-400"></i>
-                                                <p><span class="font-medium">Prize:</span> <?php echo esc_html(get_sub_field('prize_won')); ?></p>
-                                            </div>
+                                            <?php if (get_sub_field('player_name')) : ?>
+                                                <div class="flex items-center gap-2">
+                                                    <i data-lucide="user" class="h-5 w-5 text-gray-400"></i>
+                                                    <p><span class="font-medium">Winner:</span> <?php echo esc_html(get_sub_field('player_name')); ?></p>
+                                                </div>
+                                            <?php endif; ?>
+                                            <?php if (get_sub_field('scoreresult')) : ?>
+                                                <div class="flex items-center gap-2">
+                                                    <i data-lucide="target" class="h-5 w-5 text-gray-400"></i>
+                                                    <p><span class="font-medium">Score:</span> <?php echo esc_html(get_sub_field('scoreresult')); ?></p>
+                                                </div>
+                                            <?php endif; ?>
+                                            <?php if (get_sub_field('prize_won')) : ?>
+                                                <div class="flex items-center gap-2">
+                                                    <i data-lucide="award" class="h-5 w-5 text-gray-400"></i>
+                                                    <p><span class="font-medium">Prize:</span> <?php echo esc_html(get_sub_field('prize_won')); ?></p>
+                                                </div>
+                                            <?php endif; ?>
                                         </div>
                                     </div>
                                 <?php endif; ?>
@@ -419,16 +456,328 @@ get_header();
                         </div>
                     <?php endif; ?>
                     
-                    <?php if (get_sub_field('final_leaderboard_link')) : ?>
+                    <?php $final_leaderboard = get_sub_field('final_leaderboard'); ?>
+                    <?php if ($final_leaderboard) : ?>
                         <div class="text-center">
-                            <a href="<?php echo esc_url(get_sub_field('final_leaderboard_link')); ?>" 
+                            <a href="<?php echo esc_url($final_leaderboard['url']); ?>" 
                                class="inline-flex items-center gap-2 rounded-md bg-[#269763] px-6 py-3 text-white transition-colors hover:bg-[#269763]/90">
                                 <i data-lucide="list-ordered" class="h-5 w-5"></i>
-                                <span>View Final Leaderboard</span>
+                                <span>View Final Leaderboard: <?php echo esc_html($final_leaderboard['filename']); ?></span>
                             </a>
                         </div>
                     <?php endif; ?>
                 <?php endwhile; ?>
+            </div>
+        </section>
+    <?php endif; ?>
+
+    <!-- Tournament Features Section -->
+    <?php 
+    // Check if tournament features has actual data
+    $has_tournament_features = false;
+    if (have_rows('tournament_features')) {
+        while (have_rows('tournament_features')) {
+            the_row();
+            if (have_rows('prizes')) {
+                while (have_rows('prizes')) {
+                    the_row();
+                    // Check if any prize field has content
+                    if (get_sub_field('prize_category') || get_sub_field('prize_description') || 
+                        get_sub_field('prize_value') || get_sub_field('feature_description')) {
+                        $has_tournament_features = true;
+                        break 2;
+                    }
+                    
+                    // Check for included features
+                    if (have_rows('included_features')) {
+                        while (have_rows('included_features')) {
+                            the_row();
+                            if (get_sub_field('feature')) {
+                                $has_tournament_features = true;
+                                break 3;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        reset_rows();
+    }
+    
+    // Only display the section if there's actual content
+    if ($has_tournament_features) : 
+    ?>
+        <section class="bg-white px-[5%] py-16 md:py-24">
+            <div class="container mx-auto">
+                <div class="mb-12 text-center">
+                    <h2 class="text-4xl font-bold md:text-5xl lg:text-6xl">Tournament Features</h2>
+                </div>
+                
+                <?php while (have_rows('tournament_features')) : the_row(); ?>
+                    <?php if (have_rows('prizes')) : ?>
+                        <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+                            <?php while (have_rows('prizes')) : the_row(); ?>
+                                <?php 
+                                // Only show prize if it has at least one piece of data
+                                if (get_sub_field('prize_category') || get_sub_field('prize_description') || 
+                                    get_sub_field('prize_value') || get_sub_field('feature_description') || 
+                                    have_rows('included_features')) : 
+                                ?>
+                                    <div class="rounded-xl border border-gray-100 bg-gray-50 p-8 shadow-sm transition-transform hover:shadow-md">
+                                        <div class="mb-6 inline-flex rounded-lg bg-[#269763]/10 p-3">
+                                            <i data-lucide="award" class="h-6 w-6 text-[#269763]"></i>
+                                        </div>
+                                        
+                                        <?php if (get_sub_field('prize_category')) : ?>
+                                            <h3 class="mb-2 text-xl font-bold"><?php echo esc_html(get_sub_field('prize_category')); ?></h3>
+                                        <?php endif; ?>
+                                        
+                                        <?php if (get_sub_field('prize_description')) : ?>
+                                            <p class="mb-4 text-gray-600"><?php echo esc_html(get_sub_field('prize_description')); ?></p>
+                                        <?php endif; ?>
+                                        
+                                        <?php if (get_sub_field('prize_value')) : ?>
+                                            <div class="mb-6 inline-block rounded-full bg-[#269763] px-4 py-1 text-sm font-medium text-white">
+                                                Value: $<?php echo esc_html(get_sub_field('prize_value')); ?>
+                                            </div>
+                                        <?php endif; ?>
+                                        
+                                        <?php 
+                                        // Check if included features has actual content
+                                        $has_features = false;
+                                        if (have_rows('included_features')) {
+                                            while (have_rows('included_features')) {
+                                                the_row();
+                                                if (get_sub_field('feature')) {
+                                                    $has_features = true;
+                                                    break;
+                                                }
+                                            }
+                                            reset_rows(); // Reset for the actual loop
+                                        }
+                                        
+                                        if ($has_features) : 
+                                        ?>
+                                            <h4 class="mb-3 text-lg font-medium">Included Features:</h4>
+                                            <ul class="space-y-2">
+                                                <?php while (have_rows('included_features')) : the_row(); ?>
+                                                    <?php if (get_sub_field('feature')) : ?>
+                                                        <li class="flex items-start gap-2">
+                                                            <i data-lucide="check" class="mt-1 h-4 w-4 flex-shrink-0 text-[#269763]"></i>
+                                                            <span><?php echo esc_html(get_sub_field('feature')); ?></span>
+                                                        </li>
+                                                    <?php endif; ?>
+                                                <?php endwhile; ?>
+                                            </ul>
+                                        <?php endif; ?>
+                                        
+                                        <?php if (get_sub_field('feature_description')) : ?>
+                                            <div class="mt-4 pt-4 border-t border-gray-100">
+                                                <p class="text-sm text-gray-600"><?php echo esc_html(get_sub_field('feature_description')); ?></p>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php endif; ?>
+                            <?php endwhile; ?>
+                        </div>
+                    <?php endif; ?>
+                <?php endwhile; ?>
+            </div>
+        </section>
+    <?php endif; ?>
+
+    <!-- Sponsors Section -->
+    <?php 
+    // Check if sponsor information has actual data
+    $has_sponsors = false;
+    if (have_rows('sponsor_information')) {
+        while (have_rows('sponsor_information')) {
+            the_row();
+            if (have_rows('sponsors')) {
+                while (have_rows('sponsors')) {
+                    the_row();
+                    $sponsor_logo = get_sub_field('sponsor_logo');
+                    if ($sponsor_logo || get_sub_field('sponsor_name') || get_sub_field('sponsor_level') || get_sub_field('sponsor_website')) {
+                        $has_sponsors = true;
+                        break 2;
+                    }
+                }
+            }
+        }
+        reset_rows();
+    }
+    
+    // Only display the section if there's actual content
+    if ($has_sponsors) : 
+    ?>
+        <section class="bg-gray-50 px-[5%] py-16 md:py-24">
+            <div class="container mx-auto">
+                <div class="mb-12 text-center">
+                    <h2 class="text-4xl font-bold md:text-5xl lg:text-6xl">Our Sponsors</h2>
+                    <p class="mt-4 text-gray-600">Thank you to our generous sponsors</p>
+                </div>
+                
+                <?php while (have_rows('sponsor_information')) : the_row(); ?>
+                    <?php 
+                    // Check if sponsors repeater has items with content
+                    $has_sponsor_items = false;
+                    if (have_rows('sponsors')) {
+                        while (have_rows('sponsors')) {
+                            the_row();
+                            $sponsor_logo = get_sub_field('sponsor_logo');
+                            if ($sponsor_logo || get_sub_field('sponsor_name') || get_sub_field('sponsor_level') || get_sub_field('sponsor_website')) {
+                                $has_sponsor_items = true;
+                                break;
+                            }
+                        }
+                        reset_rows(); // Reset for the actual loop
+                    }
+                    
+                    if ($has_sponsor_items) : 
+                    ?>
+                        <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+                            <?php while (have_rows('sponsors')) : the_row(); ?>
+                                <?php 
+                                $sponsor_logo = get_sub_field('sponsor_logo');
+                                $sponsor_name = get_sub_field('sponsor_name');
+                                $sponsor_level = get_sub_field('sponsor_level');
+                                $sponsor_website = get_sub_field('sponsor_website');
+                                
+                                // Only show sponsor if it has at least one piece of data
+                                if ($sponsor_logo || $sponsor_name || $sponsor_level || $sponsor_website) : 
+                                ?>
+                                    <div class="flex flex-col items-center rounded-xl border border-gray-100 bg-white p-8 text-center transition-transform hover:shadow-md">
+                                        <?php if ($sponsor_logo) : ?>
+                                            <div class="mb-6 h-24 w-full">
+                                                <img src="<?php echo esc_url($sponsor_logo['url']); ?>" 
+                                                     alt="<?php echo esc_attr($sponsor_logo['alt']); ?>" 
+                                                     class="mx-auto h-full max-h-full w-auto object-contain" />
+                                            </div>
+                                        <?php endif; ?>
+                                        
+                                        <?php if ($sponsor_name) : ?>
+                                            <h3 class="mb-2 text-xl font-bold"><?php echo esc_html($sponsor_name); ?></h3>
+                                        <?php endif; ?>
+                                        
+                                        <?php if ($sponsor_level) : ?>
+                                            <p class="mb-4 text-sm font-medium uppercase tracking-wider text-[#269763]">
+                                                <?php echo esc_html($sponsor_level); ?> Sponsor
+                                            </p>
+                                        <?php endif; ?>
+                                        
+                                        <?php if ($sponsor_website) : ?>
+                                            <a href="<?php echo esc_url($sponsor_website); ?>" 
+                                               target="_blank" rel="noopener noreferrer"
+                                               class="mt-auto inline-flex items-center gap-2 text-[#269763] hover:underline">
+                                                <span>Visit Website</span>
+                                                <i data-lucide="external-link" class="h-4 w-4"></i>
+                                            </a>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php endif; ?>
+                            <?php endwhile; ?>
+                        </div>
+                    <?php endif; ?>
+                <?php endwhile; ?>
+            </div>
+        </section>
+    <?php endif; ?>
+
+    <!-- Additional Information Section -->
+    <?php if (have_rows('additional_information')) : ?>
+        <section class="bg-white px-[5%] py-16 md:py-24">
+            <div class="container mx-auto">
+                <div class="mb-12 text-center">
+                    <h2 class="text-4xl font-bold md:text-5xl lg:text-6xl">Additional Information</h2>
+                </div>
+                
+                <div class="grid grid-cols-1 gap-12 lg:grid-cols-2">
+                    <?php while (have_rows('additional_information')) : the_row(); ?>
+                        <?php if (get_sub_field('rules_and_regulations')) : ?>
+                            <div class="rounded-xl border border-gray-100 bg-gray-50 p-8">
+                                <h3 class="mb-6 text-2xl font-bold">Rules & Regulations</h3>
+                                <div class="prose max-w-none">
+                                    <?php echo wp_kses_post(get_sub_field('rules_and_regulations')); ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                        
+                        <?php if (have_rows('what_to_bring')) : ?>
+                            <div class="rounded-xl border border-gray-100 bg-gray-50 p-8">
+                                <h3 class="mb-6 text-2xl font-bold">What to Bring</h3>
+                                <ul class="space-y-4">
+                                    <?php while (have_rows('what_to_bring')) : the_row(); ?>
+                                        <?php if (get_sub_field('item')) : ?>
+                                            <li class="flex items-start gap-3">
+                                                <i data-lucide="check-circle" class="mt-1 h-5 w-5 flex-shrink-0 text-[#269763]"></i>
+                                                <div>
+                                                    <p class="font-medium"><?php echo esc_html(get_sub_field('item')); ?></p>
+                                                    <?php if (get_sub_field('required_or_optional')) : ?>
+                                                        <span class="text-sm text-gray-500">
+                                                            <?php echo esc_html(get_sub_field('required_or_optional')); ?>
+                                                        </span>
+                                                    <?php endif; ?>
+                                                </div>
+                                            </li>
+                                        <?php endif; ?>
+                                    <?php endwhile; ?>
+                                </ul>
+                            </div>
+                        <?php endif; ?>
+                        
+                        <?php if (get_sub_field('weather_policy')) : ?>
+                            <div class="rounded-xl border border-gray-100 bg-gray-50 p-8">
+                                <h3 class="mb-6 text-2xl font-bold">Weather Policy</h3>
+                                <div class="prose max-w-none">
+                                    <?php echo wp_kses_post(get_sub_field('weather_policy')); ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                        
+                        <?php if (get_sub_field('cancellation_policy')) : ?>
+                            <div class="rounded-xl border border-gray-100 bg-gray-50 p-8">
+                                <h3 class="mb-6 text-2xl font-bold">Cancellation Policy</h3>
+                                <div class="prose max-w-none">
+                                    <?php echo wp_kses_post(get_sub_field('cancellation_policy')); ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                        
+                        <?php if (have_rows('contact_information')) : ?>
+                            <div class="rounded-xl border border-gray-100 bg-gray-50 p-8">
+                                <h3 class="mb-6 text-2xl font-bold">Contact Information</h3>
+                                <div class="space-y-4">
+                                    <?php while (have_rows('contact_information')) : the_row(); ?>
+                                        <?php if (get_sub_field('contact_name')) : ?>
+                                            <div class="flex items-center gap-3">
+                                                <i data-lucide="user" class="h-5 w-5 text-[#269763]"></i>
+                                                <p><?php echo esc_html(get_sub_field('contact_name')); ?></p>
+                                            </div>
+                                        <?php endif; ?>
+                                        
+                                        <?php if (get_sub_field('contact_email')) : ?>
+                                            <div class="flex items-center gap-3">
+                                                <i data-lucide="mail" class="h-5 w-5 text-[#269763]"></i>
+                                                <a href="mailto:<?php echo esc_attr(get_sub_field('contact_email')); ?>" class="text-[#269763] hover:underline">
+                                                    <?php echo esc_html(get_sub_field('contact_email')); ?>
+                                                </a>
+                                            </div>
+                                        <?php endif; ?>
+                                        
+                                        <?php if (get_sub_field('contact_phone')) : ?>
+                                            <div class="flex items-center gap-3">
+                                                <i data-lucide="phone" class="h-5 w-5 text-[#269763]"></i>
+                                                <a href="tel:<?php echo esc_attr(get_sub_field('contact_phone')); ?>" class="text-[#269763] hover:underline">
+                                                    <?php echo esc_html(get_sub_field('contact_phone')); ?>
+                                                </a>
+                                            </div>
+                                        <?php endif; ?>
+                                    <?php endwhile; ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                    <?php endwhile; ?>
+                </div>
             </div>
         </section>
     <?php endif; ?>
@@ -572,16 +921,7 @@ get_header();
                                 $has_additional_info = true;
                                 break;
                             }
-                            // Check contact information
-                            if (have_rows('contact_information')) {
-                                while (have_rows('contact_information')) {
-                                    the_row();
-                                    if (get_sub_field('contact_name') || get_sub_field('contact_email') || get_sub_field('contact_phone')) {
-                                        $has_additional_info = true;
-                                        break 2;
-                                    }
-                                }
-                            }
+                            // Contact information check removed to prevent duplication
                         }
                         reset_rows(); // Reset the loop for later use
                     }
@@ -667,88 +1007,30 @@ get_header();
                         <?php endwhile; ?>
                     <?php endif; ?>
 
-                    <!-- Sponsors -->
+                    <!-- Sponsorship Opportunities Section -->
                     <?php 
-                    // Check if sponsor information has data before displaying the section
-                    $has_sponsors_data = false;
+                    // Check if sponsorship opportunities exist
+                    $has_sponsorship_opportunities = false;
                     if (have_rows('sponsor_information')) {
                         while (have_rows('sponsor_information')) {
                             the_row();
-                            if (have_rows('sponsors')) {
-                                while (have_rows('sponsors')) {
-                                    the_row();
-                                    if (get_sub_field('sponsor_name') || get_sub_field('sponsor_logo')) {
-                                        $has_sponsors_data = true;
-                                        break 2;
-                                    }
-                                }
-                            }
                             if (get_sub_field('sponsorship_opportunities') || get_sub_field('sponsorship_contact')) {
-                                $has_sponsors_data = true;
+                                $has_sponsorship_opportunities = true;
                                 break;
                             }
                         }
                         reset_rows(); // Reset the loop for later use
                     }
                     
-                    if ($has_sponsors_data) : 
+                    if ($has_sponsorship_opportunities) : 
                     ?>
                         <div class="mb-16">
-                            <h2 class="mb-8 text-4xl font-bold md:text-5xl lg:text-6xl">Our Sponsors</h2>
-                            <?php while (have_rows('sponsor_information')) : the_row(); ?>
-                                <?php 
-                                $has_sponsors = false;
-                                if (have_rows('sponsors')) {
-                                    while (have_rows('sponsors')) {
-                                        the_row();
-                                        if (get_sub_field('sponsor_name') || get_sub_field('sponsor_logo')) {
-                                            $has_sponsors = true;
-                                            break;
-                                        }
-                                    }
-                                    reset_rows(); // Reset for display
-                                }
-                                
-                                if ($has_sponsors) : 
-                                ?>
-                                    <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-                                        <?php while (have_rows('sponsors')) : the_row(); ?>
-                                            <?php if (get_sub_field('sponsor_name') || get_sub_field('sponsor_logo')) : ?>
-                                                <div class="flex flex-col items-center rounded-xl border border-gray-100 bg-white p-6 text-center shadow-sm transition-transform hover:shadow-md">
-                                                    <?php $sponsor_logo = get_sub_field('sponsor_logo'); ?>
-                                                    <?php if ($sponsor_logo) : ?>
-                                                        <div class="mb-4 h-24 w-full">
-                                                            <img src="<?php echo esc_url($sponsor_logo['url']); ?>" 
-                                                                 alt="<?php echo esc_attr($sponsor_logo['alt']); ?>"
-                                                                 class="mx-auto h-full max-h-24 w-auto object-contain" />
-                                                        </div>
-                                                    <?php endif; ?>
-                                                    <?php if (get_sub_field('sponsor_name')) : ?>
-                                                    <h3 class="mb-2 text-xl font-bold"><?php echo esc_html(get_sub_field('sponsor_name')); ?></h3>
-                                                    <?php endif; ?>
-                                                    <?php if (get_sub_field('sponsor_level')) : ?>
-                                                    <p class="mb-4 text-sm text-gray-600"><?php echo esc_html(get_sub_field('sponsor_level')); ?></p>
-                                                    <?php endif; ?>
-                                                    <?php if (get_sub_field('sponsor_website')) : ?>
-                                                        <a href="<?php echo esc_url(get_sub_field('sponsor_website')); ?>" 
-                                                           target="_blank" rel="noopener noreferrer"
-                                                           class="mt-auto inline-flex items-center gap-2 text-[#269763] hover:underline">
-                                                            Visit Website
-                                                            <i data-lucide="external-link" class="h-4 w-4"></i>
-                                                        </a>
-                                                    <?php endif; ?>
-                                                </div>
-                                            <?php endif; ?>
-                                        <?php endwhile; ?>
-                                    </div>
-                                <?php endif; ?>
-                            <?php endwhile; ?>
+                            <h2 class="mb-8 text-4xl font-bold md:text-5xl lg:text-6xl">Sponsorship Opportunities</h2>
                             
                             <?php if (have_rows('sponsor_information')) : ?>
                                 <?php while (have_rows('sponsor_information')) : the_row(); ?>
                                     <?php if (get_sub_field('sponsorship_opportunities')) : ?>
-                                        <div class="mt-12 rounded-xl bg-gray-50 p-8">
-                                            <h3 class="mb-4 text-2xl font-bold">Sponsorship Opportunities</h3>
+                                        <div class="rounded-xl bg-gray-50 p-8">
                                             <div class="prose max-w-none">
                                                 <?php echo wp_kses_post(get_sub_field('sponsorship_opportunities')); ?>
                                             </div>
