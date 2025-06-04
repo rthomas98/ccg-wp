@@ -156,37 +156,8 @@
                 </div>
             </div>
         </div>
-        <div class="flex flex-col-reverse items-start justify-between pb-4 pt-6 text-sm md:flex-row md:items-center md:pb-0 md:pt-8">
+        <div class="flex justify-center pb-4 pt-6 text-sm md:pb-0 md:pt-8">
             <p><?php echo esc_html(get_theme_mod('copyright_text', '  ' . date('Y') . ' ' . get_bloginfo('name') . '. All rights reserved.')); ?></p>
-            
-            <?php if (has_nav_menu('menu-2')) : ?>
-                <nav aria-label="<?php esc_attr_e('Footer Menu', '_ccg'); ?>">
-                    <?php
-                    wp_nav_menu(
-                        array(
-                            'theme_location' => 'menu-2',
-                            'menu_class'     => 'grid grid-flow-row grid-cols-[max-content] justify-center gap-y-4 text-sm md:grid-flow-col md:gap-x-6 md:gap-y-0',
-                            'container'      => false,
-                            'depth'          => 1,
-                            'link_before'    => '<span class="underline">',
-                            'link_after'     => '</span>',
-                        )
-                    );
-                    ?>
-                </nav>
-            <?php else : ?>
-                <ul class="grid grid-flow-row grid-cols-[max-content] justify-center gap-y-4 text-sm md:grid-flow-col md:gap-x-6 md:gap-y-0">
-                    <li class="underline">
-                        <a href="<?php echo esc_url(home_url('/privacy-policy')); ?>">Privacy Policy</a>
-                    </li>
-                    <li class="underline">
-                        <a href="<?php echo esc_url(home_url('/terms-of-service')); ?>">Terms of Service</a>
-                    </li>
-                    <li class="underline">
-                        <a href="<?php echo esc_url(home_url('/cookie-settings')); ?>">Cookie Settings</a>
-                    </li>
-                </ul>
-            <?php endif; ?>
         </div>
     </div>
 </footer><!-- #colophon -->
