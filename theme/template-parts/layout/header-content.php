@@ -84,16 +84,16 @@
                         <i data-lucide="chevron-down" class="h-4 w-4"></i>
                     </button>
                     
-                    <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-48 origin-top-right rounded-lg bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                    <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-48 origin-top-right rounded-lg bg-white py-2 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                         <a href="<?php echo esc_url(home_url('/dashboard')); ?>" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                             <i data-lucide="layout-dashboard" class="h-4 w-4"></i>
                             Dashboard
                         </a>
-                        <a href="<?php echo home_url('/my-playdates'); ?>" class="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-[#269763]">
+                        <a href="<?php echo home_url('/my-playdates'); ?>" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                             <i data-lucide="calendar-check" class="h-4 w-4"></i>
                             My Playdates
                         </a>
-                        <a href="<?php echo wp_logout_url(home_url()); ?>" class="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-[#269763]">
+                        <a href="<?php echo wp_logout_url(home_url()); ?>" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                             <i data-lucide="log-out" class="h-4 w-4"></i>
                             Logout
                         </a>
