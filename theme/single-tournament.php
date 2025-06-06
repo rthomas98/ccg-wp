@@ -142,6 +142,19 @@ get_header();
     <!-- Tournament Info Cards -->
     <section class="bg-white px-[5%] py-16 md:py-24">
         <div class="container mx-auto">
+            <?php if (get_field('introduction_')) : ?>
+            <div class="mb-8 w-full">
+                <div class="rounded-xl border border-gray-100 bg-gray-50 p-8 transition-transform hover:shadow-md w-full">
+                    <div class="mb-4 inline-flex rounded-lg bg-[#269763]/10 p-3">
+                        <i data-lucide="file-text" class="h-6 w-6 text-[#269763]"></i>
+                    </div>
+                    <h3 class="mb-3 text-xl font-bold">Introduction</h3>
+                    <div class="prose max-w-none text-gray-600">
+                        <?php echo wp_kses_post(get_field('introduction_')); ?>
+                    </div>
+                </div>
+            </div>
+            <?php endif; ?>
             <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
                 <?php if (have_rows('tournament_details')) : ?>
                     <?php while (have_rows('tournament_details')) : the_row(); ?>
@@ -232,16 +245,19 @@ get_header();
                                         <span>Early Bird: <?php echo esc_html($formatted_early_bird); ?></span>
                                     </li>
                                 <?php endif; ?>
-                                <?php if (get_sub_field('registration_instructions')) : ?>
-                                    <li class="flex items-start gap-2">
-                                        <i data-lucide="info" class="mt-1 h-4 w-4 text-[#269763]"></i>
-                                        <span><?php echo wp_kses_post(get_sub_field('registration_instructions')); ?></span>
+                                <?php if (get_field('whats_included')) : ?>
+                                    <li class="mt-4">
+                                        <h4 class="font-medium mb-2">What's Included</h4>
+                                        <div class="flex items-start gap-2">
+                                            <i data-lucide="info" class="mt-1 h-4 w-4 text-[#269763]"></i>
+                                            <span><?php echo wp_kses_post(get_field('whats_included')); ?></span>
+                                        </div>
                                     </li>
                                 <?php endif; ?>
                                 <?php if (get_sub_field('payment_link')) : ?>
-                                    <li class="flex items-start gap-2">
-                                        <i data-lucide="credit-card" class="mt-1 h-4 w-4 text-[#269763]"></i>
-                                        <a href="<?php echo esc_url(get_sub_field('payment_link')); ?>" class="text-[#269763] hover:underline" target="_blank" rel="noopener noreferrer">
+                                    <li class="flex items-start gap-2 mt-4">
+                                        <a href="<?php echo esc_url(get_sub_field('payment_link')); ?>" class="inline-flex items-center gap-2 rounded-lg bg-[#269763] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#269763]/90" target="_blank" rel="noopener noreferrer">
+                                            <i data-lucide="credit-card" class="h-4 w-4"></i>
                                             Make Payment
                                         </a>
                                     </li>
