@@ -112,9 +112,15 @@ get_header();
                             </div>
                             
                             <?php if (get_sub_field('golf_course_address')) : ?>
+                                <?php 
+                                $address = get_sub_field('golf_course_address');
+                                $google_maps_url = 'https://www.google.com/maps/search/?api=1&query=' . urlencode($address);
+                                ?>
                                 <div class="mt-6 flex items-start gap-3 text-lg text-white/80">
                                     <i data-lucide="map" class="mt-1 h-6 w-6 text-[#269763]"></i>
-                                    <span><?php echo nl2br(esc_html(get_sub_field('golf_course_address'))); ?></span>
+                                    <a href="<?php echo esc_url($google_maps_url); ?>" target="_blank" rel="noopener noreferrer" class="hover:text-white">
+                                        <span><?php echo nl2br(esc_html($address)); ?></span>
+                                    </a>
                                 </div>
                             <?php endif; ?>
                         <?php endwhile; ?>
