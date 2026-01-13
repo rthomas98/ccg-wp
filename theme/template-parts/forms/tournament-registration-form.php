@@ -225,31 +225,55 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             if (data.success) {
                 // Show success message
+                const successMessage = document.createTextNode(data.data.message);
+                const successP = document.createElement('p');
+                successP.className = 'text-green-700';
+                successP.appendChild(successMessage);
+                formResponse.textContent = '';
+                formResponse.appendChild(successP);
                 formResponse.classList.remove('hidden', 'bg-red-100');
                 formResponse.classList.add('bg-green-100');
-                formResponse.innerHTML = '<p class="text-green-700">' + data.data.message + '</p>';
                 
                 // Reset the form
                 form.reset();
                 
-                // Redirect to payment link after a short delay if available
+                // Redirect to payment link after validation
                 if (paymentLink && paymentLink.length > 0) {
-                    setTimeout(function() {
-                        window.location.href = paymentLink;
-                    }, 1500);
+                    try {
+                        const url = new URL(paymentLink, window.location.origin);
+                        if (url.protocol === 'http:' || url.protocol === 'https:') {
+                            setTimeout(function() {
+                                window.location.href = paymentLink;
+                            }, 1500);
+                        } else {
+                            console.error('Invalid payment URL protocol');
+                        }
+                    } catch (e) {
+                        console.error('Invalid payment URL', e);
+                    }
                 }
             } else {
                 // Show error message
+                const errorMessage = document.createTextNode(data.data.message || 'Registration failed. Please try again.');
+                const errorP = document.createElement('p');
+                errorP.className = 'text-red-700';
+                errorP.appendChild(errorMessage);
+                formResponse.textContent = '';
+                formResponse.appendChild(errorP);
                 formResponse.classList.remove('hidden', 'bg-green-100');
                 formResponse.classList.add('bg-red-100');
-                formResponse.innerHTML = '<p class="text-red-700">' + (data.data.message || 'Registration failed. Please try again.') + '</p>';
             }
         })
         .catch(error => {
             console.error('Error:', error);
+            const catchErrorMessage = document.createTextNode('An error occurred. Please try again.');
+            const catchErrorP = document.createElement('p');
+            catchErrorP.className = 'text-red-700';
+            catchErrorP.appendChild(catchErrorMessage);
+            formResponse.textContent = '';
+            formResponse.appendChild(catchErrorP);
             formResponse.classList.remove('hidden', 'bg-green-100');
             formResponse.classList.add('bg-red-100');
-            formResponse.innerHTML = '<p class="text-red-700">An error occurred. Please try again.</p>';
         });
     });
 });

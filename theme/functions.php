@@ -144,19 +144,6 @@ function _ccg_widgets_init() {
 add_action( 'widgets_init', '_ccg_widgets_init' );
 
 /**
- * Enqueue scripts and styles.
- */
-function _ccg_scripts() {
-	wp_enqueue_style( '_ccg-style', get_stylesheet_uri(), array(), _CCG_VERSION );
-	wp_enqueue_script( '_ccg-script', get_template_directory_uri() . '/js/script.min.js', array(), _CCG_VERSION, true );
-
-	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
-		wp_enqueue_script( 'comment-reply' );
-	}
-}
-add_action( 'wp_enqueue_scripts', '_ccg_scripts' );
-
-/**
  * Enqueue the block editor script.
  */
 function _ccg_enqueue_block_editor_script() {
@@ -565,15 +552,16 @@ function handle_tournament_registration() {
     }
 
     // Get form data
-    $first_name = sanitize_text_field($_POST['first_name']);
-    $last_name = sanitize_text_field($_POST['last_name']);
-    $email = sanitize_email($_POST['email']);
-    $phone = sanitize_text_field($_POST['phone']);
-    $handicap = floatval($_POST['handicap']);
-    $ghin_number = sanitize_text_field($_POST['ghin_number']);
-    $home_club = sanitize_text_field($_POST['home_club']);
-    $dietary_restrictions = sanitize_textarea_field($_POST['dietary_restrictions']);
-    $special_requests = sanitize_textarea_field($_POST['special_requests']);
+    // Get and validate form data
+    $first_name = isset($_POST['first_name']) ? sanitize_text_field($_POST['first_name']) : '';
+    $last_name = isset($_POST['last_name']) ? sanitize_text_field($_POST['last_name']) : '';
+    $email = isset($_POST['email']) ? sanitize_email($_POST['email']) : '';
+    $phone = isset($_POST['phone']) ? sanitize_text_field($_POST['phone']) : '';
+    $handicap = isset($_POST['handicap']) ? floatval($_POST['handicap']) : 0;
+    $ghin_number = isset($_POST['ghin_number']) ? sanitize_text_field($_POST['ghin_number']) : '';
+    $home_club = isset($_POST['home_club']) ? sanitize_text_field($_POST['home_club']) : '';
+    $dietary_restrictions = isset($_POST['dietary_restrictions']) ? sanitize_textarea_field($_POST['dietary_restrictions']) : '';
+    $special_requests = isset($_POST['special_requests']) ? sanitize_textarea_field($_POST['special_requests']) : '';
 
     // Validate required fields
     if (empty($first_name) || empty($last_name) || empty($email) || empty($phone) || 
@@ -1086,6 +1074,14 @@ function ccg_scripts() {
     // Add AlpineJS for FAQ accordion
     wp_enqueue_script('alpinejs', 'https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js', array(), null, true);
     wp_script_add_data('alpinejs', 'defer', true);
+
+    // Localize script for tournament registration AJAX
+    if ( is_singular( 'tournament' ) ) {
+        wp_localize_script( '_ccg-script', 'ajax_object', array(
+            'ajax_url' => admin_url( 'admin-ajax.php' ),
+            'nonce'    => wp_create_nonce( 'tournament_registration_nonce' )
+        ) );
+    }
 }
 add_action('wp_enqueue_scripts', 'ccg_scripts');
 

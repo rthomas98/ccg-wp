@@ -152,21 +152,33 @@ if (have_rows('pricing_information', $playdate_id)) {
                 },
                 success: function(response) {
                     if (response.success) {
-                        formResponse.removeClass('bg-gray-100 bg-red-100').addClass('bg-green-100').html('<p class="text-green-700">' + response.data.message + '</p>');
+                        const successP = $('<p>').addClass('text-green-700').text(response.data.message);
+                        formResponse.removeClass('bg-gray-100 bg-red-100').addClass('bg-green-100').empty().append(successP);
                         $('#playdate-registration-form')[0].reset();
                         
-                        // Redirect to payment link after a short delay
+                        // Redirect to payment link after validation
                         if (paymentLink && paymentLink.length > 0) {
-                            setTimeout(function() {
-                                window.location.href = paymentLink;
-                            }, 1500);
+                            try {
+                                const url = new URL(paymentLink, window.location.origin);
+                                if (url.protocol === 'http:' || url.protocol === 'https:') {
+                                    setTimeout(function() {
+                                        window.location.href = paymentLink;
+                                    }, 1500);
+                                } else {
+                                    console.error('Invalid payment URL protocol');
+                                }
+                            } catch (e) {
+                                console.error('Invalid payment URL', e);
+                            }
                         }
                     } else {
-                        formResponse.removeClass('bg-gray-100 bg-green-100').addClass('bg-red-100').html('<p class="text-red-700">' + response.data.message + '</p>');
+                        const errorP = $('<p>').addClass('text-red-700').text(response.data.message);
+                        formResponse.removeClass('bg-gray-100 bg-green-100').addClass('bg-red-100').empty().append(errorP);
                     }
                 },
                 error: function() {
-                    formResponse.removeClass('bg-gray-100 bg-green-100').addClass('bg-red-100').html('<p class="text-red-700">There was an error processing your registration. Please try again later.</p>');
+                    const catchErrorP = $('<p>').addClass('text-red-700').text('There was an error processing your registration. Please try again later.');
+                    formResponse.removeClass('bg-gray-100 bg-green-100').addClass('bg-red-100').empty().append(catchErrorP);
                 }
             });
         });
