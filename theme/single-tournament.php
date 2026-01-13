@@ -145,6 +145,101 @@ get_header();
         </div>
     </section>
 
+    <!-- Header 81 Section -->
+    <?php if (have_rows('header_81')) : ?>
+        <?php while (have_rows('header_81')) : the_row(); ?>
+            <section class="bg-white px-[5%] py-16 md:py-24">
+                <div class="container mx-auto">
+                    <div class="mx-auto max-w-4xl text-center">
+                        <?php if (get_sub_field('header')) : ?>
+                            <h2 class="mb-6 text-4xl font-bold md:text-5xl lg:text-6xl">
+                                <?php echo esc_html(get_sub_field('header')); ?>
+                            </h2>
+                        <?php endif; ?>
+
+                        <?php if (get_sub_field('content')) : ?>
+                            <div class="prose prose-lg mx-auto mb-8 max-w-none text-gray-600">
+                                <?php echo wp_kses_post(get_sub_field('content')); ?>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if (have_rows('buttons')) : ?>
+                            <?php while (have_rows('buttons')) : the_row(); ?>
+                                <div class="flex flex-wrap items-center justify-center gap-4">
+                                    <?php
+                                    $button_one_label = get_sub_field('button_one_label');
+                                    $button_one_link = get_sub_field('button_one_link');
+                                    if ($button_one_label && $button_one_link) :
+                                    ?>
+                                        <a href="<?php echo esc_url($button_one_link); ?>"
+                                           class="inline-flex items-center justify-center rounded-md bg-[#269763] px-6 py-3 text-center font-semibold text-white hover:bg-[#269763]/90 focus:outline-none focus:ring-2 focus:ring-[#269763] focus:ring-offset-2">
+                                            <?php echo esc_html($button_one_label); ?>
+                                        </a>
+                                    <?php endif; ?>
+
+                                    <?php
+                                    $button_two_label = get_sub_field('button_two_label');
+                                    $button_two_link = get_sub_field('button_two_link');
+                                    if ($button_two_label && $button_two_link) :
+                                    ?>
+                                        <a href="<?php echo esc_url($button_two_link); ?>"
+                                           class="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-6 py-3 text-center font-semibold text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#269763] focus:ring-offset-2">
+                                            <?php echo esc_html($button_two_label); ?>
+                                        </a>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endwhile; ?>
+                        <?php endif; ?>
+                    </div>
+
+                    <?php
+                    $images = get_sub_field('images');
+                    if ($images && is_array($images) && count($images) > 0) :
+                    ?>
+                        <div class="mt-12 grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4">
+                            <?php foreach ($images as $image) : ?>
+                                <div class="overflow-hidden rounded-lg shadow-md transition-transform hover:scale-105">
+                                    <img src="<?php echo esc_url($image['sizes']['medium']); ?>"
+                                         alt="<?php echo esc_attr($image['alt']); ?>"
+                                         class="aspect-square h-full w-full object-cover" />
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </section>
+        <?php endwhile; ?>
+    <?php endif; ?>
+
+    <!-- Event 7 Section -->
+    <?php if (have_rows('event_7')) : ?>
+        <?php while (have_rows('event_7')) : the_row(); ?>
+            <section class="bg-gray-50 px-[5%] py-16 md:py-24">
+                <div class="container mx-auto">
+                    <div class="mx-auto max-w-4xl text-center">
+                        <?php if (get_sub_field('sub_header')) : ?>
+                            <span class="mb-4 inline-block rounded-full bg-[#269763]/10 px-4 py-2 text-sm font-semibold uppercase tracking-wider text-[#269763]">
+                                <?php echo esc_html(get_sub_field('sub_header')); ?>
+                            </span>
+                        <?php endif; ?>
+
+                        <?php if (get_sub_field('header')) : ?>
+                            <h2 class="mb-6 text-4xl font-bold md:text-5xl lg:text-6xl">
+                                <?php echo esc_html(get_sub_field('header')); ?>
+                            </h2>
+                        <?php endif; ?>
+
+                        <?php if (get_sub_field('content')) : ?>
+                            <div class="prose prose-lg mx-auto max-w-none text-gray-600">
+                                <?php echo wp_kses_post(get_sub_field('content')); ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </section>
+        <?php endwhile; ?>
+    <?php endif; ?>
+
     <!-- Tournament Info Cards -->
     <section class="bg-white px-[5%] py-16 md:py-24">
         <div class="container mx-auto">
@@ -251,40 +346,32 @@ get_header();
                                         <span>Early Bird: <?php echo esc_html($formatted_early_bird); ?></span>
                                     </li>
                                 <?php endif; ?>
-                                <?php if (get_field('whats_included')) : ?>
-                                    <li class="mt-4">
-                                        <h4 class="font-medium mb-2">What's Included</h4>
-                                        <div class="flex items-start gap-2">
-                                            <i data-lucide="info" class="mt-1 h-4 w-4 text-[#269763]"></i>
-                                            <span><?php echo wp_kses_post(get_field('whats_included')); ?></span>
-                                        </div>
-                                    </li>
-                                <?php endif; ?>
-                                <?php if (get_sub_field('payment_link')) : ?>
-                                    <li class="flex items-start gap-2 mt-4">
-                                        <a href="<?php echo esc_url(get_sub_field('payment_link')); ?>" class="inline-flex items-center gap-2 rounded-lg bg-[#269763] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#269763]/90" target="_blank" rel="noopener noreferrer">
-                                            <i data-lucide="credit-card" class="h-4 w-4"></i>
-                                            Make Payment
-                                        </a>
-                                    </li>
-                                <?php endif; ?>
-                                
-                                <?php 
-                                // Check if whats_included has data
-                                if (have_rows('whats_included')) : 
+
+                                <?php
+                                // Display What's Included as a repeater field
+                                if (have_rows('registration_info_whats_included')) :
                                 ?>
-                                    <li class="mt-4">
-                                        <p class="font-medium mb-2">What's Included:</p>
-                                        <ul class="space-y-2 pl-6">
-                                            <?php while (have_rows('whats_included')) : the_row(); ?>
+                                    <li class="mt-4 pt-4 border-t border-gray-200">
+                                        <h4 class="font-semibold mb-3 text-gray-900">What's Included:</h4>
+                                        <ul class="space-y-2">
+                                            <?php while (have_rows('registration_info_whats_included')) : the_row(); ?>
                                                 <?php if (get_sub_field('item')) : ?>
                                                     <li class="flex items-start gap-2">
-                                                        <i data-lucide="check" class="mt-1 h-4 w-4 text-[#269763]"></i>
-                                                        <span><?php echo esc_html(get_sub_field('item')); ?></span>
+                                                        <i data-lucide="check-circle" class="mt-0.5 h-5 w-5 flex-shrink-0 text-[#269763]"></i>
+                                                        <span class="text-gray-700"><?php echo esc_html(get_sub_field('item')); ?></span>
                                                     </li>
                                                 <?php endif; ?>
                                             <?php endwhile; ?>
                                         </ul>
+                                    </li>
+                                <?php endif; ?>
+
+                                <?php if (get_sub_field('payment_link')) : ?>
+                                    <li class="flex items-start gap-2 mt-6 pt-4 border-t border-gray-200">
+                                        <a href="<?php echo esc_url(get_sub_field('payment_link')); ?>" class="inline-flex items-center gap-2 rounded-lg bg-[#269763] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#269763]/90" target="_blank" rel="noopener noreferrer">
+                                            <i data-lucide="credit-card" class="h-4 w-4"></i>
+                                            Make Payment
+                                        </a>
                                     </li>
                                 <?php endif; ?>
                             </ul>
@@ -328,7 +415,73 @@ get_header();
         </div>
     </section>
 
-    <?php 
+    <!-- Layout 12 Section -->
+    <?php if (have_rows('layout_12')) : ?>
+        <?php while (have_rows('layout_12')) : the_row(); ?>
+            <section class="bg-white px-[5%] py-16 md:py-24">
+                <div class="container mx-auto">
+                    <div class="mb-12 text-center">
+                        <?php if (get_sub_field('sub_header')) : ?>
+                            <span class="mb-4 inline-block rounded-full bg-[#269763]/10 px-4 py-2 text-sm font-semibold uppercase tracking-wider text-[#269763]">
+                                <?php echo esc_html(get_sub_field('sub_header')); ?>
+                            </span>
+                        <?php endif; ?>
+
+                        <?php if (get_sub_field('header')) : ?>
+                            <h2 class="mb-6 text-4xl font-bold md:text-5xl lg:text-6xl">
+                                <?php echo esc_html(get_sub_field('header')); ?>
+                            </h2>
+                        <?php endif; ?>
+
+                        <?php if (get_sub_field('content')) : ?>
+                            <p class="mx-auto max-w-3xl text-lg text-gray-600">
+                                <?php echo esc_html(get_sub_field('content')); ?>
+                            </p>
+                        <?php endif; ?>
+                    </div>
+
+                    <?php if (have_rows('cards')) : ?>
+                        <div class="mb-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+                            <?php while (have_rows('cards')) : the_row(); ?>
+                                <div class="rounded-xl border border-gray-100 bg-gray-50 p-8 transition-transform hover:shadow-md">
+                                    <?php if (get_sub_field('icon')) : ?>
+                                        <div class="mb-4 inline-flex rounded-lg bg-[#269763]/10 p-3">
+                                            <i data-lucide="<?php echo esc_attr(get_sub_field('icon')); ?>" class="h-6 w-6 text-[#269763]"></i>
+                                        </div>
+                                    <?php endif; ?>
+
+                                    <?php if (get_sub_field('title')) : ?>
+                                        <h3 class="mb-3 text-xl font-bold">
+                                            <?php echo esc_html(get_sub_field('title')); ?>
+                                        </h3>
+                                    <?php endif; ?>
+
+                                    <?php if (get_sub_field('content')) : ?>
+                                        <p class="text-gray-600">
+                                            <?php echo esc_html(get_sub_field('content')); ?>
+                                        </p>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endwhile; ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php
+                    $image = get_sub_field('image');
+                    if ($image) :
+                    ?>
+                        <div class="overflow-hidden rounded-xl shadow-lg">
+                            <img src="<?php echo esc_url($image['url']); ?>"
+                                 alt="<?php echo esc_attr($image['alt']); ?>"
+                                 class="h-auto w-full object-cover" />
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </section>
+        <?php endwhile; ?>
+    <?php endif; ?>
+
+    <?php
     // Check if tournament schedule has data before displaying the section
     $has_schedule_data = false;
     if (have_rows('tournament_schedule')) {
@@ -884,7 +1037,70 @@ get_header();
         </div>
     </section>
 
-    <?php 
+    <!-- CTA 3 Section -->
+    <?php if (have_rows('cta_3')) : ?>
+        <?php while (have_rows('cta_3')) : the_row(); ?>
+            <?php
+            $cta_image = get_sub_field('image');
+            $has_background = $cta_image && !empty($cta_image);
+            ?>
+            <section class="relative px-[5%] py-20 md:py-28 <?php echo $has_background ? 'bg-gray-900' : 'bg-[#269763]'; ?>">
+                <?php if ($has_background) : ?>
+                    <div class="absolute inset-0 z-0">
+                        <img src="<?php echo esc_url($cta_image); ?>"
+                             alt="CTA Background"
+                             class="h-full w-full object-cover opacity-40" />
+                    </div>
+                <?php endif; ?>
+
+                <div class="container relative z-10 mx-auto">
+                    <div class="mx-auto max-w-4xl text-center">
+                        <?php if (get_sub_field('title')) : ?>
+                            <h2 class="mb-6 text-4xl font-bold text-white md:text-5xl lg:text-6xl">
+                                <?php echo esc_html(get_sub_field('title')); ?>
+                            </h2>
+                        <?php endif; ?>
+
+                        <?php if (get_sub_field('content')) : ?>
+                            <p class="mb-10 text-xl text-white/90">
+                                <?php echo esc_html(get_sub_field('content')); ?>
+                            </p>
+                        <?php endif; ?>
+
+                        <?php if (have_rows('buttons')) : ?>
+                            <?php while (have_rows('buttons')) : the_row(); ?>
+                                <div class="flex flex-wrap items-center justify-center gap-4">
+                                    <?php
+                                    $button_one_label = get_sub_field('button_one_label');
+                                    $button_one_link = get_sub_field('button_one_link');
+                                    if ($button_one_label && $button_one_link) :
+                                    ?>
+                                        <a href="<?php echo esc_url($button_one_link); ?>"
+                                           class="inline-flex items-center justify-center rounded-md bg-white px-8 py-4 text-center text-lg font-semibold text-[#269763] hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2">
+                                            <?php echo esc_html($button_one_label); ?>
+                                        </a>
+                                    <?php endif; ?>
+
+                                    <?php
+                                    $button_two_label = get_sub_field('button_two_label');
+                                    $button_two_link = get_sub_field('button_two_link');
+                                    if ($button_two_label && $button_two_link) :
+                                    ?>
+                                        <a href="<?php echo esc_url($button_two_link); ?>"
+                                           class="inline-flex items-center justify-center rounded-md border-2 border-white bg-transparent px-8 py-4 text-center text-lg font-semibold text-white hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2">
+                                            <?php echo esc_html($button_two_label); ?>
+                                        </a>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endwhile; ?>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </section>
+        <?php endwhile; ?>
+    <?php endif; ?>
+
+    <?php
     // Check if gallery has data before displaying the section
     $has_gallery_data = false;
     if (have_rows('media')) {
