@@ -1061,6 +1061,163 @@ function register_tournament_registration_acf_fields() {
 add_action('acf/init', 'register_tournament_registration_acf_fields');
 
 /**
+ * Register additional ACF field groups for layouts
+ */
+function register_additional_layout_fields() {
+    if (!function_exists('acf_add_local_field_group')) {
+        return;
+    }
+
+    // Configuration for all layout field groups
+    $layouts = array(
+        'layout_241' => array('location' => 'page_template', 'value' => 'template-home.php'),
+        'layout_179' => array('location' => 'page_template', 'value' => 'template-home.php'),
+        'layout_272' => array('location' => 'page_template', 'value' => 'template-home.php'),
+        'layout_190' => array('location' => 'page_template', 'value' => 'template-home.php'),
+        'layout_27' => array('location' => 'page_template', 'value' => 'template-playdates.php'),
+        'layout_222' => array('location' => 'page_template', 'value' => 'template-about.php'),
+        'layout_275' => array('location' => 'page_template', 'value' => 'template-about.php'),
+        'layout_408' => array('location' => 'page_template', 'value' => 'template-about.php'),
+        'layout_4' => array('location' => 'page_template', 'value' => 'template-about.php'),
+        'layout_431' => array('location' => 'page_template', 'value' => 'template-about.php'),
+        'header_46' => array('location' => 'page_template', 'value' => 'template-faqs.php'),
+        'faq_2' => array('location' => 'page_template', 'value' => 'template-faqs.php'),
+        'cta_3' => array('location' => 'page_template', 'value' => 'default'),
+        'cta_1' => array('location' => 'page_template', 'value' => 'default'),
+        'cta_31' => array('location' => 'page_template', 'value' => 'template-faqs.php'),
+    );
+
+    foreach ($layouts as $layout_name => $location) {
+        // Base fields common to most layouts
+        $fields = array(
+            array(
+                'key' => 'field_' . $layout_name . '_sub_header',
+                'label' => 'Sub Header',
+                'name' => $layout_name . '_sub_header',
+                'type' => 'text',
+            ),
+            array(
+                'key' => 'field_' . $layout_name . '_header',
+                'label' => 'Header',
+                'name' => $layout_name . '_header',
+                'type' => 'text',
+            ),
+            array(
+                'key' => 'field_' . $layout_name . '_content',
+                'label' => 'Content',
+                'name' => $layout_name . '_content',
+                'type' => 'textarea',
+            ),
+        );
+
+        // Add cards repeater for layout types
+        if (strpos($layout_name, 'layout_') === 0) {
+            $fields[] = array(
+                'key' => 'field_' . $layout_name . '_cards',
+                'label' => 'Cards',
+                'name' => $layout_name . '_cards',
+                'type' => 'repeater',
+                'sub_fields' => array(
+                    array(
+                        'key' => 'field_' . $layout_name . '_card_icon_type',
+                        'label' => 'Icon Type',
+                        'name' => 'icon_type',
+                        'type' => 'text',
+                    ),
+                    array(
+                        'key' => 'field_' . $layout_name . '_card_header',
+                        'label' => 'Header',
+                        'name' => 'header',
+                        'type' => 'text',
+                    ),
+                    array(
+                        'key' => 'field_' . $layout_name . '_card_content',
+                        'label' => 'Content',
+                        'name' => 'content',
+                        'type' => 'textarea',
+                    ),
+                ),
+            );
+        }
+
+        // Add buttons for CTA types
+        if (strpos($layout_name, 'cta_') === 0) {
+            $fields[] = array(
+                'key' => 'field_' . $layout_name . '_button_one_label',
+                'label' => 'Button One Label',
+                'name' => $layout_name . '_button_one_label',
+                'type' => 'text',
+            );
+            $fields[] = array(
+                'key' => 'field_' . $layout_name . '_button_one_link',
+                'label' => 'Button One Link',
+                'name' => $layout_name . '_button_one_link',
+                'type' => 'url',
+            );
+            $fields[] = array(
+                'key' => 'field_' . $layout_name . '_button_two_label',
+                'label' => 'Button Two Label',
+                'name' => $layout_name . '_button_two_label',
+                'type' => 'text',
+            );
+            $fields[] = array(
+                'key' => 'field_' . $layout_name . '_button_two_link',
+                'label' => 'Button Two Link',
+                'name' => $layout_name . '_button_two_link',
+                'type' => 'url',
+            );
+            $fields[] = array(
+                'key' => 'field_' . $layout_name . '_image',
+                'label' => 'Image',
+                'name' => $layout_name . '_image',
+                'type' => 'image',
+            );
+        }
+
+        // Add FAQ-specific fields
+        if ($layout_name === 'faq_2') {
+            $fields[] = array(
+                'key' => 'field_faq_2_items',
+                'label' => 'FAQ Items',
+                'name' => 'faq_2_items',
+                'type' => 'repeater',
+                'sub_fields' => array(
+                    array(
+                        'key' => 'field_faq_2_question',
+                        'label' => 'Question',
+                        'name' => 'question',
+                        'type' => 'text',
+                    ),
+                    array(
+                        'key' => 'field_faq_2_answer',
+                        'label' => 'Answer',
+                        'name' => 'answer',
+                        'type' => 'textarea',
+                    ),
+                ),
+            );
+        }
+
+        // Register the field group
+        acf_add_local_field_group(array(
+            'key' => 'group_' . $layout_name,
+            'title' => ucwords(str_replace('_', ' ', $layout_name)),
+            'fields' => $fields,
+            'location' => array(
+                array(
+                    array(
+                        'param' => $location['location'],
+                        'operator' => '==',
+                        'value' => $location['value'],
+                    ),
+                ),
+            ),
+        ));
+    }
+}
+add_action('acf/init', 'register_additional_layout_fields');
+
+/**
  * Enqueue scripts and styles.
  */
 function ccg_scripts() {
