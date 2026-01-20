@@ -75,11 +75,13 @@
                                     </div>
                                     <div>
                                         <?php if (have_rows('buttons')) : ?>
-                                            <?php while (have_rows('buttons')) : the_row(); ?>
-                                                <?php $button_one_link = get_sub_field('button_one_link'); ?>
-                                                <?php if ($button_one_link) : ?>
+                                            <?php while (have_rows('buttons')) : the_row();
+                                                $button_one_link = get_sub_field('button_one_link');
+                                                $button_one_label = get_sub_field('button_one_label');
+                                            ?>
+                                                <?php if ($button_one_link && $button_one_label) : ?>
                                                     <a href="<?php echo esc_url($button_one_link['url']); ?>" target="<?php echo esc_attr($button_one_link['target']); ?>" class="inline-flex w-full items-center justify-center rounded-md bg-[#269763] px-6 py-3 text-center font-semibold text-white hover:bg-[#1c7049] focus:outline-none focus:ring-2 focus:ring-[#269763] focus:ring-offset-2">
-                                                        <?php the_sub_field('button_one_label'); ?>
+                                                        <?php echo esc_html($button_one_label); ?>
                                                     </a>
                                                 <?php endif; ?>
                                             <?php endwhile; ?>
@@ -131,26 +133,30 @@
                             <?php endif; ?>
                         </div>
 
-                        <div class="mt-10 flex items-center gap-4 md:mt-14 lg:mt-16">
-                            <?php if (have_rows('buttons')) : ?>
-                                <?php while (have_rows('buttons')) : the_row(); 
-                                    $button_one_link = get_sub_field('button_one_link');
-                                    $button_two_link = get_sub_field('button_two_link');
-                                ?>
-                                    <?php if ($button_one_link) : ?>
-                                        <a href="<?php echo esc_url($button_one_link); ?>" target="<?php echo esc_attr($button_one_link['target']); ?>" class="inline-flex items-center justify-center rounded-md border-2 border-white bg-transparent px-6 py-3 text-center font-semibold text-white hover:bg-white hover:text-[#269763] focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2">
-                                            <?php the_sub_field('button_one_label'); ?>
-                                        </a>
+                        <?php if (have_rows('buttons')) : ?>
+                            <?php while (have_rows('buttons')) : the_row();
+                                $button_one_link = get_sub_field('button_one_link');
+                                $button_one_label = get_sub_field('button_one_label');
+                                $button_two_link = get_sub_field('button_two_link');
+                                $button_two_label = get_sub_field('button_two_label');
+                            ?>
+                                <?php if (($button_one_label && $button_one_link) || ($button_two_label && $button_two_link)) : ?>
+                                <div class="mt-10 flex items-center gap-4 md:mt-14 lg:mt-16">
+                                    <?php if ($button_one_label && $button_one_link) : ?>
+                                    <a href="<?php echo esc_url($button_one_link); ?>" class="inline-flex items-center justify-center rounded-md border-2 border-white bg-transparent px-6 py-3 text-center font-semibold text-white hover:bg-white hover:text-[#269763] focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2">
+                                        <?php echo esc_html($button_one_label); ?>
+                                    </a>
                                     <?php endif; ?>
-                                    <?php if ($button_two_link) : ?>
-                                        <a href="<?php echo esc_url($button_two_link); ?>" target="<?php echo esc_attr($button_two_link['target']); ?>" class="inline-flex items-center justify-center gap-2 text-white hover:underline">
-                                            <?php the_sub_field('button_two_label'); ?>
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right"><path d="m9 18 6-6-6-6"/></svg>
-                                        </a>
+                                    <?php if ($button_two_label && $button_two_link) : ?>
+                                    <a href="<?php echo esc_url($button_two_link); ?>" class="inline-flex items-center justify-center gap-2 text-white hover:underline">
+                                        <?php echo esc_html($button_two_label); ?>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right"><path d="m9 18 6-6-6-6"/></svg>
+                                    </a>
                                     <?php endif; ?>
-                                <?php endwhile; ?>
-                            <?php endif; ?>
-                        </div>
+                                </div>
+                                <?php endif; ?>
+                            <?php endwhile; ?>
+                        <?php endif; ?>
                     </div>
                 </div>
             </section>

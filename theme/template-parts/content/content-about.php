@@ -55,12 +55,14 @@
                                     <p>
                                         <?php echo $content ? esc_html($content) : 'Content description goes here.'; ?>
                                     </p>
+                                    <?php if ($button_text && $button_link) : ?>
                                     <div class="mt-6 flex items-center gap-4 md:mt-8">
-                                        <a href="<?php echo $button_link ? esc_url($button_link) : '#'; ?>" class="inline-flex items-center text-[#269763] hover:text-[#1c7049] font-semibold">
-                                            <?php echo $button_text ? esc_html($button_text) : 'Learn More'; ?>
+                                        <a href="<?php echo esc_url($button_link); ?>" class="inline-flex items-center text-[#269763] hover:text-[#1c7049] font-semibold">
+                                            <?php echo esc_html($button_text); ?>
                                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-1"><path d="m9 18 6-6-6-6"/></svg>
                                         </a>
                                     </div>
+                                    <?php endif; ?>
                                 </div>
                             <?php 
                                 endwhile;
@@ -244,32 +246,14 @@
                                 <a href="<?php echo esc_url($button_one_link); ?>" class="inline-flex items-center justify-center rounded-md bg-white px-6 py-3 text-center font-semibold text-[#141414] hover:bg-[#f0f0f0] focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black">
                                     <?php echo esc_html($button_one_label); ?>
                                 </a>
-                            <?php else : ?>
-                                <a href="#" class="inline-flex items-center justify-center rounded-md bg-white px-6 py-3 text-center font-semibold text-[#141414] hover:bg-[#f0f0f0] focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black">
-                                    Learn More
-                                </a>
                             <?php endif; ?>
-                            
                             <?php if ($button_two_label && $button_two_link) : ?>
                                 <a href="<?php echo esc_url($button_two_link); ?>" class="inline-flex items-center text-white hover:text-[#f0f0f0] font-semibold">
                                     <?php echo esc_html($button_two_label); ?>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-1"><path d="m9 18 6-6-6-6"/></svg>
                                 </a>
-                            <?php else : ?>
-                                <a href="#" class="inline-flex items-center text-white hover:text-[#f0f0f0] font-semibold">
-                                    Sign Up
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-1"><path d="m9 18 6-6-6-6"/></svg>
-                                </a>
                             <?php endif; ?>
                         <?php endwhile; ?>
-                    <?php else : ?>
-                        <a href="#" class="inline-flex items-center justify-center rounded-md bg-white px-6 py-3 text-center font-semibold text-[#141414] hover:bg-[#f0f0f0] focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black">
-                            Learn More
-                        </a>
-                        <a href="#" class="inline-flex items-center text-white hover:text-[#f0f0f0] font-semibold">
-                            Sign Up
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-1"><path d="m9 18 6-6-6-6"/></svg>
-                        </a>
                     <?php endif; ?>
                 </div>
             </div>
@@ -330,10 +314,10 @@
                         
                         if (have_rows('buttons')) :
                             while (have_rows('buttons')) : the_row();
-                                $button_one_label = get_sub_field('button_one_label') ?: 'Learn More';
-                                $button_one_link = get_sub_field('button_one_link') ?: '#';
-                                $button_two_label = get_sub_field('button_two_label') ?: 'Join';
-                                $button_two_link = get_sub_field('button_two_link') ?: '#';
+                                $button_one_label = get_sub_field('button_one_label');
+                                $button_one_link = get_sub_field('button_one_link');
+                                $button_two_label = get_sub_field('button_two_label');
+                                $button_two_link = get_sub_field('button_two_link');
                             endwhile;
                         endif;
                         
@@ -347,44 +331,56 @@
                             <p class="mb-2 font-semibold"><?php echo esc_html($card_sub_header); ?></p>
                             <h3 class="mb-5 text-4xl font-bold leading-[1.2] md:mb-6 md:text-5xl lg:text-6xl"><?php echo esc_html($card_title); ?></h3>
                             <p><?php echo esc_html($card_content); ?></p>
+                            <?php if (($button_one_label && $button_one_link) || ($button_two_label && $button_two_link)) : ?>
                             <div class="mt-6 flex items-center gap-x-4 md:mt-8">
+                                <?php if ($button_one_label && $button_one_link) : ?>
                                 <a href="<?php echo esc_url($button_one_link); ?>" class="inline-flex items-center justify-center rounded-md border border-[#141414] bg-white px-6 py-3 text-center font-semibold text-[#141414] hover:bg-[#f0f0f0] focus:outline-none focus:ring-2 focus:ring-[#141414] focus:ring-offset-2">
                                     <?php echo esc_html($button_one_label); ?>
                                 </a>
+                                <?php endif; ?>
+                                <?php if ($button_two_label && $button_two_link) : ?>
                                 <a href="<?php echo esc_url($button_two_link); ?>" class="inline-flex items-center text-[#269763] hover:text-[#1c7049] font-semibold">
                                     <?php echo esc_html($button_two_label); ?>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-1"><path d="m9 18 6-6-6-6"/></svg>
                                 </a>
+                                <?php endif; ?>
                             </div>
+                            <?php endif; ?>
                         </div>
                         <div class="order-last flex flex-col items-center justify-center">
-                            <?php 
+                            <?php
                             $image = get_sub_field('image');
-                            if ($image) : 
+                            if ($image) :
                                 // Output the image using ACF's image field
                                 echo wp_get_attachment_image($image, 'full', false, array('class' => 'w-full h-auto'));
-                            else : 
+                            else :
                             ?>
                                 <img src="https://d22po4pjz3o32e.cloudfront.net/placeholder-image.svg" alt="Relume placeholder image <?php echo $card_count; ?>" class="w-full h-auto">
                             <?php endif; ?>
                         </div>
                     </div>
-                    
+
                     <!-- Tablet/Desktop version -->
                     <div class="hidden md:grid static grid-cols-1 content-center overflow-hidden border border-[#e5e5e5] bg-white md:sticky md:top-[10%] md:mb-[10vh] md:h-[80vh] md:grid-cols-2 scale-card" data-card-index="<?php echo $card_count - 1; ?>">
                         <div class="order-first flex flex-col justify-center p-6 md:p-8 lg:p-12 <?php echo $order_text; ?>">
                             <p class="mb-2 font-semibold"><?php echo esc_html($card_sub_header); ?></p>
                             <h3 class="mb-5 text-4xl font-bold leading-[1.2] md:mb-6 md:text-5xl lg:text-6xl"><?php echo esc_html($card_title); ?></h3>
                             <p><?php echo esc_html($card_content); ?></p>
+                            <?php if (($button_one_label && $button_one_link) || ($button_two_label && $button_two_link)) : ?>
                             <div class="mt-6 flex items-center gap-x-4 md:mt-8">
+                                <?php if ($button_one_label && $button_one_link) : ?>
                                 <a href="<?php echo esc_url($button_one_link); ?>" class="inline-flex items-center justify-center rounded-md border border-[#141414] bg-white px-6 py-3 text-center font-semibold text-[#141414] hover:bg-[#f0f0f0] focus:outline-none focus:ring-2 focus:ring-[#141414] focus:ring-offset-2">
                                     <?php echo esc_html($button_one_label); ?>
                                 </a>
+                                <?php endif; ?>
+                                <?php if ($button_two_label && $button_two_link) : ?>
                                 <a href="<?php echo esc_url($button_two_link); ?>" class="inline-flex items-center text-[#269763] hover:text-[#1c7049] font-semibold">
                                     <?php echo esc_html($button_two_label); ?>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-1"><path d="m9 18 6-6-6-6"/></svg>
                                 </a>
+                                <?php endif; ?>
                             </div>
+                            <?php endif; ?>
                         </div>
                         <div class="order-last flex flex-col items-center justify-center <?php echo $order_image; ?>">
                             <?php 
@@ -438,36 +434,18 @@
                             <p class="mb-2 font-semibold"><?php echo esc_html($card['sub_header']); ?></p>
                             <h3 class="mb-5 text-4xl font-bold leading-[1.2] md:mb-6 md:text-5xl lg:text-6xl"><?php echo esc_html($card['title']); ?></h3>
                             <p><?php echo esc_html($card['content']); ?></p>
-                            <div class="mt-6 flex items-center gap-x-4 md:mt-8">
-                                <a href="#" class="inline-flex items-center justify-center rounded-md border border-[#141414] bg-white px-6 py-3 text-center font-semibold text-[#141414] hover:bg-[#f0f0f0] focus:outline-none focus:ring-2 focus:ring-[#141414] focus:ring-offset-2">
-                                    Learn More
-                                </a>
-                                <a href="#" class="inline-flex items-center text-[#269763] hover:text-[#1c7049] font-semibold">
-                                    Join
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-1"><path d="m9 18 6-6-6-6"/></svg>
-                                </a>
-                            </div>
                         </div>
                         <div class="order-last flex flex-col items-center justify-center">
                             <img src="https://d22po4pjz3o32e.cloudfront.net/placeholder-image.svg" alt="Relume placeholder image <?php echo $card_count; ?>" class="w-full h-auto">
                         </div>
                     </div>
-                    
+
                     <!-- Tablet/Desktop version -->
                     <div class="hidden md:grid static grid-cols-1 content-center overflow-hidden border border-[#e5e5e5] bg-white md:sticky md:top-[10%] md:mb-[10vh] md:h-[80vh] md:grid-cols-2 scale-card" data-card-index="<?php echo $card['index']; ?>">
                         <div class="order-first flex flex-col justify-center p-6 md:p-8 lg:p-12 <?php echo $card['order_text']; ?>">
                             <p class="mb-2 font-semibold"><?php echo esc_html($card['sub_header']); ?></p>
                             <h3 class="mb-5 text-4xl font-bold leading-[1.2] md:mb-6 md:text-5xl lg:text-6xl"><?php echo esc_html($card['title']); ?></h3>
                             <p><?php echo esc_html($card['content']); ?></p>
-                            <div class="mt-6 flex items-center gap-x-4 md:mt-8">
-                                <a href="#" class="inline-flex items-center justify-center rounded-md border border-[#141414] bg-white px-6 py-3 text-center font-semibold text-[#141414] hover:bg-[#f0f0f0] focus:outline-none focus:ring-2 focus:ring-[#141414] focus:ring-offset-2">
-                                    Learn More
-                                </a>
-                                <a href="#" class="inline-flex items-center text-[#269763] hover:text-[#1c7049] font-semibold">
-                                    Join
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-1"><path d="m9 18 6-6-6-6"/></svg>
-                                </a>
-                            </div>
                         </div>
                         <div class="order-last flex flex-col items-center justify-center <?php echo $card['order_image']; ?>">
                             <img src="https://d22po4pjz3o32e.cloudfront.net/placeholder-image.svg" alt="Relume placeholder image <?php echo $card_count; ?>" class="w-full h-full object-cover">
@@ -578,33 +556,30 @@
                             <?php endif; ?>
                         </div>
 
-                        <div class="mt-6 flex flex-wrap items-center gap-4 md:mt-8">
-                            <?php if (have_rows('buttons')) : ?>
-                                <?php while (have_rows('buttons')) : the_row(); 
-                                    $button_one_label = get_sub_field('button_one_label') ?: 'Learn More';
-                                    $button_one_link = get_sub_field('button_one_link') ?: '#';
-                                    $button_two_label = get_sub_field('button_two_label') ?: 'Join Us';
-                                    $button_two_link = get_sub_field('button_two_link') ?: '#';
-                                ?>
+                        <?php if (have_rows('buttons')) : ?>
+                            <?php while (have_rows('buttons')) : the_row();
+                                $button_one_label = get_sub_field('button_one_label');
+                                $button_one_link = get_sub_field('button_one_link');
+                                $button_two_label = get_sub_field('button_two_label');
+                                $button_two_link = get_sub_field('button_two_link');
+                            ?>
+                                <?php if (($button_one_label && $button_one_link) || ($button_two_label && $button_two_link)) : ?>
+                                <div class="mt-6 flex flex-wrap items-center gap-4 md:mt-8">
+                                    <?php if ($button_one_label && $button_one_link) : ?>
                                     <a href="<?php echo esc_url($button_one_link); ?>" class="inline-flex items-center justify-center rounded-md border border-[#141414] bg-white px-6 py-3 text-center font-semibold text-[#141414] hover:bg-[#f0f0f0] focus:outline-none focus:ring-2 focus:ring-[#141414] focus:ring-offset-2">
                                         <?php echo esc_html($button_one_label); ?>
                                     </a>
+                                    <?php endif; ?>
+                                    <?php if ($button_two_label && $button_two_link) : ?>
                                     <a href="<?php echo esc_url($button_two_link); ?>" class="inline-flex items-center text-[#269763] hover:text-[#1c7049] font-semibold">
                                         <?php echo esc_html($button_two_label); ?>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-1"><path d="m9 18 6-6-6-6"/></svg>
                                     </a>
-                                <?php endwhile; ?>
-                            <?php else : ?>
-                                <!-- Default buttons if no ACF data -->
-                                <a href="#" class="inline-flex items-center justify-center rounded-md border border-[#141414] bg-white px-6 py-3 text-center font-semibold text-[#141414] hover:bg-[#f0f0f0] focus:outline-none focus:ring-2 focus:ring-[#141414] focus:ring-offset-2">
-                                    Learn More
-                                </a>
-                                <a href="#" class="inline-flex items-center text-[#269763] hover:text-[#1c7049] font-semibold">
-                                    Join Us
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-1"><path d="m9 18 6-6-6-6"/></svg>
-                                </a>
-                            <?php endif; ?>
-                        </div>
+                                    <?php endif; ?>
+                                </div>
+                                <?php endif; ?>
+                            <?php endwhile; ?>
+                        <?php endif; ?>
                     </div>
                     <div>
                         <?php 
@@ -663,32 +638,30 @@
                     <div>
                         <div class="ml-[5%] mr-[10%]">
                             <p class="md:text-md"><?php echo esc_html($content); ?></p>
-                            <div class="mt-6 flex flex-wrap gap-4 md:mt-8">
-                                <?php if (have_rows('buttons')) : ?>
-                                    <?php while (have_rows('buttons')) : the_row(); 
-                                        $button_one_label = get_sub_field('button_one_label') ?: 'Join';
-                                        $button_one_link = get_sub_field('button_one_link') ?: '#';
-                                        $button_two_label = get_sub_field('button_two_label') ?: 'Learn More';
-                                        $button_two_link = get_sub_field('button_two_link') ?: '#';
-                                    ?>
+                            <?php if (have_rows('buttons')) : ?>
+                                <?php while (have_rows('buttons')) : the_row();
+                                    $button_one_label = get_sub_field('button_one_label');
+                                    $button_one_link = get_sub_field('button_one_link');
+                                    $button_two_label = get_sub_field('button_two_label');
+                                    $button_two_link = get_sub_field('button_two_link');
+                                ?>
+                                    <?php if (($button_one_label && $button_one_link) || ($button_two_label && $button_two_link)) : ?>
+                                    <div class="mt-6 flex flex-wrap gap-4 md:mt-8">
+                                        <?php if ($button_one_label && $button_one_link) : ?>
                                         <a href="<?php echo esc_url($button_one_link); ?>" class="inline-flex items-center justify-center rounded-md border border-white bg-transparent px-6 py-3 text-center font-semibold text-white hover:bg-white hover:text-[#269763] focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#269763]">
                                             <?php echo esc_html($button_one_label); ?>
                                         </a>
+                                        <?php endif; ?>
+                                        <?php if ($button_two_label && $button_two_link) : ?>
                                         <a href="<?php echo esc_url($button_two_link); ?>" class="inline-flex items-center text-white hover:text-[#e6e6e6] font-semibold">
                                             <?php echo esc_html($button_two_label); ?>
                                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-1"><path d="m9 18 6-6-6-6"/></svg>
                                         </a>
-                                    <?php endwhile; ?>
-                                <?php else : ?>
-                                    <a href="#" class="inline-flex items-center justify-center rounded-md border border-white bg-transparent px-6 py-3 text-center font-semibold text-white hover:bg-white hover:text-[#269763] focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#269763]">
-                                        Join
-                                    </a>
-                                    <a href="#" class="inline-flex items-center text-white hover:text-[#e6e6e6] font-semibold">
-                                        Learn More
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-1"><path d="m9 18 6-6-6-6"/></svg>
-                                    </a>
-                                <?php endif; ?>
-                            </div>
+                                        <?php endif; ?>
+                                    </div>
+                                    <?php endif; ?>
+                                <?php endwhile; ?>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>

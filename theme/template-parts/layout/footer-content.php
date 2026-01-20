@@ -46,14 +46,26 @@
                     <p>
                         <?php echo esc_html(get_theme_mod('footer_text', 'Join our community and elevate your golf experience with exclusive resources and events.')); ?>
                     </p>
+                    <?php
+                    $join_button_url = get_theme_mod('join_button_url');
+                    $join_button_text = get_theme_mod('join_button_text');
+                    $contact_button_url = get_theme_mod('contact_button_url');
+                    $contact_button_text = get_theme_mod('contact_button_text');
+
+                    if (($join_button_url && $join_button_text) || ($contact_button_url && $contact_button_text)) : ?>
                     <div class="mt-6 flex flex-wrap gap-4 md:mt-8">
-                        <a href="<?php echo esc_url(home_url(get_theme_mod('join_button_url', '/register'))); ?>" class="inline-block px-5 py-2 bg-[#269763] text-white font-medium rounded-md hover:bg-[#1c7a4e] transition-colors duration-300">
-                            <?php echo esc_html(get_theme_mod('join_button_text', 'Become A Member')); ?>
+                        <?php if ($join_button_url && $join_button_text) : ?>
+                        <a href="<?php echo esc_url(home_url($join_button_url)); ?>" class="inline-block px-5 py-2 bg-[#269763] text-white font-medium rounded-md hover:bg-[#1c7a4e] transition-colors duration-300">
+                            <?php echo esc_html($join_button_text); ?>
                         </a>
-                        <a href="<?php echo esc_url(home_url(get_theme_mod('contact_button_url', '/contact-us'))); ?>" class="inline-block px-5 py-2 border border-[#269763] text-[#269763] font-medium rounded-md hover:bg-[#f8f8f8] transition-colors duration-300">
-                            <?php echo esc_html(get_theme_mod('contact_button_text', 'Contact Us')); ?>
+                        <?php endif; ?>
+                        <?php if ($contact_button_url && $contact_button_text) : ?>
+                        <a href="<?php echo esc_url(home_url($contact_button_url)); ?>" class="inline-block px-5 py-2 border border-[#269763] text-[#269763] font-medium rounded-md hover:bg-[#f8f8f8] transition-colors duration-300">
+                            <?php echo esc_html($contact_button_text); ?>
                         </a>
+                        <?php endif; ?>
                     </div>
+                    <?php endif; ?>
                 </div>
             </div>
             <div class="flex flex-col justify-between gap-8">
