@@ -839,6 +839,49 @@ get_header();
     <?php endif; ?>
 
     <!-- Tournament Description -->
+    <?php
+    // Check if any content exists for this section
+    $has_tournament_content = !empty(get_the_content());
+
+    $has_features_check = false;
+    if (have_rows('tournament_features')) {
+        while (have_rows('tournament_features')) {
+            the_row();
+            if (get_sub_field('feature_title') || get_sub_field('feature_description')) {
+                $has_features_check = true;
+                break;
+            }
+        }
+        reset_rows();
+    }
+
+    $has_additional_check = false;
+    if (have_rows('additional_information')) {
+        while (have_rows('additional_information')) {
+            the_row();
+            if (get_sub_field('rules') || get_sub_field('prizes') || get_sub_field('faq') || get_sub_field('cancellation_policy')) {
+                $has_additional_check = true;
+                break;
+            }
+        }
+        reset_rows();
+    }
+
+    $has_sponsorship_check = false;
+    if (have_rows('sponsor_information')) {
+        while (have_rows('sponsor_information')) {
+            the_row();
+            if (get_sub_field('sponsorship_opportunities') || get_sub_field('sponsorship_contact')) {
+                $has_sponsorship_check = true;
+                break;
+            }
+        }
+        reset_rows();
+    }
+
+    // Only render section if any content exists
+    if ($has_tournament_content || $has_features_check || $has_additional_check || $has_sponsorship_check) :
+    ?>
     <section class="px-[5%] py-16 md:py-24">
         <div class="container mx-auto">
             <div class="grid grid-cols-1 gap-16">
@@ -1032,13 +1075,40 @@ get_header();
                     <?php endif; ?>
                 </div>
 
-            
+
             </div>
         </div>
     </section>
+    <?php endif; ?>
 
     <!-- CTA 3 Section -->
-    <?php if (have_rows('cta_3')) : ?>
+    <?php
+    // Check if CTA 3 has actual content before rendering
+    $has_cta3_content = false;
+    if (have_rows('cta_3')) {
+        while (have_rows('cta_3')) {
+            the_row();
+            if (get_sub_field('title') || get_sub_field('content') || get_sub_field('image')) {
+                $has_cta3_content = true;
+                break;
+            }
+            // Check for buttons with content
+            if (have_rows('buttons')) {
+                while (have_rows('buttons')) {
+                    the_row();
+                    if ((get_sub_field('button_one_label') && get_sub_field('button_one_link')) ||
+                        (get_sub_field('button_two_label') && get_sub_field('button_two_link'))) {
+                        $has_cta3_content = true;
+                        break 2;
+                    }
+                }
+            }
+        }
+        reset_rows();
+    }
+
+    if ($has_cta3_content && have_rows('cta_3')) :
+    ?>
         <?php while (have_rows('cta_3')) : the_row(); ?>
             <?php
             $cta_image = get_sub_field('image');
@@ -1117,14 +1187,15 @@ get_header();
     if ($has_gallery_data) : 
     ?>
         <?php while (have_rows('media')) : the_row(); ?>
-            <?php 
+            <?php
             $gallery = get_sub_field('gallery');
-            if ($gallery && count($gallery) > 0) : 
+            $gallery_title = get_sub_field('gallery_title');
+            if ($gallery && count($gallery) > 0) :
             ?>
-                <section class="px-0 py-16 md:py-24 lg:py-28">
+                <section class="px-0 pt-8 pb-16 md:pt-12 md:pb-24 lg:pt-16 lg:pb-28">
                     <div class="container mx-auto">
                         <div class="mb-12 text-center md:mb-16 lg:mb-20">
-                            <h2 class="mb-5 text-4xl font-bold md:text-5xl lg:text-6xl">Tournament Gallery</h2>
+                            <h2 class="mb-5 text-4xl font-bold md:text-5xl lg:text-6xl"><?php echo esc_html($gallery_title ?: 'Tournament Gallery'); ?></h2>
                             <p class="text-gray-600">View photos from this tournament</p>
                         </div>
                         <div class="grid auto-cols-fr grid-cols-2 grid-rows-2 gap-6 md:auto-cols-auto md:grid-cols-[2fr_1fr_1fr] md:gap-8">
