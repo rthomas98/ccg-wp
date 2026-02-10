@@ -6,6 +6,30 @@
  */
 
 get_header();
+
+// Pre-fetch registration data to avoid repeated ACF row loops
+$registration_data = array(
+    'payment_link'       => '',
+    'spots_available'    => 0,
+    'entry_fee'          => '',
+    'early_bird_deadline' => '',
+);
+
+if (have_rows('registration_info')) {
+    while (have_rows('registration_info')) {
+        the_row();
+        $registration_data['payment_link']       = get_sub_field('payment_link');
+        $registration_data['entry_fee']          = get_sub_field('entry_fee');
+        $registration_data['early_bird_deadline'] = get_sub_field('early_bird_deadline');
+    }
+    reset_rows();
+}
+
+// spots_available lives in a separate programmatic field group, not in the registration_info group
+$registration_data['spots_available'] = intval(get_field('registration_info_spots_available'));
+
+$has_spots        = $registration_data['spots_available'] > 0;
+$has_payment_link = ! empty($registration_data['payment_link']);
 ?>
 
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
@@ -16,14 +40,14 @@ get_header();
                 <div class="absolute inset-0 z-0 after:absolute after:inset-0 after:bg-gradient-to-t after:from-black/80 after:to-black/20">
                     <?php $featured_image = get_sub_field('featured_image'); ?>
                     <?php if ($featured_image) : ?>
-                        <img src="<?php echo esc_url($featured_image['url']); ?>" 
+                        <img src="<?php echo esc_url($featured_image['url']); ?>"
                              alt="<?php echo esc_attr($featured_image['alt']); ?>"
                              class="h-full w-full object-cover" />
                     <?php endif; ?>
                 </div>
             <?php endwhile; ?>
         <?php endif; ?>
-        
+
         <div class="relative z-10 flex min-h-[80vh] items-end px-[5%] pb-16 pt-32 md:pb-24 lg:pb-28">
             <div class="container mx-auto">
                 <div class="max-w-3xl">
@@ -40,14 +64,13 @@ get_header();
                             </h1>
 
                             <div class="flex flex-wrap items-center gap-8 text-lg text-white/90">
-                                <?php 
+                                <?php
                                 // Format tournament date if it exists
                                 $tournament_date = get_sub_field('tournament_date');
                                 $formatted_date = '';
-                                
+
                                 if (!empty($tournament_date)) {
                                     if (is_string($tournament_date)) {
-                                        // Try different date formats
                                         $date_obj = DateTime::createFromFormat('Ymd', $tournament_date);
                                         if (!$date_obj) {
                                             $date_obj = DateTime::createFromFormat('Y-m-d', $tournament_date);
@@ -60,7 +83,7 @@ get_header();
                                     }
                                 }
                                 ?>
-                                
+
                                 <?php if ($formatted_date) : ?>
                                     <div class="flex items-center gap-3">
                                         <i data-lucide="calendar" class="h-6 w-6 text-[#269763]"></i>
@@ -81,15 +104,13 @@ get_header();
                                         <span class="font-medium"><?php echo esc_html(get_sub_field('golf_course_name')); ?></span>
                                     </div>
                                 <?php endif; ?>
-                                
-                                <?php 
-                                // Format registration deadline if it exists
+
+                                <?php
                                 $reg_deadline = get_sub_field('registration_deadline');
                                 $formatted_reg_deadline = '';
-                                
+
                                 if (!empty($reg_deadline)) {
                                     if (is_string($reg_deadline)) {
-                                        // Try different date formats
                                         $date_obj = DateTime::createFromFormat('Ymd', $reg_deadline);
                                         if (!$date_obj) {
                                             $date_obj = DateTime::createFromFormat('Y-m-d', $reg_deadline);
@@ -102,7 +123,7 @@ get_header();
                                     }
                                 }
                                 ?>
-                                
+
                                 <?php if ($formatted_reg_deadline) : ?>
                                     <div class="flex items-center gap-3">
                                         <i data-lucide="clock" class="h-6 w-6 text-[#269763]"></i>
@@ -110,9 +131,9 @@ get_header();
                                     </div>
                                 <?php endif; ?>
                             </div>
-                            
+
                             <?php if (get_sub_field('golf_course_address')) : ?>
-                                <?php 
+                                <?php
                                 $address = get_sub_field('golf_course_address');
                                 $google_maps_url = 'https://www.google.com/maps/search/?api=1&query=' . urlencode($address);
                                 ?>
@@ -125,20 +146,16 @@ get_header();
                             <?php endif; ?>
                         <?php endwhile; ?>
                     <?php endif; ?>
-                    
-                    <?php if (have_rows('registration_info')) : ?>
-                        <?php while (have_rows('registration_info')) : the_row(); ?>
-                            <?php if (get_sub_field('payment_link')) : ?>
-                                <div class="mt-8">
-                                    <button 
-                                       onclick="document.getElementById('registration-section').scrollIntoView({ behavior: 'smooth' });"
-                                       class="inline-flex items-center justify-center rounded-md bg-[#269763] px-6 py-3 text-center font-semibold text-white hover:bg-[#269763]/90 focus:outline-none focus:ring-2 focus:ring-[#269763] focus:ring-offset-2">
-                                        Register Now
-                                        <i data-lucide="arrow-right" class="ml-2 h-5 w-5"></i>
-                                    </button>
-                                </div>
-                            <?php endif; ?>
-                        <?php endwhile; ?>
+
+                    <?php if ($has_spots) : ?>
+                        <div class="mt-8">
+                            <button
+                               onclick="document.getElementById('registration-section').scrollIntoView({ behavior: 'smooth' });"
+                               class="inline-flex items-center justify-center rounded-md bg-[#269763] px-6 py-3 text-center font-semibold text-white hover:bg-[#269763]/90 focus:outline-none focus:ring-2 focus:ring-[#269763] focus:ring-offset-2">
+                                Register Now
+                                <i data-lucide="arrow-right" class="ml-2 h-5 w-5"></i>
+                            </button>
+                        </div>
                     <?php endif; ?>
                 </div>
             </div>
@@ -305,14 +322,14 @@ get_header();
                         </div>
                     <?php endwhile; ?>
                 <?php endif; ?>
-                
+
                 <?php if (have_rows('registration_info')) : ?>
                     <?php while (have_rows('registration_info')) : the_row(); ?>
                         <div class="rounded-xl border border-gray-100 bg-gray-50 p-8 transition-transform hover:shadow-md w-full">
                             <div class="mb-4 inline-flex rounded-lg bg-[#269763]/10 p-3">
                                 <i data-lucide="credit-card" class="h-6 w-6 text-[#269763]"></i>
                             </div>
-                            <h3 class="mb-3 text-xl font-bold">Registration</h3>
+                            <h3 class="mb-3 text-xl font-bold">Registration & Pricing</h3>
                             <ul class="space-y-2 text-gray-600">
                                 <?php if (get_sub_field('entry_fee')) : ?>
                                     <li class="flex items-start gap-2">
@@ -320,14 +337,12 @@ get_header();
                                         <span>Entry Fee: $<?php echo esc_html(get_sub_field('entry_fee')); ?></span>
                                     </li>
                                 <?php endif; ?>
-                                <?php 
-                                // Format early bird deadline if it exists
+                                <?php
                                 $early_bird = get_sub_field('early_bird_deadline');
                                 $formatted_early_bird = '';
-                                
+
                                 if (!empty($early_bird)) {
                                     if (is_string($early_bird)) {
-                                        // Try different date formats
                                         $date_obj = DateTime::createFromFormat('Ymd', $early_bird);
                                         if (!$date_obj) {
                                             $date_obj = DateTime::createFromFormat('Y-m-d', $early_bird);
@@ -347,8 +362,17 @@ get_header();
                                     </li>
                                 <?php endif; ?>
 
+                                <!-- Spots Available -->
+                                <li class="flex items-start gap-2">
+                                    <i data-lucide="users" class="mt-1 h-4 w-4 text-[#269763]"></i>
+                                    <?php if ($has_spots) : ?>
+                                        <span><?php echo esc_html($registration_data['spots_available']); ?> spots remaining</span>
+                                    <?php else : ?>
+                                        <span class="font-semibold text-red-600">Registration Closed</span>
+                                    <?php endif; ?>
+                                </li>
+
                                 <?php
-                                // Display What's Included as a repeater field
                                 if (have_rows('registration_info_whats_included')) :
                                 ?>
                                     <li class="mt-4 pt-4 border-t border-gray-200">
@@ -366,19 +390,20 @@ get_header();
                                     </li>
                                 <?php endif; ?>
 
-                                <?php if (get_sub_field('payment_link')) : ?>
+                                <?php if ($has_spots) : ?>
                                     <li class="flex items-start gap-2 mt-6 pt-4 border-t border-gray-200">
-                                        <a href="<?php echo esc_url(get_sub_field('payment_link')); ?>" class="inline-flex items-center gap-2 rounded-lg bg-[#269763] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#269763]/90" target="_blank" rel="noopener noreferrer">
-                                            <i data-lucide="credit-card" class="h-4 w-4"></i>
-                                            Make Payment
-                                        </a>
+                                        <button onclick="document.getElementById('registration-section').scrollIntoView({ behavior: 'smooth' });"
+                                                class="inline-flex items-center gap-2 rounded-lg bg-[#269763] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#269763]/90">
+                                            <i data-lucide="clipboard-check" class="h-4 w-4"></i>
+                                            Register Now
+                                        </button>
                                     </li>
                                 <?php endif; ?>
                             </ul>
                         </div>
                     <?php endwhile; ?>
                 <?php endif; ?>
-                
+
                 <?php if (have_rows('tournament_schedule')) : ?>
                     <?php while (have_rows('tournament_schedule')) : the_row(); ?>
                         <div class="rounded-xl border border-gray-100 bg-gray-50 p-8 transition-transform hover:shadow-md w-full">
@@ -409,9 +434,32 @@ get_header();
                         </div>
                     <?php endwhile; ?>
                 <?php endif; ?>
-                
 
             </div>
+        </div>
+    </section>
+
+    <!-- Registration Form (moved up from bottom) -->
+    <section id="registration-section" class="bg-gray-50 px-0 py-16 md:py-24">
+        <div class="container mx-auto max-w-3xl">
+            <?php if ($has_spots) : ?>
+                <div class="mb-12 text-center">
+                    <span class="mb-4 inline-block rounded-full bg-[#269763]/10 px-4 py-2 text-sm font-semibold uppercase tracking-wider text-[#269763]">
+                        Step 1: Register
+                    </span>
+                    <h2 class="text-4xl font-bold md:text-5xl lg:text-6xl">Register for Tournament</h2>
+                    <p class="mt-4 text-gray-600">You will be able to make payment after registration.</p>
+                </div>
+                <?php get_template_part('template-parts/forms/tournament-registration-form'); ?>
+            <?php else : ?>
+                <div class="text-center">
+                    <div class="mx-auto mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
+                        <i data-lucide="x-circle" class="h-8 w-8 text-red-600"></i>
+                    </div>
+                    <h2 class="mb-4 text-4xl font-bold md:text-5xl lg:text-6xl">Registration Closed</h2>
+                    <p class="text-lg text-gray-600">This tournament is currently full. Please check back later or contact us for waitlist information.</p>
+                </div>
+            <?php endif; ?>
         </div>
     </section>
 
@@ -482,7 +530,7 @@ get_header();
     <?php endif; ?>
 
     <?php
-    // Check if tournament schedule has data before displaying the section
+    // Tournament Schedule expanded section
     $has_schedule_data = false;
     if (have_rows('tournament_schedule')) {
         while (have_rows('tournament_schedule')) {
@@ -492,10 +540,10 @@ get_header();
                 break;
             }
         }
-        reset_rows(); // Reset the loop for later use
+        reset_rows();
     }
-    
-    if ($has_schedule_data) : 
+
+    if ($has_schedule_data) :
     ?>
         <section class="bg-gray-50 px-[5%] py-16 md:py-24">
             <div class="container mx-auto">
@@ -511,7 +559,7 @@ get_header();
                                 <p class="text-lg text-gray-600"><?php echo esc_html(get_sub_field('check-in_time')); ?></p>
                             </div>
                         <?php endif; ?>
-                        
+
                         <?php if (get_sub_field('start_time')) : ?>
                             <div class="rounded-xl border border-gray-100 bg-white p-8 transition-transform hover:scale-105">
                                 <div class="mb-4 inline-flex rounded-lg bg-[#269763]/10 p-3">
@@ -521,7 +569,7 @@ get_header();
                                 <p class="text-lg text-gray-600"><?php echo esc_html(get_sub_field('start_time')); ?></p>
                             </div>
                         <?php endif; ?>
-                        
+
                         <?php if (get_sub_field('format')) : ?>
                             <div class="rounded-xl border border-gray-100 bg-white p-8 transition-transform hover:scale-105">
                                 <div class="mb-4 inline-flex rounded-lg bg-[#269763]/10 p-3">
@@ -537,133 +585,6 @@ get_header();
         </section>
     <?php endif; ?>
 
-    <?php 
-    // Check if tournament results has actual data
-    $has_results = false;
-    if (have_rows('tournament_results')) {
-        while (have_rows('tournament_results')) {
-            the_row();
-            if (get_sub_field('tournament_recap')) {
-                $has_results = true;
-                break;
-            }
-            
-            $final_leaderboard = get_sub_field('final_leaderboard');
-            if ($final_leaderboard) {
-                $has_results = true;
-                break;
-            }
-            
-            // Check winners
-            if (have_rows('winners')) {
-                while (have_rows('winners')) {
-                    the_row();
-                    if (get_sub_field('category') || get_sub_field('player_name') || 
-                        get_sub_field('scoreresult') || get_sub_field('prize_won')) {
-                        $has_results = true;
-                        break 2;
-                    }
-                }
-            }
-        }
-        reset_rows();
-    }
-    
-    if ($has_results) : 
-    ?>
-        <section class="bg-gray-50 px-[5%] py-16 md:py-24">
-            <div class="container mx-auto">
-                <div class="mb-12 text-center">
-                    <h2 class="mb-4 text-4xl font-bold md:text-5xl lg:text-6xl">Tournament Results</h2>
-                    <p class="text-gray-600">Congratulations to all our winners!</p>
-                </div>
-                
-                <?php while (have_rows('tournament_results')) : the_row(); ?>
-                    <?php 
-                    // Check if winners repeater has items with content
-                    $has_winners = false;
-                    if (have_rows('winners')) {
-                        while (have_rows('winners')) {
-                            the_row();
-                            if (get_sub_field('category') || get_sub_field('player_name') || 
-                                get_sub_field('scoreresult') || get_sub_field('prize_won')) {
-                                $has_winners = true;
-                                break;
-                            }
-                        }
-                        reset_rows(); // Reset for the actual loop
-                    }
-                    
-                    if ($has_winners) : 
-                    ?>
-                        <div class="mb-16 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-                            <?php while (have_rows('winners')) : the_row(); ?>
-                                <?php 
-                                // Only show winner if it has at least one piece of data
-                                if (get_sub_field('category') || get_sub_field('player_name') || 
-                                    get_sub_field('scoreresult') || get_sub_field('prize_won')) : 
-                                ?>
-                                    <div class="rounded-xl border border-gray-100 bg-white p-8 shadow-md transition-transform hover:scale-105">
-                                        <div class="mb-6 inline-flex rounded-lg bg-[#269763]/10 p-3">
-                                            <i data-lucide="trophy" class="h-6 w-6 text-[#269763]"></i>
-                                        </div>
-                                        <?php if (get_sub_field('category')) : ?>
-                                            <h3 class="mb-4 text-2xl font-bold"><?php echo esc_html(get_sub_field('category')); ?></h3>
-                                        <?php endif; ?>
-                                        <div class="space-y-3">
-                                            <?php if (get_sub_field('player_name')) : ?>
-                                                <div class="flex items-center gap-2">
-                                                    <i data-lucide="user" class="h-5 w-5 text-gray-400"></i>
-                                                    <p><span class="font-medium">Winner:</span> <?php echo esc_html(get_sub_field('player_name')); ?></p>
-                                                </div>
-                                            <?php endif; ?>
-                                            <?php if (get_sub_field('scoreresult')) : ?>
-                                                <div class="flex items-center gap-2">
-                                                    <i data-lucide="target" class="h-5 w-5 text-gray-400"></i>
-                                                    <p><span class="font-medium">Score:</span> <?php echo esc_html(get_sub_field('scoreresult')); ?></p>
-                                                </div>
-                                            <?php endif; ?>
-                                            <?php if (get_sub_field('prize_won')) : ?>
-                                                <div class="flex items-center gap-2">
-                                                    <i data-lucide="award" class="h-5 w-5 text-gray-400"></i>
-                                                    <p><span class="font-medium">Prize:</span> <?php echo esc_html(get_sub_field('prize_won')); ?></p>
-                                                </div>
-                                            <?php endif; ?>
-                                        </div>
-                                    </div>
-                                <?php endif; ?>
-                            <?php endwhile; ?>
-                        </div>
-                    <?php endif; ?>
-                    
-                    <?php if (get_sub_field('tournament_recap')) : ?>
-                        <div class="mb-12 rounded-xl border border-gray-100 bg-white p-8 shadow-sm">
-                            <h3 class="mb-6 text-2xl font-bold">Tournament Recap</h3>
-                            <div class="prose max-w-none">
-                                <?php echo wp_kses_post(get_sub_field('tournament_recap')); ?>
-                            </div>
-                        </div>
-                    <?php endif; ?>
-                    
-                    <?php $final_leaderboard = get_sub_field('final_leaderboard'); ?>
-                    <?php if ($final_leaderboard) : ?>
-                        <div class="text-center">
-                            <a href="<?php echo esc_url($final_leaderboard['url']); ?>" 
-                               class="inline-flex items-center gap-2 rounded-md bg-[#269763] px-6 py-3 text-white transition-colors hover:bg-[#269763]/90">
-                                <i data-lucide="list-ordered" class="h-5 w-5"></i>
-                                <span>View Final Leaderboard: <?php echo esc_html($final_leaderboard['filename']); ?></span>
-                            </a>
-                        </div>
-                    <?php endif; ?>
-                <?php endwhile; ?>
-            </div>
-        </section>
-    <?php endif; ?>
-
-
-
-
-
     <!-- Additional Information Section -->
     <?php if (have_rows('additional_information')) : ?>
         <section class="bg-white px-[5%] py-16 md:py-24">
@@ -671,7 +592,7 @@ get_header();
                 <div class="mb-12 text-center">
                     <h2 class="text-4xl font-bold md:text-5xl lg:text-6xl">Additional Information</h2>
                 </div>
-                
+
                 <div class="grid grid-cols-1 gap-12 lg:grid-cols-2">
                     <?php while (have_rows('additional_information')) : the_row(); ?>
                         <?php if (get_sub_field('rules_and_regulations')) : ?>
@@ -682,7 +603,7 @@ get_header();
                                 </div>
                             </div>
                         <?php endif; ?>
-                        
+
                         <?php if (have_rows('what_to_bring')) : ?>
                             <div class="rounded-xl border border-gray-100 bg-gray-50 p-8">
                                 <h3 class="mb-6 text-2xl font-bold">What to Bring</h3>
@@ -705,7 +626,7 @@ get_header();
                                 </ul>
                             </div>
                         <?php endif; ?>
-                        
+
                         <?php if (get_sub_field('weather_policy')) : ?>
                             <div class="rounded-xl border border-gray-100 bg-gray-50 p-8">
                                 <h3 class="mb-6 text-2xl font-bold">Weather Policy</h3>
@@ -714,7 +635,7 @@ get_header();
                                 </div>
                             </div>
                         <?php endif; ?>
-                        
+
                         <?php if (get_sub_field('cancellation_policy')) : ?>
                             <div class="rounded-xl border border-gray-100 bg-gray-50 p-8">
                                 <h3 class="mb-6 text-2xl font-bold">Cancellation Policy</h3>
@@ -723,7 +644,7 @@ get_header();
                                 </div>
                             </div>
                         <?php endif; ?>
-                        
+
                         <?php if (have_rows('contact_information')) : ?>
                             <div class="rounded-xl border border-gray-100 bg-gray-50 p-8 lg:col-span-2">
                                 <h3 class="mb-6 text-2xl font-bold">Contact Information</h3>
@@ -735,7 +656,7 @@ get_header();
                                                 <p><?php echo esc_html(get_sub_field('contact_name')); ?></p>
                                             </div>
                                         <?php endif; ?>
-                                        
+
                                         <?php if (get_sub_field('contact_email')) : ?>
                                             <div class="flex items-center gap-3">
                                                 <i data-lucide="mail" class="h-5 w-5 text-[#269763]"></i>
@@ -744,7 +665,7 @@ get_header();
                                                 </a>
                                             </div>
                                         <?php endif; ?>
-                                        
+
                                         <?php if (get_sub_field('contact_phone')) : ?>
                                             <div class="flex items-center gap-3">
                                                 <i data-lucide="phone" class="h-5 w-5 text-[#269763]"></i>
@@ -763,84 +684,8 @@ get_header();
         </section>
     <?php endif; ?>
 
-    <!-- Registration Section -->
+    <!-- Tournament Description & Features -->
     <?php
-    $has_payment_link = false;
-    $payment_link = '';
-    if (have_rows('registration_info')) {
-        while (have_rows('registration_info')) {
-            the_row();
-            if (get_sub_field('payment_link')) {
-                $has_payment_link = true;
-                $payment_link = get_sub_field('payment_link');
-                break;
-            }
-        }
-        reset_rows(); // Reset the loop for later use
-    }
-
-    if ($has_payment_link) :
-    ?>
-    <section id="registration-section" class="bg-gray-50 py-16 md:py-24">
-        <div class="container mx-auto px-4">
-            <div class="mx-auto max-w-3xl text-center">
-                <h2 class="mb-6 text-4xl font-bold md:text-5xl lg:text-6xl">Register Now</h2>
-                <p class="mb-12 text-lg text-gray-600">Complete the form below to register for this tournament.</p>
-            </div>
-            
-            <div class="mx-auto max-w-3xl">
-                <!-- Hidden field for payment link -->
-                <div id="payment_link_container" style="display: none;" data-payment-link="<?php echo esc_url($payment_link); ?>"></div>
-                
-                <?php echo do_shortcode('[fluentform id="6"]'); ?>
-                
-                <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    // Get the payment link from the hidden container
-                    const paymentLink = document.getElementById('payment_link_container').getAttribute('data-payment-link');
-                    
-                    if (window.jQuery && paymentLink) {
-                        // Method 1: Using Fluent Forms' success event
-                        jQuery(document).on('fluentform_submission_success', function(event, data) {
-                            if (data.form_id === '6') {
-                                setTimeout(function() {
-                                    window.open(paymentLink, '_blank');
-                                }, 1500);
-                            }
-                        });
-                        
-                        // Method 2: Watch for success message appearance as backup
-                        const observer = new MutationObserver(function(mutations) {
-                            mutations.forEach(function(mutation) {
-                                if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-                                    // Look for success message in the form
-                                    const successMessage = document.querySelector('.ff-message-success');
-                                    if (successMessage) {
-                                        setTimeout(function() {
-                                            window.open(paymentLink, '_blank');
-                                        }, 1500);
-                                        observer.disconnect(); // Stop observing once we've found the success message
-                                    }
-                                }
-                            });
-                        });
-                        
-                        // Start observing the form container for changes
-                        const formContainer = document.querySelector('.fluentform');
-                        if (formContainer) {
-                            observer.observe(formContainer, { childList: true, subtree: true });
-                        }
-                    }
-                });
-                </script>
-            </div>
-        </div>
-    </section>
-    <?php endif; ?>
-
-    <!-- Tournament Description -->
-    <?php
-    // Check if any content exists for this section
     $has_tournament_content = !empty(get_the_content());
 
     $has_features_check = false;
@@ -879,15 +724,12 @@ get_header();
         reset_rows();
     }
 
-    // Only render section if any content exists
     if ($has_tournament_content || $has_features_check || $has_additional_check || $has_sponsorship_check) :
     ?>
     <section class="px-[5%] py-16 md:py-24">
         <div class="container mx-auto">
             <div class="grid grid-cols-1 gap-16">
-                <!-- Left Column -->
                 <div>
-                    <!-- Tournament Description -->
                     <?php if (!empty(get_the_content())) : ?>
                     <div class="mb-16">
                         <h2 class="mb-8 text-4xl font-bold md:text-5xl lg:text-6xl">About This Tournament</h2>
@@ -897,8 +739,7 @@ get_header();
                     </div>
                     <?php endif; ?>
 
-                    <?php 
-                    // Check if tournament features has data before displaying the section
+                    <?php
                     $has_features_data = false;
                     if (have_rows('tournament_features')) {
                         while (have_rows('tournament_features')) {
@@ -908,10 +749,10 @@ get_header();
                                 break;
                             }
                         }
-                        reset_rows(); // Reset the loop for later use
+                        reset_rows();
                     }
-                    
-                    if ($has_features_data) : 
+
+                    if ($has_features_data) :
                     ?>
                         <div class="mb-16">
                             <h2 class="mb-8 text-4xl font-bold md:text-5xl lg:text-6xl">Tournament Features</h2>
@@ -935,8 +776,7 @@ get_header();
                         </div>
                     <?php endif; ?>
 
-                    <?php 
-                    // Check if additional information has data before displaying the section
+                    <?php
                     $has_additional_info = false;
                     if (have_rows('additional_information')) {
                         while (have_rows('additional_information')) {
@@ -945,24 +785,23 @@ get_header();
                                 $has_additional_info = true;
                                 break;
                             }
-                            // Contact information check removed to prevent duplication
                         }
-                        reset_rows(); // Reset the loop for later use
+                        reset_rows();
                     }
-                    
-                    if ($has_additional_info) : 
+
+                    if ($has_additional_info) :
                     ?>
                         <?php while (have_rows('additional_information')) : the_row(); ?>
-                            <?php 
+                            <?php
                             $has_rules = !empty(get_sub_field('rules'));
                             $has_prizes = !empty(get_sub_field('prizes'));
                             $has_faq = !empty(get_sub_field('faq'));
                             $has_cancellation = !empty(get_sub_field('cancellation_policy'));
-                            
+
                             if ($has_rules || $has_prizes) : ?>
                             <div class="mb-16">
                                 <h2 class="mb-8 text-4xl font-bold md:text-5xl lg:text-6xl">Additional Information</h2>
-                                
+
                                 <?php if ($has_rules || $has_prizes) : ?>
                                 <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
                                     <?php if ($has_rules) : ?>
@@ -1031,9 +870,7 @@ get_header();
                         <?php endwhile; ?>
                     <?php endif; ?>
 
-                    <!-- Sponsorship Opportunities Section -->
-                    <?php 
-                    // Check if sponsorship opportunities exist
+                    <?php
                     $has_sponsorship_opportunities = false;
                     if (have_rows('sponsor_information')) {
                         while (have_rows('sponsor_information')) {
@@ -1043,14 +880,14 @@ get_header();
                                 break;
                             }
                         }
-                        reset_rows(); // Reset the loop for later use
+                        reset_rows();
                     }
-                    
-                    if ($has_sponsorship_opportunities) : 
+
+                    if ($has_sponsorship_opportunities) :
                     ?>
                         <div class="mb-16">
                             <h2 class="mb-8 text-4xl font-bold md:text-5xl lg:text-6xl">Sponsorship Opportunities</h2>
-                            
+
                             <?php if (have_rows('sponsor_information')) : ?>
                                 <?php while (have_rows('sponsor_information')) : the_row(); ?>
                                     <?php if (get_sub_field('sponsorship_opportunities')) : ?>
@@ -1060,7 +897,7 @@ get_header();
                                             </div>
                                             <?php if (get_sub_field('sponsorship_contact')) : ?>
                                                 <div class="mt-6">
-                                                    <a href="mailto:<?php echo esc_attr(get_sub_field('sponsorship_contact')); ?>" 
+                                                    <a href="mailto:<?php echo esc_attr(get_sub_field('sponsorship_contact')); ?>"
                                                        class="inline-flex items-center gap-2 rounded-md bg-[#269763]/10 px-4 py-2 text-[#269763] hover:bg-[#269763]/20">
                                                         <i data-lucide="mail" class="h-5 w-5"></i>
                                                         <span>Contact for Sponsorship</span>
@@ -1074,16 +911,133 @@ get_header();
                         </div>
                     <?php endif; ?>
                 </div>
-
-
             </div>
         </div>
     </section>
     <?php endif; ?>
 
+    <!-- Tournament Results (post-event content, moved down) -->
+    <?php
+    $has_results = false;
+    if (have_rows('tournament_results')) {
+        while (have_rows('tournament_results')) {
+            the_row();
+            if (get_sub_field('tournament_recap')) {
+                $has_results = true;
+                break;
+            }
+
+            $final_leaderboard = get_sub_field('final_leaderboard');
+            if ($final_leaderboard) {
+                $has_results = true;
+                break;
+            }
+
+            if (have_rows('winners')) {
+                while (have_rows('winners')) {
+                    the_row();
+                    if (get_sub_field('category') || get_sub_field('player_name') ||
+                        get_sub_field('scoreresult') || get_sub_field('prize_won')) {
+                        $has_results = true;
+                        break 2;
+                    }
+                }
+            }
+        }
+        reset_rows();
+    }
+
+    if ($has_results) :
+    ?>
+        <section class="bg-gray-50 px-[5%] py-16 md:py-24">
+            <div class="container mx-auto">
+                <div class="mb-12 text-center">
+                    <h2 class="mb-4 text-4xl font-bold md:text-5xl lg:text-6xl">Tournament Results</h2>
+                    <p class="text-gray-600">Congratulations to all our winners!</p>
+                </div>
+
+                <?php while (have_rows('tournament_results')) : the_row(); ?>
+                    <?php
+                    $has_winners = false;
+                    if (have_rows('winners')) {
+                        while (have_rows('winners')) {
+                            the_row();
+                            if (get_sub_field('category') || get_sub_field('player_name') ||
+                                get_sub_field('scoreresult') || get_sub_field('prize_won')) {
+                                $has_winners = true;
+                                break;
+                            }
+                        }
+                        reset_rows();
+                    }
+
+                    if ($has_winners) :
+                    ?>
+                        <div class="mb-16 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+                            <?php while (have_rows('winners')) : the_row(); ?>
+                                <?php
+                                if (get_sub_field('category') || get_sub_field('player_name') ||
+                                    get_sub_field('scoreresult') || get_sub_field('prize_won')) :
+                                ?>
+                                    <div class="rounded-xl border border-gray-100 bg-white p-8 shadow-md transition-transform hover:scale-105">
+                                        <div class="mb-6 inline-flex rounded-lg bg-[#269763]/10 p-3">
+                                            <i data-lucide="trophy" class="h-6 w-6 text-[#269763]"></i>
+                                        </div>
+                                        <?php if (get_sub_field('category')) : ?>
+                                            <h3 class="mb-4 text-2xl font-bold"><?php echo esc_html(get_sub_field('category')); ?></h3>
+                                        <?php endif; ?>
+                                        <div class="space-y-3">
+                                            <?php if (get_sub_field('player_name')) : ?>
+                                                <div class="flex items-center gap-2">
+                                                    <i data-lucide="user" class="h-5 w-5 text-gray-400"></i>
+                                                    <p><span class="font-medium">Winner:</span> <?php echo esc_html(get_sub_field('player_name')); ?></p>
+                                                </div>
+                                            <?php endif; ?>
+                                            <?php if (get_sub_field('scoreresult')) : ?>
+                                                <div class="flex items-center gap-2">
+                                                    <i data-lucide="target" class="h-5 w-5 text-gray-400"></i>
+                                                    <p><span class="font-medium">Score:</span> <?php echo esc_html(get_sub_field('scoreresult')); ?></p>
+                                                </div>
+                                            <?php endif; ?>
+                                            <?php if (get_sub_field('prize_won')) : ?>
+                                                <div class="flex items-center gap-2">
+                                                    <i data-lucide="award" class="h-5 w-5 text-gray-400"></i>
+                                                    <p><span class="font-medium">Prize:</span> <?php echo esc_html(get_sub_field('prize_won')); ?></p>
+                                                </div>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+                            <?php endwhile; ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if (get_sub_field('tournament_recap')) : ?>
+                        <div class="mb-12 rounded-xl border border-gray-100 bg-white p-8 shadow-sm">
+                            <h3 class="mb-6 text-2xl font-bold">Tournament Recap</h3>
+                            <div class="prose max-w-none">
+                                <?php echo wp_kses_post(get_sub_field('tournament_recap')); ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php $final_leaderboard = get_sub_field('final_leaderboard'); ?>
+                    <?php if ($final_leaderboard) : ?>
+                        <div class="text-center">
+                            <a href="<?php echo esc_url($final_leaderboard['url']); ?>"
+                               class="inline-flex items-center gap-2 rounded-md bg-[#269763] px-6 py-3 text-white transition-colors hover:bg-[#269763]/90">
+                                <i data-lucide="list-ordered" class="h-5 w-5"></i>
+                                <span>View Final Leaderboard: <?php echo esc_html($final_leaderboard['filename']); ?></span>
+                            </a>
+                        </div>
+                    <?php endif; ?>
+                <?php endwhile; ?>
+            </div>
+        </section>
+    <?php endif; ?>
+
     <!-- CTA 3 Section -->
     <?php
-    // Check if CTA 3 has actual content before rendering
     $has_cta3_content = false;
     if (have_rows('cta_3')) {
         while (have_rows('cta_3')) {
@@ -1092,7 +1046,6 @@ get_header();
                 $has_cta3_content = true;
                 break;
             }
-            // Check for buttons with content
             if (have_rows('buttons')) {
                 while (have_rows('buttons')) {
                     the_row();
@@ -1170,8 +1123,8 @@ get_header();
         <?php endwhile; ?>
     <?php endif; ?>
 
+    <!-- Gallery Section -->
     <?php
-    // Check if gallery has data before displaying the section
     $has_gallery_data = false;
     if (have_rows('media')) {
         while (have_rows('media')) {
@@ -1181,10 +1134,10 @@ get_header();
                 break;
             }
         }
-        reset_rows(); // Reset the loop for later use
+        reset_rows();
     }
-    
-    if ($has_gallery_data) : 
+
+    if ($has_gallery_data) :
     ?>
         <?php while (have_rows('media')) : the_row(); ?>
             <?php
@@ -1199,38 +1152,18 @@ get_header();
                             <p class="text-gray-600">View photos from this tournament</p>
                         </div>
                         <div class="grid auto-cols-fr grid-cols-2 grid-rows-2 gap-6 md:auto-cols-auto md:grid-cols-[2fr_1fr_1fr] md:gap-8">
-                            <?php 
+                            <?php
                             foreach ($gallery as $index => $image) : ?>
-                                <a href="<?php echo esc_url($image['url']); ?>" 
+                                <a href="<?php echo esc_url($image['url']); ?>"
                                    class="inline-block size-full <?php echo $index === 0 ? 'col-start-1 col-end-2 row-start-1 row-end-3' : ''; ?>">
                                     <div class="size-full overflow-hidden rounded-lg transition-transform hover:scale-[1.02]">
-                                        <img src="<?php echo esc_url($image['sizes']['large']); ?>" 
+                                        <img src="<?php echo esc_url($image['sizes']['large']); ?>"
                                              alt="<?php echo esc_attr($image['alt']); ?>"
                                              class="aspect-square size-full object-cover" />
                                     </div>
                                 </a>
                             <?php endforeach; ?>
                         </div>
-                    </div>
-                </section>
-            <?php endif; ?>
-        <?php endwhile; ?>
-    <?php endif; ?>
-
-    <!-- Registration Form -->
-    <?php if (have_rows('registration_info')) : ?>
-        <?php while (have_rows('registration_info')) : the_row(); ?>
-            <?php if (get_sub_field('spots_available') > 0) : ?>
-                <section id="registration-section" class="bg-gray-50 px-0 py-16 md:py-24">
-                    <div class="container mx-auto max-w-3xl">
-                        <div class="mb-12 text-center">
-                            <h2 class="text-4xl font-bold md:text-5xl lg:text-6xl">Register for Tournament</h2>
-                            <p class="mt-4 text-gray-600">Fill out the form below to secure your spot</p>
-                        </div>
-                        <?php 
-                        // Include registration form
-                        get_template_part('template-parts/forms/tournament-registration-form');
-                        ?>
                     </div>
                 </section>
             <?php endif; ?>

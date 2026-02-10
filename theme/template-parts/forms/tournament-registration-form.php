@@ -205,6 +205,29 @@ if (have_rows('registration_info', $tournament_id)) {
     <div id="form-response" class="mt-4 hidden rounded-lg p-4 text-center"></div>
 </form>
 
+<!-- Registration Confirmation Panel -->
+<div id="registration-confirmation" class="hidden">
+    <div class="rounded-xl border border-green-200 bg-green-50 p-8 text-center">
+        <div class="mx-auto mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
+            <i data-lucide="check-circle" class="h-8 w-8 text-green-600"></i>
+        </div>
+        <h3 class="mb-2 text-2xl font-bold text-green-800">Registration Confirmed!</h3>
+        <p class="mb-6 text-green-700">Your spot has been secured. A confirmation email has been sent.</p>
+
+        <div id="confirmation-details" class="mb-6 rounded-lg bg-white p-4 text-left text-sm text-gray-700">
+            <!-- Populated by JS -->
+        </div>
+
+        <div id="payment-button-container" class="mb-4">
+            <!-- Populated by JS if payment_link exists -->
+        </div>
+
+        <p id="payment-note" class="hidden text-sm text-gray-500">
+            You can also pay later before the registration deadline. A payment link has been included in your confirmation email.
+        </p>
+    </div>
+</div>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('tournament-registration-form');
@@ -224,33 +247,103 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Show success message
-                const successMessage = document.createTextNode(data.data.message);
-                const successP = document.createElement('p');
-                successP.className = 'text-green-700';
-                successP.appendChild(successMessage);
-                formResponse.textContent = '';
-                formResponse.appendChild(successP);
-                formResponse.classList.remove('hidden', 'bg-red-100');
-                formResponse.classList.add('bg-green-100');
-                
-                // Reset the form
-                form.reset();
-                
-                // Redirect to payment link after validation
-                if (paymentLink && paymentLink.length > 0) {
+                // Hide the form and show confirmation panel
+                form.classList.add('hidden');
+                formResponse.classList.add('hidden');
+
+                const confirmationPanel = document.getElementById('registration-confirmation');
+                const confirmationDetails = document.getElementById('confirmation-details');
+                const paymentButtonContainer = document.getElementById('payment-button-container');
+                const paymentNote = document.getElementById('payment-note');
+
+                // Populate confirmation details using safe DOM methods
+                const playerName = data.data.player_name || '';
+                const playerEmail = data.data.player_email || '';
+                const serverPaymentLink = data.data.payment_link || '';
+
+                // Clear and build details safely
+                confirmationDetails.textContent = '';
+                const detailsWrapper = document.createElement('div');
+                detailsWrapper.className = 'space-y-2';
+
+                // Name row
+                const nameP = document.createElement('p');
+                const nameLabel = document.createElement('span');
+                nameLabel.className = 'font-semibold';
+                nameLabel.textContent = 'Name: ';
+                nameP.appendChild(nameLabel);
+                nameP.appendChild(document.createTextNode(playerName));
+                detailsWrapper.appendChild(nameP);
+
+                // Email row
+                const emailP = document.createElement('p');
+                const emailLabel = document.createElement('span');
+                emailLabel.className = 'font-semibold';
+                emailLabel.textContent = 'Email: ';
+                emailP.appendChild(emailLabel);
+                emailP.appendChild(document.createTextNode(playerEmail));
+                detailsWrapper.appendChild(emailP);
+
+                // Status row
+                const statusP = document.createElement('p');
+                const statusLabel = document.createElement('span');
+                statusLabel.className = 'font-semibold';
+                statusLabel.textContent = 'Status: ';
+                statusP.appendChild(statusLabel);
+                const statusBadge = document.createElement('span');
+                statusBadge.className = 'inline-block rounded-full bg-green-100 px-2 py-0.5 text-xs font-semibold text-green-800';
+                statusBadge.textContent = 'Registered';
+                statusP.appendChild(statusBadge);
+                detailsWrapper.appendChild(statusP);
+
+                // Payment row
+                const paymentP = document.createElement('p');
+                const paymentLabel = document.createElement('span');
+                paymentLabel.className = 'font-semibold';
+                paymentLabel.textContent = 'Payment: ';
+                paymentP.appendChild(paymentLabel);
+                const paymentBadge = document.createElement('span');
+                paymentBadge.className = 'inline-block rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-800';
+                paymentBadge.textContent = 'Unpaid';
+                paymentP.appendChild(paymentBadge);
+                detailsWrapper.appendChild(paymentP);
+
+                confirmationDetails.appendChild(detailsWrapper);
+
+                // Show payment button if payment link exists
+                const effectivePaymentLink = serverPaymentLink || paymentLink;
+                if (effectivePaymentLink && effectivePaymentLink.length > 0) {
                     try {
-                        const url = new URL(paymentLink, window.location.origin);
+                        const url = new URL(effectivePaymentLink, window.location.origin);
                         if (url.protocol === 'http:' || url.protocol === 'https:') {
-                            setTimeout(function() {
-                                window.location.href = paymentLink;
-                            }, 1500);
-                        } else {
-                            console.error('Invalid payment URL protocol');
+                            paymentButtonContainer.textContent = '';
+                            const paymentBtn = document.createElement('a');
+                            paymentBtn.href = effectivePaymentLink;
+                            paymentBtn.target = '_blank';
+                            paymentBtn.rel = 'noopener noreferrer';
+                            paymentBtn.className = 'inline-flex items-center justify-center gap-2 rounded-md bg-[#269763] px-8 py-3 text-center font-semibold text-white hover:bg-[#1a724a] focus:outline-none focus:ring-2 focus:ring-[#269763] focus:ring-offset-2';
+                            const btnIcon = document.createElement('i');
+                            btnIcon.setAttribute('data-lucide', 'credit-card');
+                            btnIcon.className = 'h-5 w-5';
+                            paymentBtn.appendChild(btnIcon);
+                            paymentBtn.appendChild(document.createTextNode(' Proceed to Payment'));
+                            paymentButtonContainer.appendChild(paymentBtn);
+                            paymentNote.classList.remove('hidden');
                         }
                     } catch (e) {
                         console.error('Invalid payment URL', e);
                     }
+                }
+
+                // Show the confirmation panel
+                confirmationPanel.classList.remove('hidden');
+
+                // Scroll to confirmation
+                confirmationPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                // Re-initialize Lucide icons for dynamically added elements
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
                 }
             } else {
                 // Show error message

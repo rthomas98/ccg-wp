@@ -596,10 +596,20 @@ function handle_tournament_registration() {
     update_field('registration_details_special_requests', $special_requests, $registration_id);
     update_field('registration_details_tournament', $tournament_id, $registration_id);
     update_field('registration_details_status', 'registered', $registration_id);
+    update_field('registration_details_payment_status', 'unpaid', $registration_id);
     update_field('registration_details_registration_date', date('Y-m-d H:i:s'), $registration_id);
 
     // Update spots available
     update_field('registration_info_spots_available', $spots_available - 1, $tournament_id);
+
+    // Get payment link for email
+    $tournament_payment_link = '';
+    if (have_rows('registration_info', $tournament_id)) {
+        while (have_rows('registration_info', $tournament_id)) {
+            the_row();
+            $tournament_payment_link = get_sub_field('payment_link');
+        }
+    }
 
     // Send confirmation email to registrant
     $to = $email;
@@ -614,7 +624,11 @@ function handle_tournament_registration() {
     if ($home_club) {
         $message .= "Home Club: $home_club\n";
     }
-    
+    $message .= "\nPayment Status: Unpaid\n";
+    if ($tournament_payment_link) {
+        $message .= "\nPlease complete your payment at: " . $tournament_payment_link . "\n";
+    }
+
     $headers = ['Content-Type: text/plain; charset=UTF-8'];
     wp_mail($to, $subject, $message, $headers);
 
@@ -625,7 +639,10 @@ function handle_tournament_registration() {
 
     wp_send_json_success([
         'message' => 'Registration successful! Check your email for confirmation details.',
-        'registration_id' => $registration_id
+        'registration_id' => $registration_id,
+        'player_name' => $first_name . ' ' . $last_name,
+        'player_email' => $email,
+        'payment_link' => $tournament_payment_link,
     ]);
 }
 add_action('wp_ajax_tournament_registration', 'handle_tournament_registration');
@@ -940,6 +957,19 @@ function register_tournament_registration_acf_fields() {
                         'cancelled' => 'Cancelled',
                     ),
                     'default_value' => 'registered',
+                    'required' => 1,
+                ),
+                array(
+                    'key' => 'field_registration_details_payment_status',
+                    'label' => 'Payment Status',
+                    'name' => 'registration_details_payment_status',
+                    'type' => 'select',
+                    'choices' => array(
+                        'unpaid' => 'Unpaid',
+                        'paid' => 'Paid',
+                        'refunded' => 'Refunded',
+                    ),
+                    'default_value' => 'unpaid',
                     'required' => 1,
                 ),
                 array(

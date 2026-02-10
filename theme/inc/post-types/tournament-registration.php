@@ -57,6 +57,7 @@ function add_tournament_registration_columns($columns) {
             $new_columns['tournament'] = __('Tournament', '_ccg');
             $new_columns['registration_date'] = __('Registration Date', '_ccg');
             $new_columns['status'] = __('Status', '_ccg');
+            $new_columns['payment_status'] = __('Payment Status', '_ccg');
         } else {
             $new_columns[$key] = $value;
         }
@@ -89,6 +90,13 @@ function display_tournament_registration_columns($column, $post_id) {
             $status = get_field('registration_details_status', $post_id);
             echo '<span class="registration-status status-' . esc_attr($status) . '">' . esc_html(ucfirst($status)) . '</span>';
             break;
+        case 'payment_status':
+            $payment_status = get_field('registration_details_payment_status', $post_id);
+            if (!$payment_status) {
+                $payment_status = 'unpaid';
+            }
+            echo '<span class="payment-status payment-' . esc_attr($payment_status) . '">' . esc_html(ucfirst($payment_status)) . '</span>';
+            break;
     }
 }
 add_action('manage_tournament_registration_posts_custom_column', 'display_tournament_registration_columns', 10, 2);
@@ -120,6 +128,26 @@ function add_tournament_registration_admin_styles() {
             .status-waitlisted {
                 background-color: #fff3cd;
                 color: #856404;
+            }
+            .payment-status {
+                display: inline-block;
+                padding: 4px 8px;
+                border-radius: 4px;
+                font-size: 12px;
+                font-weight: 600;
+                text-transform: uppercase;
+            }
+            .payment-paid {
+                background-color: #e6f4ea;
+                color: #1e7e34;
+            }
+            .payment-unpaid {
+                background-color: #fff3cd;
+                color: #856404;
+            }
+            .payment-refunded {
+                background-color: #e2e8f0;
+                color: #64748b;
             }
         </style>
         <?php
