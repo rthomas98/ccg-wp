@@ -665,6 +665,11 @@ require_once get_template_directory() . '/inc/post-types/tournament-registration
 require_once get_template_directory() . '/inc/post-types/waitlist.php';
 
 /**
+ * Include admin dashboard widgets
+ */
+require_once get_template_directory() . '/inc/admin-dashboard-widgets.php';
+
+/**
  * Register ACF fields for the home page
  */
 function _ccg_register_acf_fields() {
