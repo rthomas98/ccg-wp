@@ -527,18 +527,6 @@ while (have_posts()) :
                                     </button>
                                 <?php endif; ?>
                                 
-                                <!-- External Payment Link -->
-                                <?php if (have_rows('pricing_information')) : ?>
-                                    <?php while (have_rows('pricing_information')) : the_row(); ?>
-                                        <?php if (get_sub_field('payment_link')) : ?>
-                                            <div class="mt-4">
-                                                <a href="<?php echo esc_url(get_sub_field('payment_link')); ?>" target="_blank" class="block w-full bg-blue-600 hover:bg-blue-700 text-white text-center font-bold py-3 px-4 rounded transition duration-300">
-                                                    Pay Directly
-                                                </a>
-                                            </div>
-                                        <?php endif; ?>
-                                    <?php endwhile; ?>
-                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -555,197 +543,8 @@ while (have_posts()) :
                     <h2 class="text-4xl font-bold md:text-5xl lg:text-6xl">Register for this Playdate</h2>
                     <p class="mt-4 text-gray-600">Fill out the form below to secure your spot</p>
                 </div>
-                
-                <?php
-                // Get playdate details
-                $playdate_id = get_the_ID();
-                $playdate_title = get_the_title();
-                
-                // Initialize price variables
-                $member_price = 0;
-                $non_member_price = 0;
-                
-                // Get pricing information
-                if (have_rows('pricing_information')) {
-                    while (have_rows('pricing_information')) {
-                        the_row();
-                        
-                        // Get member/non-member prices
-                        $member_price = get_sub_field('course_member_price') ? (float)get_sub_field('course_member_price') : 0;
-                        $non_member_price = get_sub_field('non_member_price') ? (float)get_sub_field('non_member_price') : 0;
-                    }
-                }
-                
-                // Get date
-                $playdate_date = '';
-                if (have_rows('playdate_details')) {
-                    while (have_rows('playdate_details')) {
-                        the_row();
-                        if (get_sub_field('date')) {
-                            $playdate_date = date('M j, Y', strtotime(get_sub_field('date')));
-                        }
-                    }
-                }
-                ?>
-                
-                <!-- Custom Pre-Registration Form -->
-                <div id="pre-registration-form" class="bg-white rounded-lg shadow-sm p-6 mb-8 border border-gray-200">
-                    <h3 class="text-xl font-semibold mb-4">Playdate Options</h3>
-                    
-                    <!-- Membership Status -->
-                    <div class="mb-6">
-                        <label class="block text-gray-700 font-medium mb-2">Membership Status</label>
-                        <div class="flex flex-wrap gap-4">
-                            <label class="flex items-center cursor-pointer">
-                                <input type="radio" name="membership-status" value="member" class="form-radio h-5 w-5 text-[#269763]" checked>
-                                <span class="ml-2">Course Member</span>
-                            </label>
-                            <label class="flex items-center cursor-pointer">
-                                <input type="radio" name="membership-status" value="non-member" class="form-radio h-5 w-5 text-[#269763]">
-                                <span class="ml-2">Non-Member</span>
-                            </label>
-                        </div>
-                    </div>
-                    
-                    <div class="payment-summary bg-gray-50 rounded-lg p-6 mb-6 border border-gray-200">
-                        <h3 class="font-semibold text-gray-900 mb-4 text-lg">Payment Summary</h3>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                            <div>
-                                <p class="text-gray-600 text-sm">Green Fee</p>
-                                <p class="text-lg font-medium" id="green-fee-display">$<?php echo number_format($member_price, 2); ?></p>
-                            </div>
-                        </div>
-                        
-                        <div class="border-t border-gray-300 pt-4 mb-4">
-                            <div class="flex justify-between items-center">
-                                <p class="font-semibold">Total</p>
-                                <p class="text-xl font-bold text-[#269763]" id="total-price-display">$<?php echo number_format($member_price, 2); ?></p>
-                            </div>
-                        </div>
-                        
-                        <div class="mt-4 text-sm text-gray-600">
-                            <p>Your card will be charged immediately upon submission.</p>
-                            <?php if (have_rows('additional_information')) : ?>
-                                <?php while (have_rows('additional_information')) : the_row(); ?>
-                                    <?php if (get_sub_field('cancellation_policy')) : ?>
-                                        <p class="mt-2"><strong>Cancellation Policy:</strong> <?php echo esc_html(get_sub_field('cancellation_policy')); ?></p>
-                                    <?php endif; ?>
-                                <?php endwhile; ?>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                    
-                    <!-- Continue to Registration Button -->
-                    <button id="continue-to-registration" class="w-full bg-[#269763] hover:bg-[#1e7a4f] text-white font-bold py-3 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300">
-                        Continue to Registration
-                    </button>
-                </div>
-                
-                <!-- Hidden Fluent Form (will be shown after pre-registration) -->
-                <div id="fluent-form-container" class="hidden bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-                    <?php echo do_shortcode('[fluentform id="5"]'); ?>
-                </div>
-                
-                <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    // Price variables from PHP
-                    const memberPrice = <?php echo $member_price; ?>;
-                    const nonMemberPrice = <?php echo $non_member_price; ?>;
-                    
-                    // Get payment link
-                    <?php if (have_rows('pricing_information')) : ?>
-                        <?php while (have_rows('pricing_information')) : the_row(); ?>
-                            const memberPaymentLink = "<?php echo esc_url(get_sub_field('member_payment_link')); ?>";
-                            const nonMemberPaymentLink = "<?php echo esc_url(get_sub_field('non_member_payment_link')); ?>";
-                        <?php endwhile; ?>
-                    <?php else : ?>
-                        const memberPaymentLink = "";
-                        const nonMemberPaymentLink = "";
-                    <?php endif; ?>
-                    
-                    // DOM elements
-                    const membershipRadios = document.querySelectorAll('input[name="membership-status"]');
-                    const greenFeeDisplay = document.getElementById('green-fee-display');
-                    const totalPriceDisplay = document.getElementById('total-price-display');
-                    const continueButton = document.getElementById('continue-to-registration');
-                    const preRegistrationForm = document.getElementById('pre-registration-form');
-                    const fluentFormContainer = document.getElementById('fluent-form-container');
-                    
-                    // Current state
-                    let currentMembershipStatus = 'member';
-                    
-                    // Format price as currency
-                    function formatPrice(price) {
-                        return '$' + price.toFixed(2);
-                    }
-                    
-                    // Update displayed prices
-                    function updatePrices() {
-                        const greenFee = currentMembershipStatus === 'member' ? memberPrice : nonMemberPrice;
-                        
-                        greenFeeDisplay.textContent = formatPrice(greenFee);
-                        totalPriceDisplay.textContent = formatPrice(greenFee);
-                    }
-                    
-                    // Membership status change handler
-                    membershipRadios.forEach(radio => {
-                        radio.addEventListener('change', function() {
-                            currentMembershipStatus = this.value;
-                            updatePrices();
-                        });
-                    });
-                    
-                    // Continue to registration button handler
-                    continueButton.addEventListener('click', function() {
-                        preRegistrationForm.style.display = 'none';
-                        fluentFormContainer.style.display = 'block';
-                        
-                        // Scroll to the form
-                        fluentFormContainer.scrollIntoView({ 
-                            behavior: 'smooth',
-                            block: 'start'
-                        });
-                        
-                        // Store the payment link in a global variable to use after form submission
-                        window.ccgSelectedPaymentLink = currentMembershipStatus === 'member' ? memberPaymentLink : nonMemberPaymentLink;
-                        
-                        // Add a hidden field to the form to store the selected payment link
-                        if (!document.getElementById('ccg_selected_payment_link')) {
-                            const hiddenLinkField = document.createElement('input');
-                            hiddenLinkField.type = 'hidden';
-                            hiddenLinkField.id = 'ccg_selected_payment_link';
-                            hiddenLinkField.name = 'ccg_selected_payment_link';
-                            hiddenLinkField.value = window.ccgSelectedPaymentLink;
-                            fluentFormContainer.querySelector('form').appendChild(hiddenLinkField);
-                        } else {
-                            document.getElementById('ccg_selected_payment_link').value = window.ccgSelectedPaymentLink;
-                        }
-                    });
-                });
-                </script>
-                
-                <!-- Script to handle form submission and redirection -->
-                <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    // Listen for the Fluent Form success event
-                    jQuery(document).on('fluentform_submission_success', function(event, data) {
-                        // Get the stored payment link
-                        const redirectLink = window.ccgSelectedPaymentLink;
-                        
-                        // Log for debugging
-                        console.log('Form submitted successfully');
-                        console.log('Redirecting to:', redirectLink);
-                        
-                        // Redirect to payment link after successful form submission
-                        if (redirectLink && redirectLink.length > 0) {
-                            setTimeout(function() {
-                                window.open(redirectLink, '_blank');
-                            }, 1500);
-                        }
-                    });
-                });
-                </script>
+
+                <?php get_template_part('template-parts/forms/playdate-registration-form'); ?>
             </div>
         </section>
     <?php endif; ?>
@@ -759,10 +558,7 @@ while (have_posts()) :
                     <p class="mt-4 text-gray-600">This playdate is currently full, but you can join our waitlist</p>
                 </div>
                 <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-                    <?php 
-                    // Include waitlist form
-                    echo do_shortcode('[fluentform id="6"]'); 
-                    ?>
+                    <?php get_template_part('template-parts/forms/playdate-waitlist-form'); ?>
                 </div>
             </div>
         </section>

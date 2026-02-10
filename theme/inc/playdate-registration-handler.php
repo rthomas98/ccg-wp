@@ -39,14 +39,30 @@ function ccg_handle_playdate_registration() {
     $playdate_id = intval($_POST['playdate_id']);
     $spots_available = get_field('spots_available', $playdate_id);
 
+    // Also check current_status spots_remaining
+    if (have_rows('current_status', $playdate_id)) {
+        while (have_rows('current_status', $playdate_id)) {
+            the_row();
+            $spots_remaining = get_sub_field('spots_remaining');
+            if ($spots_remaining !== null && $spots_remaining !== '' && $spots_remaining !== false) {
+                $spots_available = intval($spots_remaining);
+            }
+        }
+    }
+
     // Check if spots are available
     if ($spots_available <= 0) {
         wp_send_json_error(['message' => 'Sorry, this playdate is full.']);
     }
 
+    // Sanitize inputs
+    $first_name = sanitize_text_field($_POST['first_name']);
+    $last_name = sanitize_text_field($_POST['last_name']);
+    $email = sanitize_email($_POST['email']);
+
     // Create registration post
     $registration_data = array(
-        'post_title'    => wp_strip_all_tags($_POST['first_name'] . ' ' . $_POST['last_name'] . ' - ' . get_the_title($playdate_id)),
+        'post_title'    => wp_strip_all_tags($first_name . ' ' . $last_name . ' - ' . get_the_title($playdate_id)),
         'post_status'   => 'publish',
         'post_type'     => 'playdate_registration'
     );
@@ -59,14 +75,18 @@ function ccg_handle_playdate_registration() {
 
     // Save registration meta
     $meta_fields = [
-        '_first_name' => sanitize_text_field($_POST['first_name']),
-        '_last_name' => sanitize_text_field($_POST['last_name']),
-        '_email' => sanitize_email($_POST['email']),
+        '_first_name' => $first_name,
+        '_last_name' => $last_name,
+        '_email' => $email,
         '_phone' => sanitize_text_field($_POST['phone']),
         '_handicap' => $handicap,
+        '_gender' => sanitize_text_field($_POST['gender'] ?? ''),
+        '_is_member' => sanitize_text_field($_POST['is_member'] ?? ''),
+        '_membership_status' => sanitize_text_field($_POST['membership_status'] ?? ''),
         '_special_requests' => sanitize_textarea_field($_POST['special_requests'] ?? ''),
         '_playdate_id' => $playdate_id,
         '_registration_status' => 'pending',
+        '_payment_status' => 'unpaid',
         '_registration_date' => current_time('mysql')
     ];
 
@@ -77,6 +97,23 @@ function ccg_handle_playdate_registration() {
     // Update spots available
     update_field('spots_available', $spots_available - 1, $playdate_id);
 
+    // Also update current_status spots_remaining if it exists
+    if (have_rows('current_status', $playdate_id)) {
+        while (have_rows('current_status', $playdate_id)) {
+            the_row();
+            update_sub_field('spots_remaining', $spots_available - 1);
+        }
+    }
+
+    // Get payment link from pricing_information
+    $payment_link = '';
+    if (have_rows('pricing_information', $playdate_id)) {
+        while (have_rows('pricing_information', $playdate_id)) {
+            the_row();
+            $payment_link = get_sub_field('payment_link');
+        }
+    }
+
     // Send confirmation email
     ccg_send_registration_confirmation_email($registration_id);
 
@@ -85,7 +122,10 @@ function ccg_handle_playdate_registration() {
 
     wp_send_json_success([
         'message' => 'Registration successful! You will receive a confirmation email shortly.',
-        'registration_id' => $registration_id
+        'registration_id' => $registration_id,
+        'player_name' => $first_name . ' ' . $last_name,
+        'player_email' => $email,
+        'payment_link' => $payment_link
     ]);
 }
 
@@ -93,14 +133,45 @@ function ccg_handle_playdate_registration() {
  * Send confirmation email to the registrant
  */
 function ccg_send_registration_confirmation_email($registration_id) {
-    $registration = get_post($registration_id);
     $playdate_id = get_post_meta($registration_id, '_playdate_id', true);
-    $playdate = get_post($playdate_id);
     $first_name = get_post_meta($registration_id, '_first_name', true);
     $email = get_post_meta($registration_id, '_email', true);
-    
+
+    // Get playdate details from ACF group
+    $playdate_date = '';
+    $tee_time = '';
+    $location = '';
+    if (have_rows('playdate_details', $playdate_id)) {
+        while (have_rows('playdate_details', $playdate_id)) {
+            the_row();
+            $playdate_date = get_sub_field('date');
+            $tee_time = get_sub_field('tee_time_start');
+            $location = get_sub_field('location');
+        }
+    }
+
+    // Get pricing info
+    $price_display = 'TBD';
+    $payment_link = '';
+    if (have_rows('pricing_information', $playdate_id)) {
+        while (have_rows('pricing_information', $playdate_id)) {
+            the_row();
+            $member_price = get_sub_field('course_member_price');
+            $non_member_price = get_sub_field('non_member_price');
+            $payment_link = get_sub_field('payment_link');
+            if ($member_price) {
+                $price_display = '$' . number_format((float)$member_price, 2);
+            } elseif ($non_member_price) {
+                $price_display = '$' . number_format((float)$non_member_price, 2);
+            }
+        }
+    }
+
+    // Format date for display
+    $formatted_date = !empty($playdate_date) ? date('F j, Y', strtotime($playdate_date)) : 'TBD';
+
     $subject = 'Registration Confirmation - ' . get_the_title($playdate_id);
-    
+
     $message = sprintf(
         'Hello %s,
 
@@ -108,27 +179,41 @@ Thank you for registering for %s.
 
 Registration Details:
 - Date: %s
-- Time: %s
+- Tee Time: %s
 - Location: %s
-- Price: $%s
+- Price: %s',
+        esc_html($first_name),
+        esc_html(get_the_title($playdate_id)),
+        esc_html($formatted_date),
+        esc_html($tee_time ?: 'TBD'),
+        esc_html($location ?: 'TBD'),
+        esc_html($price_display)
+    );
 
-We will review your registration and send you payment instructions shortly.
+    // Add payment link if available
+    if (!empty($payment_link)) {
+        $message .= sprintf(
+            '
+
+Complete your payment at: %s',
+            esc_url($payment_link)
+        );
+    }
+
+    $message .= sprintf(
+        '
+
+We will review your registration and confirm your spot shortly.
 
 If you have any questions, please don\'t hesitate to contact us.
 
 Best regards,
 %s',
-        esc_html($first_name),
-        esc_html(get_the_title($playdate_id)),
-        esc_html(get_field('date', $playdate_id)),
-        esc_html(get_field('time', $playdate_id)),
-        esc_html(get_field('location', $playdate_id)),
-        esc_html(get_field('price', $playdate_id)),
         esc_html(get_bloginfo('name'))
     );
 
     $headers = ['Content-Type: text/plain; charset=UTF-8'];
-    
+
     wp_mail($email, $subject, $message, $headers);
 }
 
@@ -136,16 +221,15 @@ Best regards,
  * Send notification email to admin
  */
 function ccg_send_admin_registration_notification($registration_id) {
-    $registration = get_post($registration_id);
     $playdate_id = get_post_meta($registration_id, '_playdate_id', true);
     $first_name = get_post_meta($registration_id, '_first_name', true);
     $last_name = get_post_meta($registration_id, '_last_name', true);
     $email = get_post_meta($registration_id, '_email', true);
     $phone = get_post_meta($registration_id, '_phone', true);
     $handicap = get_post_meta($registration_id, '_handicap', true);
-    
+
     $subject = 'New Playdate Registration - ' . get_the_title($playdate_id);
-    
+
     $message = sprintf(
         'New registration received for %s
 
@@ -167,7 +251,7 @@ View registration: %s',
 
     $admin_email = get_option('admin_email');
     $headers = ['Content-Type: text/plain; charset=UTF-8'];
-    
+
     wp_mail($admin_email, $subject, $message, $headers);
 }
 
@@ -226,31 +310,3 @@ function ccg_handle_waitlist_submission() {
 }
 add_action('wp_ajax_playdate_waitlist', 'ccg_handle_waitlist_submission');
 add_action('wp_ajax_nopriv_playdate_waitlist', 'ccg_handle_waitlist_submission');
-
-/**
- * Add the registration form to single playdate content
- */
-function ccg_add_registration_form_to_playdate($content) {
-    if (is_singular('playdate')) {
-        ob_start();
-        get_template_part('template-parts/forms/playdate-registration-form');
-        $form = ob_get_clean();
-        $content .= $form;
-    }
-    return $content;
-}
-add_filter('the_content', 'ccg_add_registration_form_to_playdate');
-
-/**
- * Enqueue scripts and localize AJAX URL
- */
-function ccg_enqueue_registration_scripts() {
-    if (is_singular('playdate')) {
-        wp_enqueue_script('ccg-registration', get_stylesheet_directory_uri() . '/assets/js/registration.js', array('jquery'), '1.0', true);
-        wp_localize_script('ccg-registration', 'ccg_ajax', array(
-            'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('playdate_registration_nonce')
-        ));
-    }
-}
-add_action('wp_enqueue_scripts', 'ccg_enqueue_registration_scripts');

@@ -652,6 +652,7 @@ add_action('wp_ajax_nopriv_tournament_registration', 'handle_tournament_registra
  * Include playdate registration functionality
  */
 require_once get_template_directory() . '/inc/post-types/playdate-registration.php';
+require_once get_template_directory() . '/inc/playdate-registration-handler.php';
 
 /**
  * Include tournament registration functionality
@@ -1262,11 +1263,10 @@ function ccg_scripts() {
     wp_enqueue_script('alpinejs', 'https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js', array(), null, true);
     wp_script_add_data('alpinejs', 'defer', true);
 
-    // Localize script for tournament registration AJAX
-    if ( is_singular( 'tournament' ) ) {
+    // Localize script for registration AJAX
+    if ( is_singular( 'tournament' ) || is_singular( 'playdate' ) ) {
         wp_localize_script( '_ccg-script', 'ajax_object', array(
             'ajax_url' => admin_url( 'admin-ajax.php' ),
-            'nonce'    => wp_create_nonce( 'tournament_registration_nonce' )
         ) );
     }
 }
