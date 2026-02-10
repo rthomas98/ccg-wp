@@ -30,7 +30,7 @@ add_action( 'wp_dashboard_setup', 'ccg_register_dashboard_widgets' );
 function ccg_dashboard_playdate_registrations_callback() {
 	$query = new WP_Query(
 		array(
-			'post_type'      => 'playdate_registration',
+			'post_type'      => 'playdate_reg',
 			'posts_per_page' => 10,
 			'orderby'        => 'date',
 			'order'          => 'DESC',
@@ -89,7 +89,7 @@ function ccg_dashboard_playdate_registrations_callback() {
 
 	echo '</tbody></table>';
 	echo '</div>';
-	echo '<p class="ccg-dashboard-widget-footer"><a href="' . esc_url( admin_url( 'edit.php?post_type=playdate_registration' ) ) . '">View All Playdate Registrations &rarr;</a></p>';
+	echo '<p class="ccg-dashboard-widget-footer"><a href="' . esc_url( admin_url( 'edit.php?post_type=playdate_reg' ) ) . '">View All Playdate Registrations &rarr;</a></p>';
 }
 
 /**
@@ -98,7 +98,7 @@ function ccg_dashboard_playdate_registrations_callback() {
 function ccg_dashboard_tournament_registrations_callback() {
 	$query = new WP_Query(
 		array(
-			'post_type'      => 'tournament_registration',
+			'post_type'      => 'tournament_reg',
 			'posts_per_page' => 10,
 			'orderby'        => 'date',
 			'order'          => 'DESC',
@@ -157,7 +157,7 @@ function ccg_dashboard_tournament_registrations_callback() {
 
 	echo '</tbody></table>';
 	echo '</div>';
-	echo '<p class="ccg-dashboard-widget-footer"><a href="' . esc_url( admin_url( 'edit.php?post_type=tournament_registration' ) ) . '">View All Tournament Registrations &rarr;</a></p>';
+	echo '<p class="ccg-dashboard-widget-footer"><a href="' . esc_url( admin_url( 'edit.php?post_type=tournament_reg' ) ) . '">View All Tournament Registrations &rarr;</a></p>';
 }
 
 /**

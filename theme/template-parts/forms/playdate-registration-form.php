@@ -81,7 +81,7 @@ if (have_rows('playdate_details', $playdate_id)) {
 <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-sm p-6 md:p-8">
     <form id="playdate-registration-form" class="space-y-6" method="POST">
         <?php wp_nonce_field('playdate_registration_nonce', 'playdate_registration_nonce'); ?>
-        <input type="hidden" name="action" value="playdate_registration">
+        <input type="hidden" name="action" value="playdate_reg">
         <input type="hidden" name="playdate_id" value="<?php echo esc_attr($playdate_id); ?>">
         <input type="hidden" name="membership_status" id="membership_status" value="member">
         <input type="hidden" name="selected_price" id="selected_price" value="<?php echo esc_attr($course_member_price); ?>">

@@ -35,7 +35,7 @@ function ccg_register_playdate_registration_post_type() {
         'show_in_rest'       => true,
     );
 
-    register_post_type('playdate_registration', $args);
+    register_post_type('playdate_reg', $args);
 }
 add_action('init', 'ccg_register_playdate_registration_post_type');
 
@@ -53,7 +53,7 @@ function ccg_playdate_registration_columns($columns) {
     $new_columns['date'] = $columns['date'];
     return $new_columns;
 }
-add_filter('manage_playdate_registration_posts_columns', 'ccg_playdate_registration_columns');
+add_filter('manage_playdate_reg_posts_columns', 'ccg_playdate_registration_columns');
 
 /**
  * Display custom column content
@@ -84,7 +84,7 @@ function ccg_playdate_registration_column_content($column, $post_id) {
             break;
     }
 }
-add_action('manage_playdate_registration_posts_custom_column', 'ccg_playdate_registration_column_content', 10, 2);
+add_action('manage_playdate_reg_posts_custom_column', 'ccg_playdate_registration_column_content', 10, 2);
 
 /**
  * Make custom columns sortable
@@ -95,14 +95,14 @@ function ccg_playdate_registration_sortable_columns($columns) {
     $columns['status'] = 'status';
     return $columns;
 }
-add_filter('manage_edit-playdate_registration_sortable_columns', 'ccg_playdate_registration_sortable_columns');
+add_filter('manage_edit-playdate_reg_sortable_columns', 'ccg_playdate_registration_sortable_columns');
 
 /**
  * Add custom admin styles for playdate registration status badges
  */
 function ccg_playdate_registration_admin_styles() {
     $screen = get_current_screen();
-    if ($screen && $screen->post_type === 'playdate_registration') {
+    if ($screen && $screen->post_type === 'playdate_reg') {
         ?>
         <style>
             .registration-status {

@@ -21,7 +21,7 @@ if (have_rows('registration_info', $tournament_id)) {
 
 <form id="tournament-registration-form" class="space-y-8" method="POST">
     <?php wp_nonce_field('tournament_registration_nonce', 'tournament_registration_nonce'); ?>
-    <input type="hidden" name="action" value="tournament_registration">
+    <input type="hidden" name="action" value="tournament_reg">
     <input type="hidden" name="tournament_id" value="<?php echo esc_attr($tournament_id); ?>">
     <input type="hidden" name="payment_link" value="<?php echo esc_url($payment_link); ?>">
 

@@ -573,7 +573,7 @@ function handle_tournament_registration() {
     // Create registration post
     $registration = [
         'post_title' => $first_name . ' ' . $last_name . ' - ' . get_the_title($tournament_id),
-        'post_type' => 'tournament_registration',
+        'post_type' => 'tournament_reg',
         'post_status' => 'publish',
     ];
 
@@ -645,8 +645,8 @@ function handle_tournament_registration() {
         'payment_link' => $tournament_payment_link,
     ]);
 }
-add_action('wp_ajax_tournament_registration', 'handle_tournament_registration');
-add_action('wp_ajax_nopriv_tournament_registration', 'handle_tournament_registration');
+add_action('wp_ajax_tournament_reg', 'handle_tournament_registration');
+add_action('wp_ajax_nopriv_tournament_reg', 'handle_tournament_registration');
 
 /**
  * Include playdate registration functionality
@@ -993,7 +993,7 @@ function register_tournament_registration_acf_fields() {
                     array(
                         'param' => 'post_type',
                         'operator' => '==',
-                        'value' => 'tournament_registration',
+                        'value' => 'tournament_reg',
                     ),
                 ),
             ),

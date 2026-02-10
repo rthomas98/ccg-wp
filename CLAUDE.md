@@ -105,8 +105,8 @@ composer run make-pot
 1. **Post Types:**
    - `playdate` - Golf playdate sessions (defined in theme/functions.php via ACF)
    - `tournament` - Tournament events (defined in theme/functions.php via ACF)
-   - `playdate_registration` - Registration records (inc/post-types/playdate-registration.php)
-   - `tournament_registration` - Tournament registrations (inc/post-types/tournament-registration.php)
+   - `playdate_reg` - Registration records (inc/post-types/playdate-registration.php)
+   - `tournament_reg` - Tournament registrations (inc/post-types/tournament-registration.php)
    - `waitlist` - Overflow management (inc/post-types/waitlist.php)
 
 2. **AJAX Registration Flow:**

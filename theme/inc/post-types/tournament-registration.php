@@ -32,7 +32,7 @@ function register_tournament_registration_post_type() {
         'show_ui'            => true,
         'show_in_menu'       => true,
         'query_var'          => true,
-        'rewrite'            => array('slug' => 'tournament-registration'),
+        'rewrite'            => array('slug' => 'tournament-reg'),
         'capability_type'    => 'post',
         'has_archive'        => false,
         'hierarchical'       => false,
@@ -41,7 +41,7 @@ function register_tournament_registration_post_type() {
         'supports'           => array('title'),
     );
 
-    register_post_type('tournament_registration', $args);
+    register_post_type('tournament_reg', $args);
 }
 add_action('init', 'register_tournament_registration_post_type');
 
@@ -64,7 +64,7 @@ function add_tournament_registration_columns($columns) {
     }
     return $new_columns;
 }
-add_filter('manage_tournament_registration_posts_columns', 'add_tournament_registration_columns');
+add_filter('manage_tournament_reg_posts_columns', 'add_tournament_registration_columns');
 
 /**
  * Display custom column content
@@ -99,14 +99,14 @@ function display_tournament_registration_columns($column, $post_id) {
             break;
     }
 }
-add_action('manage_tournament_registration_posts_custom_column', 'display_tournament_registration_columns', 10, 2);
+add_action('manage_tournament_reg_posts_custom_column', 'display_tournament_registration_columns', 10, 2);
 
 /**
  * Add custom admin styles for registration status
  */
 function add_tournament_registration_admin_styles() {
     $screen = get_current_screen();
-    if ($screen && $screen->post_type === 'tournament_registration') {
+    if ($screen && $screen->post_type === 'tournament_reg') {
         ?>
         <style>
             .registration-status {

@@ -4,8 +4,8 @@
  */
 
 // Add AJAX handlers
-add_action('wp_ajax_playdate_registration', 'ccg_handle_playdate_registration');
-add_action('wp_ajax_nopriv_playdate_registration', 'ccg_handle_playdate_registration');
+add_action('wp_ajax_playdate_reg', 'ccg_handle_playdate_registration');
+add_action('wp_ajax_nopriv_playdate_reg', 'ccg_handle_playdate_registration');
 
 /**
  * Handle the registration form submission
@@ -64,7 +64,7 @@ function ccg_handle_playdate_registration() {
     $registration_data = array(
         'post_title'    => wp_strip_all_tags($first_name . ' ' . $last_name . ' - ' . get_the_title($playdate_id)),
         'post_status'   => 'publish',
-        'post_type'     => 'playdate_registration'
+        'post_type'     => 'playdate_reg'
     );
 
     $registration_id = wp_insert_post($registration_data);
