@@ -150,10 +150,10 @@ $has_payment_link = ! empty($registration_data['payment_link']);
                     <?php if ($has_spots) : ?>
                         <div class="mt-8">
                             <button
-                               onclick="document.getElementById('registration-section').scrollIntoView({ behavior: 'smooth' });"
+                               onclick="document.getElementById('introduction-section').scrollIntoView({ behavior: 'smooth' });"
                                class="inline-flex items-center justify-center rounded-md bg-[#269763] px-6 py-3 text-center font-semibold text-white hover:bg-[#269763]/90 focus:outline-none focus:ring-2 focus:ring-[#269763] focus:ring-offset-2">
-                                Register Now
-                                <i data-lucide="arrow-right" class="ml-2 h-5 w-5"></i>
+                                View Details
+                                <i data-lucide="arrow-down" class="ml-2 h-5 w-5"></i>
                             </button>
                         </div>
                     <?php endif; ?>
@@ -261,7 +261,7 @@ $has_payment_link = ! empty($registration_data['payment_link']);
     <section class="bg-white px-[5%] py-16 md:py-24">
         <div class="container mx-auto">
             <?php if (get_field('introduction_')) : ?>
-            <div class="mb-8 w-full">
+            <div id="introduction-section" class="mb-8 w-full">
                 <div class="rounded-xl border border-gray-100 bg-gray-50 p-8 transition-transform hover:shadow-md w-full">
                     <div class="mb-4 inline-flex rounded-lg bg-[#269763]/10 p-3">
                         <i data-lucide="file-text" class="h-6 w-6 text-[#269763]"></i>
