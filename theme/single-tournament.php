@@ -439,30 +439,6 @@ $has_payment_link = ! empty($registration_data['payment_link']);
         </div>
     </section>
 
-    <!-- Registration Form (moved up from bottom) -->
-    <section id="registration-section" class="bg-gray-50 px-0 py-16 md:py-24">
-        <div class="container mx-auto max-w-3xl">
-            <?php if ($has_spots) : ?>
-                <div class="mb-12 text-center">
-                    <span class="mb-4 inline-block rounded-full bg-[#269763]/10 px-4 py-2 text-sm font-semibold uppercase tracking-wider text-[#269763]">
-                        Step 1: Register
-                    </span>
-                    <h2 class="text-4xl font-bold md:text-5xl lg:text-6xl">Register for Tournament</h2>
-                    <p class="mt-4 text-gray-600">You will be able to make payment after registration.</p>
-                </div>
-                <?php get_template_part('template-parts/forms/tournament-registration-form'); ?>
-            <?php else : ?>
-                <div class="text-center">
-                    <div class="mx-auto mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
-                        <i data-lucide="x-circle" class="h-8 w-8 text-red-600"></i>
-                    </div>
-                    <h2 class="mb-4 text-4xl font-bold md:text-5xl lg:text-6xl">Registration Closed</h2>
-                    <p class="text-lg text-gray-600">This tournament is currently full. Please check back later or contact us for waitlist information.</p>
-                </div>
-            <?php endif; ?>
-        </div>
-    </section>
-
     <!-- Layout 12 Section -->
     <?php if (have_rows('layout_12')) : ?>
         <?php while (have_rows('layout_12')) : the_row(); ?>
@@ -645,39 +621,6 @@ $has_payment_link = ! empty($registration_data['payment_link']);
                             </div>
                         <?php endif; ?>
 
-                        <?php if (have_rows('contact_information')) : ?>
-                            <div class="rounded-xl border border-gray-100 bg-gray-50 p-8 lg:col-span-2">
-                                <h3 class="mb-6 text-2xl font-bold">Contact Information</h3>
-                                <div class="space-y-4">
-                                    <?php while (have_rows('contact_information')) : the_row(); ?>
-                                        <?php if (get_sub_field('contact_name')) : ?>
-                                            <div class="flex items-center gap-3">
-                                                <i data-lucide="user" class="h-5 w-5 text-[#269763]"></i>
-                                                <p><?php echo esc_html(get_sub_field('contact_name')); ?></p>
-                                            </div>
-                                        <?php endif; ?>
-
-                                        <?php if (get_sub_field('contact_email')) : ?>
-                                            <div class="flex items-center gap-3">
-                                                <i data-lucide="mail" class="h-5 w-5 text-[#269763]"></i>
-                                                <a href="mailto:<?php echo esc_attr(get_sub_field('contact_email')); ?>" class="text-[#269763] hover:underline">
-                                                    <?php echo esc_html(get_sub_field('contact_email')); ?>
-                                                </a>
-                                            </div>
-                                        <?php endif; ?>
-
-                                        <?php if (get_sub_field('contact_phone')) : ?>
-                                            <div class="flex items-center gap-3">
-                                                <i data-lucide="phone" class="h-5 w-5 text-[#269763]"></i>
-                                                <a href="tel:<?php echo esc_attr(get_sub_field('contact_phone')); ?>" class="text-[#269763] hover:underline">
-                                                    <?php echo esc_html(get_sub_field('contact_phone')); ?>
-                                                </a>
-                                            </div>
-                                        <?php endif; ?>
-                                    <?php endwhile; ?>
-                                </div>
-                            </div>
-                        <?php endif; ?>
                     <?php endwhile; ?>
                 </div>
             </div>
@@ -1120,6 +1063,77 @@ $has_payment_link = ! empty($registration_data['payment_link']);
                     </div>
                 </div>
             </section>
+        <?php endwhile; ?>
+    <?php endif; ?>
+
+    <!-- Registration Form -->
+    <section id="registration-section" class="bg-gray-50 px-[5%] py-16 md:py-24">
+        <div class="container mx-auto max-w-3xl">
+            <?php if ($has_spots) : ?>
+                <div class="mb-8 text-center md:mb-12">
+                    <span class="mb-4 inline-block rounded-full bg-[#269763]/10 px-4 py-2 text-sm font-semibold uppercase tracking-wider text-[#269763]">
+                        Step 1: Register
+                    </span>
+                    <h2 class="text-3xl font-bold md:text-5xl lg:text-6xl">Register for Tournament</h2>
+                    <p class="mt-4 text-gray-600">You will be able to make payment after registration.</p>
+                </div>
+                <?php get_template_part('template-parts/forms/tournament-registration-form'); ?>
+            <?php else : ?>
+                <div class="text-center">
+                    <div class="mx-auto mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
+                        <i data-lucide="x-circle" class="h-8 w-8 text-red-600"></i>
+                    </div>
+                    <h2 class="mb-4 text-3xl font-bold md:text-5xl lg:text-6xl">Registration Closed</h2>
+                    <p class="text-base text-gray-600 md:text-lg">This tournament is currently full. Please check back later or contact us for waitlist information.</p>
+                </div>
+            <?php endif; ?>
+        </div>
+    </section>
+
+    <!-- Contact Information -->
+    <?php if (have_rows('additional_information')) : ?>
+        <?php while (have_rows('additional_information')) : the_row(); ?>
+            <?php if (have_rows('contact_information')) : ?>
+                <section class="bg-white px-[5%] py-16 md:py-24">
+                    <div class="container mx-auto">
+                        <div class="mx-auto max-w-3xl">
+                            <div class="mb-8 text-center">
+                                <h2 class="text-4xl font-bold md:text-5xl lg:text-6xl">Contact Information</h2>
+                            </div>
+                            <div class="rounded-xl border border-gray-100 bg-gray-50 p-8">
+                                <div class="space-y-4">
+                                    <?php while (have_rows('contact_information')) : the_row(); ?>
+                                        <?php if (get_sub_field('contact_name')) : ?>
+                                            <div class="flex items-center gap-3">
+                                                <i data-lucide="user" class="h-5 w-5 text-[#269763]"></i>
+                                                <p><?php echo esc_html(get_sub_field('contact_name')); ?></p>
+                                            </div>
+                                        <?php endif; ?>
+
+                                        <?php if (get_sub_field('contact_email')) : ?>
+                                            <div class="flex items-center gap-3">
+                                                <i data-lucide="mail" class="h-5 w-5 text-[#269763]"></i>
+                                                <a href="mailto:<?php echo esc_attr(get_sub_field('contact_email')); ?>" class="text-[#269763] hover:underline">
+                                                    <?php echo esc_html(get_sub_field('contact_email')); ?>
+                                                </a>
+                                            </div>
+                                        <?php endif; ?>
+
+                                        <?php if (get_sub_field('contact_phone')) : ?>
+                                            <div class="flex items-center gap-3">
+                                                <i data-lucide="phone" class="h-5 w-5 text-[#269763]"></i>
+                                                <a href="tel:<?php echo esc_attr(get_sub_field('contact_phone')); ?>" class="text-[#269763] hover:underline">
+                                                    <?php echo esc_html(get_sub_field('contact_phone')); ?>
+                                                </a>
+                                            </div>
+                                        <?php endif; ?>
+                                    <?php endwhile; ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            <?php endif; ?>
         <?php endwhile; ?>
     <?php endif; ?>
 

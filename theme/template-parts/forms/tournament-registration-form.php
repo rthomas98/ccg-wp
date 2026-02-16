@@ -19,7 +19,7 @@ if (have_rows('registration_info', $tournament_id)) {
 }
 ?>
 
-<form id="tournament-registration-form" class="space-y-8" method="POST">
+<form id="tournament-registration-form" class="space-y-6 rounded-xl border border-gray-100 bg-white p-4 shadow-sm md:space-y-8 md:p-8" method="POST">
     <?php wp_nonce_field('tournament_registration_nonce', 'tournament_registration_nonce'); ?>
     <input type="hidden" name="action" value="tournament_reg">
     <input type="hidden" name="tournament_id" value="<?php echo esc_attr($tournament_id); ?>">
@@ -128,27 +128,22 @@ if (have_rows('registration_info', $tournament_id)) {
         <h3 class="mb-6 text-xl font-bold">Golf Information</h3>
         <div class="grid gap-6 md:grid-cols-2">
             <div>
-                <label for="handicap" class="mb-2 block text-sm font-medium text-gray-700">Handicap Index *</label>
-                <input type="number" 
-                       id="handicap" 
-                       name="handicap" 
-                       step="0.1"
-                       required
-                       class="w-full rounded-md border-gray-300 shadow-sm focus:border-[#269763] focus:ring-[#269763]">
-            </div>
-            <div>
-                <label for="ghin_number" class="mb-2 block text-sm font-medium text-gray-700">GHIN Number *</label>
-                <input type="text" 
-                       id="ghin_number" 
-                       name="ghin_number" 
-                       required
-                       class="w-full rounded-md border-gray-300 shadow-sm focus:border-[#269763] focus:ring-[#269763]">
+                <label for="scorecard_range" class="mb-2 block text-sm font-medium text-gray-700">Scorecard Range *</label>
+                <select id="scorecard_range"
+                        name="scorecard_range"
+                        required
+                        class="w-full rounded-md border-gray-300 shadow-sm focus:border-[#269763] focus:ring-[#269763]">
+                    <option value="">Select your typical scorecard range</option>
+                    <option value="70-85">70 - 85</option>
+                    <option value="86-96">86 - 96</option>
+                    <option value="above-96">Above 96</option>
+                </select>
             </div>
             <div>
                 <label for="home_club" class="mb-2 block text-sm font-medium text-gray-700">Home Club</label>
-                <input type="text" 
-                       id="home_club" 
-                       name="home_club" 
+                <input type="text"
+                       id="home_club"
+                       name="home_club"
                        class="w-full rounded-md border-gray-300 shadow-sm focus:border-[#269763] focus:ring-[#269763]">
             </div>
         </div>
@@ -207,7 +202,7 @@ if (have_rows('registration_info', $tournament_id)) {
 
 <!-- Registration Confirmation Panel -->
 <div id="registration-confirmation" class="hidden">
-    <div class="rounded-xl border border-green-200 bg-green-50 p-8 text-center">
+    <div class="rounded-xl border border-green-200 bg-green-50 p-4 text-center md:p-8">
         <div class="mx-auto mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
             <i data-lucide="check-circle" class="h-8 w-8 text-green-600"></i>
         </div>

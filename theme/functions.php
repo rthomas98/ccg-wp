@@ -557,15 +557,14 @@ function handle_tournament_registration() {
     $last_name = isset($_POST['last_name']) ? sanitize_text_field($_POST['last_name']) : '';
     $email = isset($_POST['email']) ? sanitize_email($_POST['email']) : '';
     $phone = isset($_POST['phone']) ? sanitize_text_field($_POST['phone']) : '';
-    $handicap = isset($_POST['handicap']) ? floatval($_POST['handicap']) : 0;
-    $ghin_number = isset($_POST['ghin_number']) ? sanitize_text_field($_POST['ghin_number']) : '';
+    $scorecard_range = isset($_POST['scorecard_range']) ? sanitize_text_field($_POST['scorecard_range']) : '';
     $home_club = isset($_POST['home_club']) ? sanitize_text_field($_POST['home_club']) : '';
     $dietary_restrictions = isset($_POST['dietary_restrictions']) ? sanitize_textarea_field($_POST['dietary_restrictions']) : '';
     $special_requests = isset($_POST['special_requests']) ? sanitize_textarea_field($_POST['special_requests']) : '';
 
     // Validate required fields
-    if (empty($first_name) || empty($last_name) || empty($email) || empty($phone) || 
-        empty($handicap) || empty($ghin_number)) {
+    if (empty($first_name) || empty($last_name) || empty($email) || empty($phone) ||
+        empty($scorecard_range)) {
         wp_send_json_error(['message' => 'Please fill in all required fields']);
         return;
     }
@@ -589,8 +588,7 @@ function handle_tournament_registration() {
     update_field('registration_details_last_name', $last_name, $registration_id);
     update_field('registration_details_email', $email, $registration_id);
     update_field('registration_details_phone', $phone, $registration_id);
-    update_field('registration_details_handicap', $handicap, $registration_id);
-    update_field('registration_details_ghin_number', $ghin_number, $registration_id);
+    update_field('registration_details_scorecard_range', $scorecard_range, $registration_id);
     update_field('registration_details_home_club', $home_club, $registration_id);
     update_field('registration_details_dietary_restrictions', $dietary_restrictions, $registration_id);
     update_field('registration_details_special_requests', $special_requests, $registration_id);
@@ -619,8 +617,7 @@ function handle_tournament_registration() {
     $message .= "Name: $first_name $last_name\n";
     $message .= "Email: $email\n";
     $message .= "Phone: $phone\n";
-    $message .= "GHIN Number: $ghin_number\n";
-    $message .= "Handicap Index: $handicap\n";
+    $message .= "Scorecard Range: $scorecard_range\n";
     if ($home_club) {
         $message .= "Home Club: $home_club\n";
     }
@@ -910,21 +907,16 @@ function register_tournament_registration_acf_fields() {
                     'required' => 1,
                 ),
                 array(
-                    'key' => 'field_registration_details_handicap',
-                    'label' => 'Handicap Index',
-                    'name' => 'registration_details_handicap',
-                    'type' => 'number',
+                    'key' => 'field_registration_details_scorecard_range',
+                    'label' => 'Scorecard Range',
+                    'name' => 'registration_details_scorecard_range',
+                    'type' => 'select',
                     'required' => 1,
-                    'min' => -10,
-                    'max' => 54,
-                    'step' => 0.1,
-                ),
-                array(
-                    'key' => 'field_registration_details_ghin_number',
-                    'label' => 'GHIN Number',
-                    'name' => 'registration_details_ghin_number',
-                    'type' => 'text',
-                    'required' => 1,
+                    'choices' => array(
+                        '70-85' => '70 - 85',
+                        '86-96' => '86 - 96',
+                        'above-96' => 'Above 96',
+                    ),
                 ),
                 array(
                     'key' => 'field_registration_details_home_club',
