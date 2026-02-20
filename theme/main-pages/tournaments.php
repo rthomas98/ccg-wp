@@ -108,21 +108,25 @@ get_header();
                                         </div>
                                         
                                         <div class="p-6">
-                                            <h3 class="text-xl font-bold mb-2"><?php the_title(); ?></h3>
+                                            <a href="<?php the_permalink(); ?>" class="transition-colors hover:text-[#269763]">
+                                                <h3 class="text-xl font-bold mb-2"><?php the_title(); ?></h3>
+                                            </a>
                                             
-                                            <?php if ($location || $golf_course_name) : ?>
-                                                <div class="flex items-center text-gray-600 mb-3">
-                                                    <i data-lucide="map-pin" class="h-5 w-5 mr-2 text-[#269763]"></i>
-                                                    <span><?php echo esc_html($golf_course_name ?: $location); ?></span>
-                                                </div>
-                                            <?php endif; ?>
-                                            
-                                            <?php if ($formatted_date) : ?>
-                                                <div class="flex items-center text-gray-600 mb-4">
-                                                    <i data-lucide="calendar" class="h-5 w-5 mr-2 text-[#269763]"></i>
-                                                    <span><?php echo esc_html($formatted_date); ?></span>
-                                                </div>
-                                            <?php endif; ?>
+                                            <div class="flex items-center justify-between text-gray-600 mb-4">
+                                                <?php if ($location || $golf_course_name) : ?>
+                                                    <div class="flex items-center">
+                                                        <i data-lucide="map-pin" class="h-5 w-5 mr-2 text-[#269763]"></i>
+                                                        <span><?php echo esc_html($golf_course_name ?: $location); ?></span>
+                                                    </div>
+                                                <?php endif; ?>
+
+                                                <?php if ($formatted_date) : ?>
+                                                    <div class="flex items-center">
+                                                        <i data-lucide="calendar" class="h-5 w-5 mr-2 text-[#269763]"></i>
+                                                        <span><?php echo esc_html($formatted_date); ?></span>
+                                                    </div>
+                                                <?php endif; ?>
+                                            </div>
                                             
                                             <div class="mt-4">
                                                 <a href="<?php the_permalink(); ?>" class="inline-flex items-center text-[#269763] hover:text-[#1a704a] transition-colors">

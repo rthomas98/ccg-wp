@@ -69,7 +69,7 @@
                     <?php endif; ?>
                 </div>
 
-                <div class="flex w-screen justify-start overflow-hidden">
+                <div class="flex w-full justify-start overflow-hidden">
                     <div class="grid shrink-0 grid-cols-1 gap-y-4">
                         <div class="grid w-full animate-marquee-top auto-cols-fr grid-cols-2 gap-4 self-center">
                             <div class="grid w-full grid-flow-col gap-4">
@@ -354,9 +354,9 @@
                             <div class="flex flex-col items-center justify-start text-center">
                                 <div class="rb-6 mb-6 md:mb-8">
                                     <?php if ($image) : ?>
-                                        <img src="<?php echo esc_url($image['url']); ?>" alt="<?php echo esc_attr($image['alt']); ?>" />
+                                        <img src="<?php echo esc_url($image['url']); ?>" alt="<?php echo esc_attr($image['alt']); ?>" class="w-full" />
                                     <?php else : ?>
-                                        <img src="https://d22po4pjz3o32e.cloudfront.net/placeholder-image-landscape.svg" alt="Placeholder image" />
+                                        <img src="https://d22po4pjz3o32e.cloudfront.net/placeholder-image-landscape.svg" alt="Placeholder image" class="w-full" />
                                     <?php endif; ?>
                                 </div>
                                 <h3 class="mb-5 text-2xl font-bold md:mb-6 md:text-3xl md:leading-[1.3] lg:text-4xl">
@@ -434,10 +434,10 @@
                         </p>
                     <?php endif; ?>
                 </div>
-                
-                <div class="grid grid-cols-1 items-start gap-y-12 md:grid-cols-3 md:gap-x-8 md:gap-y-16 lg:gap-x-12">
+
+                <div class="mt-12 grid grid-cols-1 items-start gap-y-12 md:mt-18 md:grid-cols-3 md:gap-x-8 md:gap-y-16 lg:mt-20 lg:gap-x-12">
                     <?php if (have_rows('cards')) : ?>
-                        <?php while (have_rows('cards')) : the_row(); 
+                        <?php while (have_rows('cards')) : the_row();
                             $icon = get_sub_field('icon');
                             $title = get_sub_field('title');
                             $card_content = get_sub_field('content');
@@ -570,7 +570,7 @@
     ?>
         <section id="relume" class="relative px-[5%] py-16 md:py-24 lg:py-28">
             <div class="container relative z-10 mx-auto">
-                <div class="w-full max-w-[30vw]">
+                <div class="w-full max-w-lg lg:max-w-[30vw]">
                     <?php if ($title) : ?>
                         <h2 class="mb-5 text-4xl font-bold text-white md:text-5xl lg:text-6xl md:mb-6">
                             <?php echo esc_html($title); ?>
@@ -633,7 +633,7 @@
 
     <!-- Fluent Form Modal -->
     <div id="contact-modal-<?php echo get_the_ID(); ?>" class="contact-modal fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50 p-4" aria-labelledby="modal-title-<?php echo get_the_ID(); ?>" role="dialog" aria-modal="true">
-        <div class="relative w-full max-w-[50vw] max-h-[90vh] rounded-lg bg-white p-6 shadow-xl sm:p-8 overflow-y-auto">
+        <div class="relative w-full max-w-2xl max-h-[90vh] rounded-lg bg-white p-6 shadow-xl sm:p-8 overflow-y-auto">
             <button type="button" data-modal-close="contact-modal-<?php echo get_the_ID(); ?>" class="close-contact-modal-button sticky top-3 right-3 float-right text-gray-400 hover:text-gray-600 z-10">
                 <span class="sr-only">Close modal</span>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x h-6 w-6"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>

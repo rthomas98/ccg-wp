@@ -377,7 +377,7 @@ class CCG_Walker_Nav_Menu extends Walker_Nav_Menu {
         $atts['aria-current'] = $item->current ? 'page' : '';
 
         // Add classes to links
-        $link_classes = array('block py-2 px-4 text-black hover:text-[#269763] transition-colors duration-300');
+        $link_classes = array('block py-2 px-3 text-sm whitespace-nowrap text-black hover:text-[#269763] transition-colors duration-300');
         
         if ( in_array( 'current-menu-item', $classes ) ) {
             $link_classes[] = 'text-[#269763] font-bold';
@@ -1087,6 +1087,49 @@ function register_tournament_registration_acf_fields() {
     }
 }
 add_action('acf/init', 'register_tournament_registration_acf_fields');
+
+/**
+ * Register ACF fields for the register page (Stripe Payment Link)
+ */
+function _ccg_register_register_page_fields() {
+    if ( ! function_exists( 'acf_add_local_field_group' ) ) {
+        return;
+    }
+
+    acf_add_local_field_group( array(
+        'key'      => 'group_register_page_settings',
+        'title'    => 'Register Page Settings',
+        'fields'   => array(
+            array(
+                'key'          => 'field_stripe_individual_link',
+                'label'        => 'Individual Membership Payment Link',
+                'name'         => 'stripe_individual_link',
+                'type'         => 'url',
+                'instructions' => 'Stripe Payment Link for Individual Membership ($79/year).',
+                'required'     => 0,
+            ),
+            array(
+                'key'          => 'field_stripe_business_link',
+                'label'        => 'Business Membership Payment Link',
+                'name'         => 'stripe_business_link',
+                'type'         => 'url',
+                'instructions' => 'Stripe Payment Link for Business Membership ($550/year).',
+                'required'     => 0,
+            ),
+        ),
+        'location' => array(
+            array(
+                array(
+                    'param'    => 'page_template',
+                    'operator' => '==',
+                    'value'    => 'main-pages/register.php',
+                ),
+            ),
+        ),
+        'position' => 'side',
+    ) );
+}
+add_action( 'acf/init', '_ccg_register_register_page_fields' );
 
 /**
  * Register additional ACF field groups for layouts

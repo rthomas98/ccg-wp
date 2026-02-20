@@ -11,7 +11,7 @@
 
 <footer id="colophon" class="px-[5%] py-12 md:py-18 lg:py-20">
     <div class="container mx-auto bg-white p-4">
-        <div class="grid grid-cols-1 gap-x-[4vw] gap-y-12 border border-gray-200 p-8 md:gap-y-16 md:p-12 lg:grid-cols-[1fr_0.5fr] lg:gap-y-4">
+        <div class="grid grid-cols-1 gap-x-[4vw] gap-y-12 border border-gray-200 p-8 md:gap-y-16 md:p-12 md:grid-cols-[1fr_0.5fr] md:gap-y-4">
             <div class="flex flex-col items-start">
                 <div class="rb-6 max-w-md">
                     <div class="rb-6 mb-5 md:mb-6">
@@ -32,15 +32,15 @@
                                 if (!file_exists(get_template_directory() . '/theme/assets/images/logo.png')) {
                                     echo '<span class="text-2xl font-bold text-[#269763]">' . get_bloginfo('name') . '</span>';
                                 } else {
-                                    echo '<img src="' . esc_url($logo_url) . '" alt="' . esc_attr(get_bloginfo('name')) . '" class="inline-block h-32 w-auto">';
+                                    echo '<img src="' . esc_url($logo_url) . '" alt="' . esc_attr(get_bloginfo('name')) . '" class="inline-block h-20 md:h-28 lg:h-32 w-auto">';
                                 }
                             } else {
-                                echo '<img src="' . esc_url($logo_url) . '" alt="' . esc_attr(get_bloginfo('name')) . '" class="inline-block h-32 w-auto">';
+                                echo '<img src="' . esc_url($logo_url) . '" alt="' . esc_attr(get_bloginfo('name')) . '" class="inline-block h-20 md:h-28 lg:h-32 w-auto">';
                             }
                             ?>
                         </a>
                     </div>
-                    <h1 class="mb-5 text-4xl font-bold md:mb-6 md:text-5xl lg:text-6xl">
+                    <h1 class="mb-5 text-3xl font-bold md:mb-6 md:text-4xl lg:text-5xl">
                         <?php echo esc_html(get_theme_mod('footer_heading', 'Stay Connected with Chau Chau Golf')); ?>
                     </h1>
                     <p>

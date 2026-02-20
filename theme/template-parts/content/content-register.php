@@ -33,7 +33,15 @@
                                 </div>
                             </div>
                         <?php else : ?>
-                            <?php echo do_shortcode(get_sub_field('form')); ?>
+                            <?php
+                            $stripe_individual = get_field( 'stripe_individual_link' );
+                            $stripe_business   = get_field( 'stripe_business_link' );
+                            ?>
+                            <div class="ccg-registration-form"
+                                 data-stripe-individual="<?php echo esc_url( $stripe_individual ); ?>"
+                                 data-stripe-business="<?php echo esc_url( $stripe_business ); ?>">
+                                <?php echo do_shortcode( get_sub_field( 'form' ) ); ?>
+                            </div>
                         <?php endif; ?>
                     </div>
                 <?php endif; ?>

@@ -261,7 +261,7 @@ $has_payment_link = ! empty($registration_data['payment_link']);
     <section class="bg-white px-[5%] py-16 md:py-24">
         <div class="container mx-auto">
             <?php if (get_field('introduction_')) : ?>
-            <div id="introduction-section" class="mb-8 w-full">
+            <div id="introduction-section" class="mb-8 w-full scroll-mt-32">
                 <div class="rounded-xl border border-gray-100 bg-gray-50 p-8 transition-transform hover:shadow-md w-full">
                     <div class="mb-4 inline-flex rounded-lg bg-[#269763]/10 p-3">
                         <i data-lucide="file-text" class="h-6 w-6 text-[#269763]"></i>
@@ -404,36 +404,6 @@ $has_payment_link = ! empty($registration_data['payment_link']);
                     <?php endwhile; ?>
                 <?php endif; ?>
 
-                <?php if (have_rows('tournament_schedule')) : ?>
-                    <?php while (have_rows('tournament_schedule')) : the_row(); ?>
-                        <div class="rounded-xl border border-gray-100 bg-gray-50 p-8 transition-transform hover:shadow-md w-full">
-                            <div class="mb-4 inline-flex rounded-lg bg-[#269763]/10 p-3">
-                                <i data-lucide="clock" class="h-6 w-6 text-[#269763]"></i>
-                            </div>
-                            <h3 class="mb-3 text-xl font-bold">Schedule</h3>
-                            <ul class="space-y-2 text-gray-600">
-                                <?php if (get_sub_field('check-in_time')) : ?>
-                                    <li class="flex items-start gap-2">
-                                        <i data-lucide="user-check" class="mt-1 h-4 w-4 text-[#269763]"></i>
-                                        <span>Check-in: <?php echo esc_html(get_sub_field('check-in_time')); ?></span>
-                                    </li>
-                                <?php endif; ?>
-                                <?php if (get_sub_field('start_time')) : ?>
-                                    <li class="flex items-start gap-2">
-                                        <i data-lucide="play" class="mt-1 h-4 w-4 text-[#269763]"></i>
-                                        <span>Start: <?php echo esc_html(get_sub_field('start_time')); ?></span>
-                                    </li>
-                                <?php endif; ?>
-                                <?php if (get_sub_field('format')) : ?>
-                                    <li class="flex items-start gap-2">
-                                        <i data-lucide="layout-grid" class="mt-1 h-4 w-4 text-[#269763]"></i>
-                                        <span>Format: <?php echo esc_html(get_sub_field('format')); ?></span>
-                                    </li>
-                                <?php endif; ?>
-                            </ul>
-                        </div>
-                    <?php endwhile; ?>
-                <?php endif; ?>
 
             </div>
         </div>
@@ -1090,53 +1060,6 @@ $has_payment_link = ! empty($registration_data['payment_link']);
         </div>
     </section>
 
-    <!-- Contact Information -->
-    <?php if (have_rows('additional_information')) : ?>
-        <?php while (have_rows('additional_information')) : the_row(); ?>
-            <?php if (have_rows('contact_information')) : ?>
-                <section class="bg-white px-[5%] py-16 md:py-24">
-                    <div class="container mx-auto">
-                        <div class="mx-auto max-w-3xl">
-                            <div class="mb-8 text-center">
-                                <h2 class="text-4xl font-bold md:text-5xl lg:text-6xl">Contact Information</h2>
-                            </div>
-                            <div class="rounded-xl border border-gray-100 bg-gray-50 p-8">
-                                <div class="space-y-4">
-                                    <?php while (have_rows('contact_information')) : the_row(); ?>
-                                        <?php if (get_sub_field('contact_name')) : ?>
-                                            <div class="flex items-center gap-3">
-                                                <i data-lucide="user" class="h-5 w-5 text-[#269763]"></i>
-                                                <p><?php echo esc_html(get_sub_field('contact_name')); ?></p>
-                                            </div>
-                                        <?php endif; ?>
-
-                                        <?php if (get_sub_field('contact_email')) : ?>
-                                            <div class="flex items-center gap-3">
-                                                <i data-lucide="mail" class="h-5 w-5 text-[#269763]"></i>
-                                                <a href="mailto:<?php echo esc_attr(get_sub_field('contact_email')); ?>" class="text-[#269763] hover:underline">
-                                                    <?php echo esc_html(get_sub_field('contact_email')); ?>
-                                                </a>
-                                            </div>
-                                        <?php endif; ?>
-
-                                        <?php if (get_sub_field('contact_phone')) : ?>
-                                            <div class="flex items-center gap-3">
-                                                <i data-lucide="phone" class="h-5 w-5 text-[#269763]"></i>
-                                                <a href="tel:<?php echo esc_attr(get_sub_field('contact_phone')); ?>" class="text-[#269763] hover:underline">
-                                                    <?php echo esc_html(get_sub_field('contact_phone')); ?>
-                                                </a>
-                                            </div>
-                                        <?php endif; ?>
-                                    <?php endwhile; ?>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            <?php endif; ?>
-        <?php endwhile; ?>
-    <?php endif; ?>
-
     <!-- Gallery Section -->
     <?php
     $has_gallery_data = false;
@@ -1177,6 +1100,53 @@ $has_payment_link = ! empty($registration_data['payment_link']);
                                     </div>
                                 </a>
                             <?php endforeach; ?>
+                        </div>
+                    </div>
+                </section>
+            <?php endif; ?>
+        <?php endwhile; ?>
+    <?php endif; ?>
+
+    <!-- Contact Information -->
+    <?php if (have_rows('additional_information')) : ?>
+        <?php while (have_rows('additional_information')) : the_row(); ?>
+            <?php if (have_rows('contact_information')) : ?>
+                <section class="bg-white px-[5%] py-16 md:py-24">
+                    <div class="container mx-auto">
+                        <div class="mx-auto max-w-3xl">
+                            <div class="mb-8 text-center">
+                                <h2 class="text-4xl font-bold md:text-5xl lg:text-6xl">Contact Information</h2>
+                            </div>
+                            <div class="rounded-xl border border-gray-100 bg-gray-50 p-8">
+                                <div class="space-y-4">
+                                    <?php while (have_rows('contact_information')) : the_row(); ?>
+                                        <?php if (get_sub_field('contact_name')) : ?>
+                                            <div class="flex items-center gap-3">
+                                                <i data-lucide="user" class="h-5 w-5 text-[#269763]"></i>
+                                                <p><?php echo esc_html(get_sub_field('contact_name')); ?></p>
+                                            </div>
+                                        <?php endif; ?>
+
+                                        <?php if (get_sub_field('contact_email')) : ?>
+                                            <div class="flex items-center gap-3">
+                                                <i data-lucide="mail" class="h-5 w-5 text-[#269763]"></i>
+                                                <a href="mailto:<?php echo esc_attr(get_sub_field('contact_email')); ?>" class="text-[#269763] hover:underline">
+                                                    <?php echo esc_html(get_sub_field('contact_email')); ?>
+                                                </a>
+                                            </div>
+                                        <?php endif; ?>
+
+                                        <?php if (get_sub_field('contact_phone')) : ?>
+                                            <div class="flex items-center gap-3">
+                                                <i data-lucide="phone" class="h-5 w-5 text-[#269763]"></i>
+                                                <a href="tel:<?php echo esc_attr(get_sub_field('contact_phone')); ?>" class="text-[#269763] hover:underline">
+                                                    <?php echo esc_html(get_sub_field('contact_phone')); ?>
+                                                </a>
+                                            </div>
+                                        <?php endif; ?>
+                                    <?php endwhile; ?>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </section>

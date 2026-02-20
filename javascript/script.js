@@ -65,10 +65,68 @@ function setupContactModals() {
     });
 }
 
-// Run the setup function when the DOM is ready
+// Stripe Payment Link redirect after registration form submission
+function setupStripeRedirect() {
+    const registrationForm = document.querySelector('.ccg-registration-form');
+    if (!registrationForm) return;
+
+    const individualUrl = registrationForm.dataset.stripeIndividual;
+    const businessUrl = registrationForm.dataset.stripeBusiness;
+    if (!individualUrl && !businessUrl) return;
+
+    // Track the selected membership plan before the form resets on submit
+    let selectedPlan = '';
+    const form = registrationForm.querySelector('form');
+    if (form) {
+        // Capture plan selection on form submit and also on change
+        const planSelect = form.querySelector(
+            'select[name="payment_input"],' +
+            'select[data-subscription_item="yes"]'
+        );
+        if (planSelect) {
+            const capturePlan = function () {
+                const option = planSelect.options[planSelect.selectedIndex];
+                selectedPlan = option
+                    ? option.getAttribute('data-plan_name') || option.text.trim()
+                    : '';
+            };
+            planSelect.addEventListener('change', capturePlan);
+            capturePlan(); // capture default selection
+        }
+    }
+
+    const observer = new MutationObserver(function (mutations) {
+        for (const mutation of mutations) {
+            for (const node of mutation.addedNodes) {
+                if (
+                    node.nodeType === 1 &&
+                    node.classList &&
+                    node.classList.contains('ff-message-success')
+                ) {
+                    observer.disconnect();
+                    const isBusiness =
+                        selectedPlan.toLowerCase().includes('business');
+                    const redirectUrl = isBusiness
+                        ? businessUrl || individualUrl
+                        : individualUrl || businessUrl;
+                    if (redirectUrl) {
+                        window.location.href = redirectUrl;
+                    }
+                    return;
+                }
+            }
+        }
+    });
+    observer.observe(registrationForm, { childList: true, subtree: true });
+}
+
+// Run the setup functions when the DOM is ready
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', setupContactModals);
+    document.addEventListener('DOMContentLoaded', () => {
+        setupContactModals();
+        setupStripeRedirect();
+    });
 } else {
-    // DOMContentLoaded has already fired
     setupContactModals();
+    setupStripeRedirect();
 }

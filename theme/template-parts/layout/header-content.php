@@ -10,7 +10,7 @@
 ?>
 
 <header id="masthead" class="sticky top-0 z-50 bg-white shadow-md">
-    <div class="mx-auto px-8 md:px-10 lg:px-12 flex flex-wrap items-center justify-between container">
+    <div class="mx-auto w-full px-4 sm:px-6 lg:px-8 flex flex-wrap items-center justify-between">
         <!-- Logo -->
         <div class="flex items-center">
             <?php if (has_custom_logo()) : ?>
@@ -25,7 +25,7 @@
         </div>
 
         <!-- Mobile menu button -->
-        <button id="mobile-menu-toggle" class="md:hidden flex items-center p-2 text-black hover:text-[#269763] focus:outline-none transition-colors duration-300">
+        <button id="mobile-menu-toggle" class="lg:hidden flex items-center p-2 text-black hover:text-[#269763] focus:outline-none transition-colors duration-300">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon">
                 <line x1="3" y1="12" x2="21" y2="12"></line>
                 <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -38,8 +38,8 @@
         </button>
 
         <!-- Navigation -->
-        <div id="nav-container" class="hidden w-full md:w-auto md:flex items-center justify-between flex-1 pl-8">
-            <nav id="site-navigation" class="flex items-center justify-center flex-grow mx-8" aria-label="<?php esc_attr_e('Main Navigation', '_ccg'); ?>">
+        <div id="nav-container" class="hidden w-full lg:w-auto lg:flex items-center justify-between flex-1 lg:pl-4">
+            <nav id="site-navigation" class="flex items-center justify-center flex-grow" aria-label="<?php esc_attr_e('Main Navigation', '_ccg'); ?>">
                 <?php
                 // Check if the menu exists and display it
                 if (has_nav_menu('menu-1')) {
@@ -48,7 +48,7 @@
                             'theme_location' => 'menu-1',
                             'menu_id'        => 'primary-menu',
                             'container'      => false,
-                            'menu_class'     => 'flex flex-col md:flex-row md:space-x-12',
+                            'menu_class'     => 'flex flex-col lg:flex-row lg:space-x-4 xl:space-x-6',
                             'items_wrap'     => '<ul id="%1$s" class="%2$s" aria-label="submenu">%3$s</ul>',
                             'walker'         => new CCG_Walker_Nav_Menu(),
                             'fallback_cb'    => false,
@@ -56,17 +56,17 @@
                     );
                 } else {
                     // Fallback menu if no menu is assigned
-                    echo '<ul id="primary-menu" class="flex flex-col md:flex-row md:space-x-6" aria-label="submenu">';
-                    echo '<li class="relative"><a href="' . esc_url(home_url('/')) . '" class="block py-2 px-4 text-black hover:text-[#269763] transition-colors duration-300">Home</a></li>';
-                    echo '<li class="relative"><a href="#" class="block py-2 px-4 text-black hover:text-[#269763] transition-colors duration-300">About</a></li>';
-                    echo '<li class="relative"><a href="#" class="block py-2 px-4 text-black hover:text-[#269763] transition-colors duration-300">Services</a></li>';
+                    echo '<ul id="primary-menu" class="flex flex-col lg:flex-row lg:space-x-4 xl:space-x-6" aria-label="submenu">';
+                    echo '<li class="relative"><a href="' . esc_url(home_url('/')) . '" class="block py-2 px-3 text-sm whitespace-nowrap text-black hover:text-[#269763] transition-colors duration-300">Home</a></li>';
+                    echo '<li class="relative"><a href="#" class="block py-2 px-3 text-sm whitespace-nowrap text-black hover:text-[#269763] transition-colors duration-300">About</a></li>';
+                    echo '<li class="relative"><a href="#" class="block py-2 px-3 text-sm whitespace-nowrap text-black hover:text-[#269763] transition-colors duration-300">Services</a></li>';
                     echo '</ul>';
                 }
                 ?>
             </nav>
 
             <?php if (!is_user_logged_in()) : ?>
-                <div class="flex flex-col md:flex-row gap-2 mt-4 md:mt-0">
+                <div class="flex flex-col lg:flex-row gap-2 mt-4 lg:mt-0">
                     <a href="<?php echo esc_url(wp_login_url()); ?>" class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#269763] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#269763]/80">
                         Login
                     </a>
@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', function() {
             menuIcon.classList.toggle('hidden');
             closeIcon.classList.toggle('hidden');
             
-            if (window.innerWidth < 768) {
+            if (window.innerWidth < 1024) {
                 navContainer.classList.toggle('mobile-menu-open');
             }
         });
@@ -143,12 +143,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Handle window resize
     window.addEventListener('resize', function() {
-        if (window.innerWidth >= 768) {
+        if (window.innerWidth >= 1024) {
             navContainer.classList.remove('mobile-menu-open');
             menuIcon.classList.remove('hidden');
             closeIcon.classList.add('hidden');
-            if (!navContainer.classList.contains('md:flex')) {
-                navContainer.classList.add('md:flex');
+            if (!navContainer.classList.contains('lg:flex')) {
+                navContainer.classList.add('lg:flex');
             }
         }
     });
@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <style>
-@media (max-width: 767px) {
+@media (max-width: 1023px) {
     #nav-container.mobile-menu-open {
         display: flex !important;
         flex-direction: column;
@@ -195,7 +195,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
     .menu-item-has-children {
         position: relative;
     }

@@ -253,7 +253,7 @@
                                         </span>
                                     <?php endif; ?>
 
-                                    <a href="<?php echo esc_url(get_permalink()); ?>">
+                                    <a href="<?php echo esc_url(get_permalink()); ?>" class="transition-colors hover:text-[#269763]">
                                         <h2 class="text-xl font-bold md:text-2xl"><?php the_title(); ?></h2>
                                     </a>
 
